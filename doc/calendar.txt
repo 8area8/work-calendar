@@ -1,0 +1,24 @@
+chaque case est un objet qu'on peut 
+
+calendar.setMonth(monthNumber)
+calendar.setYear(year)
+
+calendar.setWorkerMode(workerName)
+calendar.setDefaultMode()
+
+calendar.month
+calendar.year
+calendar.activeDay
+
+calendar.showDay(dayNumber)
+
+
+backend.getMonth()
+{
+    1: {
+        {name: Olivier, start: 12h20, end: 2h30},
+    }
+}
+for ([day, workers] in month.items()) {
+    month.setDay(day, workers)
+}

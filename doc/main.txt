@@ -1,0 +1,15 @@
+BASE
+
+Je souhaite pouvoir:
+- visualiser les horaires de chaque salarié par jour dans un mois
+- modifier ces horaires/salariés
+- ajouter ou supprimer un salarié
+
+- visionner les heures /semaine et /mois par salarié
+- visionner le salaire /semaine et /mois par salarié
+
+LIMITES
+
+Utilisation de Heroku:
+- limiter drastiquement les données hebergées
+- nettoyer les données sur le temps
