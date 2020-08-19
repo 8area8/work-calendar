@@ -4,8 +4,19 @@
       <ul id="morning-workers" class=""></ul>
       <ul id="evening-workers" class=""></ul>
       <b-field grouped>
-        <b-field label="Nom" expanded>
-          <b-input id="name-input" :value="salary.name"></b-input>
+        <b-field
+          label="Nom"
+          expanded
+          :type="{ 'is-danger': hasError() }"
+          :message="{
+            'Le nom doit contenir au moins 3 caractères.': hasError(),
+          }"
+        >
+          <b-input
+            id="name-input"
+            v-model="salary.name"
+            maxlength="30"
+          ></b-input>
         </b-field>
         <b-field label="Préférence">
           <b-select id="preference-input" v-model="salary.preference">
@@ -24,7 +35,7 @@
           ></b-numberinput>
         </b-field>
       </b-field>
-      <b-button type="is-success">Nouveau salarié</b-button>
+      <b-button id="create-worker" type="is-success">Nouveau salarié</b-button>
     </div>
   </section>
 </template>
@@ -43,6 +54,11 @@ export default Vue.extend({
         salary: 10,
       } as SalaryWorker,
     }
+  },
+  methods: {
+    hasError() {
+      return this.salary.name.length < 3
+    },
   },
 })
 </script>
