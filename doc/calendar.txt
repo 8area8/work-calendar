@@ -1,4 +1,4 @@
-chaque case est un objet qu'on peut 
+chaque case est un objet qu'on peut
 
 calendar.setMonth(monthNumber)
 calendar.setYear(year)
@@ -22,3 +22,18 @@ backend.getMonth()
 for ([day, workers] in month.items()) {
     month.setDay(day, workers)
 }
+
+pour  chaque semaine dans mois:
+  pour chaque jour dans semaine:
+    createNode()
+
+{
+  days: {
+    1: [{name: max, start: "10h00"}]
+  }
+}
+
+save - update create delete worker
+
+<Day disabled/>
+<Day number="day.dayNumber" morning-number="day.workers(morgning)"/>
