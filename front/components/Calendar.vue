@@ -70,12 +70,16 @@
           :class="{
             'c-nodes__node--out-of-month': !isInMonth(day),
             'c-nodes__node--active': isActiveDay(day),
+            'c-nodes__node--disabled': isOverDatabaseLimit(day),
           }"
           :id="`day-${day.year}-${String(day.month).padStart(2, '0')}-${String(
             day.number
           ).padStart(2, '0')}`"
         >
-          <div class="c-nodes__node--wrap-data">
+          <div
+            class="c-nodes__node--wrap-data"
+            :class="{ 'is-invisible': isOverDatabaseLimit(day) }"
+          >
             <div
               class="c-day-number"
               :class="{ 'c-day-number--disabled': !isInMonth(day) }"
@@ -91,10 +95,10 @@
             </div>
             <div
               class="c-nodes__node--icon-data"
-              :class="{ 'is-invisible': !getEvenningWorkers(day).length }"
+              :class="{ 'is-invisible': !geteveningWorkers(day).length }"
             >
               <b-icon pack="fas" icon="moon" size="is-small" class=""> </b-icon
-              >{{ getEvenningWorkers(day).length }}
+              >{{ geteveningWorkers(day).length }}
             </div>
           </div>
         </div>
@@ -139,6 +143,7 @@ export default {
     },
   },
   methods: {
+    /* def */
     year() {
       return this.dateSelector.getFullYear()
     },
@@ -165,6 +170,10 @@ export default {
     isInMonth(day) {
       return day.month === this.month()
     },
+    isOverDatabaseLimit(day) {
+      let monthDiff = day.month - this.now.getMonth()
+      return Math.abs(monthDiff) >= 2
+    },
     setMonth(number) {
       this.dateSelector.setMonth(this.month() + number)
       this.getDays()
@@ -181,7 +190,7 @@ export default {
       this.dayNumbers = []
       const maxDaysInWeek = 7
       let morning = []
-      let evenning = []
+      let evening = []
 
       const startDate = new Date(this.year(), this.month(), 1)
       const endDate = new Date(this.year(), this.month() + 1, 0)
@@ -218,10 +227,10 @@ export default {
       }
       return []
     },
-    getEvenningWorkers(dayNumber) {
+    geteveningWorkers(dayNumber) {
       let dayData = this.daysData[dayNumber]
       if (dayData) {
-        return dayData['evenning']
+        return dayData['evening']
       }
       return []
     },
@@ -283,11 +292,13 @@ $calendar-color: #e9e9e9;
     transition: all 0.1s;
     padding: 1em;
 
-    &--day:not(&--disabled):not(--active) {
-      border-bottom: 1px $calendar-color solid;
-      border-right: 1px $calendar-color solid;
+    &--day {
+      &:not(.c-nodes__node--disabled) {
+        border-bottom: 1px $calendar-color solid;
+        border-right: 1px $calendar-color solid;
+      }
 
-      &:hover {
+      &:hover:not(.c-nodes__node--disabled) {
         color: white;
         background-color: #ff0057;
         cursor: pointer;
@@ -313,6 +324,10 @@ $calendar-color: #e9e9e9;
     }
 
     &--out-of-month {
+      background-color: #f1f1f1;
+    }
+
+    &--disabled {
       background-color: #f1f1f1;
     }
 

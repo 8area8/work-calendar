@@ -41,6 +41,37 @@ describe('Calendar component', () => {
     let elem = $('#day-2020-06-31')
     expect(elem).toBeVisible()
   })
+  it('should display the correct dates.', () => {
+    Page.open()
+    setTestDate()
+    expect($("#day-2020-06-26")).not.toExist()
+    expect($("#day-2020-06-27")).toExist()
+    expect($("#day-2020-08-06")).toExist()
+    expect($("#day-2020-08-07")).not.toExist()
+  })
+  it("should show the active day", () => {
+    Page.open()
+    const now = new Date()
+    const id = `day-${now.getFullYear()}-${String(now.getMonth()).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
+    expect($(`#${id}`)).toHaveClassContaining("--active")
+  })
+  it("Database limitation: should disable the dates if there is a gap >= 2 months from the current one", () => {
+    Page.open()
+    const now = new Date()
+    $('#month-chevron-left').click()
+    $('#month-chevron-left').click()
+    const allDates = $$(".c-nodes__node--day")
+    let date
+    for (elem of allDates) {
+      date = new Date(elem.getAttribute("id").slice(5));
+      console.log(date, now.getMonth())
+      if (Math.abs(now.getMonth() - date.getMonth()) > 1) {
+        expect(elem).toHaveClassContaining("--disabled")
+        expect(elem).not.toBeClickable()
+      }
+    }
+  })
+
 })
 
 function getMonthName(date) {
@@ -48,4 +79,13 @@ function getMonthName(date) {
     month: 'long',
   })
   return name[0].toUpperCase() + name.slice(1)
+}
+
+function setTestDate() {
+  while (!$('#calendar-month-name=Août')) {
+    $('#month-chevron-left').click()
+  }
+  while (!$('#calendar-year=2020')) {
+    $('#year-chevron-left').click()
+  }
 }
