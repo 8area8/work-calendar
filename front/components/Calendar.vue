@@ -2,25 +2,53 @@
   <div id="work-calendar" class="c-work-calendar">
     <div class="c-work-calendar__header">
       <div class="c-work-calendar__month">
-        <div @click="setMonth(-1)" id="month-chevron-left">
-          <b-icon pack="fas" icon="chevron-left" size="is-small" />
+        <div
+          @click="setMonth(-1)"
+          id="month-chevron-left"
+          class="is-flex is-pointer"
+        >
+          <b-icon
+            pack="fas"
+            icon="chevron-left"
+            size="is-small"
+            class="has-text-grey"
+          />
         </div>
         <span id="calendar-month-name">
           {{ monthName() }}
         </span>
-        <div @click="setMonth(1)" id="month-chevron-right">
-          <b-icon pack="fas" icon="chevron-right" size="is-small" />
+        <div
+          @click="setMonth(1)"
+          id="month-chevron-right"
+          class="is-flex is-pointer"
+        >
+          <b-icon
+            pack="fas"
+            icon="chevron-right"
+            size="is-small"
+            class="has-text-grey"
+          />
         </div>
       </div>
       <div class="c-work-calendar__year">
-        <div @click="setYear(-1)">
-          <b-icon pack="fas" icon="chevron-left" size="is-small" />
+        <div @click="setYear(-1)" class="is-flex is-pointer">
+          <b-icon
+            pack="fas"
+            icon="chevron-left"
+            size="is-small"
+            class="has-text-grey"
+          />
         </div>
         <span id="calendar-year">
           {{ year() }}
         </span>
-        <div @click="setYear(1)">
-          <b-icon pack="fas" icon="chevron-right" size="is-small" />
+        <div @click="setYear(1)" class="is-flex is-pointer">
+          <b-icon
+            pack="fas"
+            icon="chevron-right"
+            size="is-small"
+            class="has-text-grey"
+          />
         </div>
       </div>
     </div>
@@ -40,12 +68,20 @@
           v-for="(day, index) in dayNumbers"
           :key="`day-${index}`"
           :class="{
-            'c-nodes__node--disabled': !isInMonth(day),
+            'c-nodes__node--out-of-month': !isInMonth(day),
             'c-nodes__node--active': isActiveDay(day),
           }"
+          :id="`day-${day.year}-${String(day.month).padStart(2, '0')}-${String(
+            day.number
+          ).padStart(2, '0')}`"
         >
-          <div class="c-nodes__node--wrap-data" v-if="isInMonth(day)">
-            <div class="c-nodes__node--day-number">{{ day }}</div>
+          <div class="c-nodes__node--wrap-data">
+            <div
+              class="c-day-number"
+              :class="{ 'c-day-number--disabled': !isInMonth(day) }"
+            >
+              {{ day.number }}
+            </div>
             <div
               class="c-nodes__node--icon-data"
               :class="{ 'is-invisible': !getMorningWorkers(day).length }"
@@ -119,34 +155,15 @@ export default {
       let number = date.getDay()
       return number === 0 ? 7 : number
     },
-    getDays() {
-      this.dayNumbers = []
-      const maxDaysInWeek = 7
-      let morning = []
-      let evenning = []
-
-      const startDate = new Date(this.year(), this.month(), 1)
-      const endDate = new Date(this.year(), this.month() + 1, 0)
-      let startDay = -(this.getWeekDay(startDate) - 1)
-      let endDay = endDate.getDate() + maxDaysInWeek - this.getWeekDay(endDate)
-
-      for (let dayNumber = startDay; dayNumber <= endDay; dayNumber++) {
-        if (dayNumber !== 0) {
-          this.dayNumbers.push(dayNumber)
-        }
-      }
-
-      this.getAPIDays()
-    },
-    isActiveDay(dayNumber) {
+    isActiveDay(day) {
       return (
-        dayNumber === this.now.getDate() &&
-        this.year() === this.now.getFullYear() &&
-        this.month() === this.now.getMonth()
+        day.number === this.now.getDate() &&
+        day.year === this.now.getFullYear() &&
+        day.month === this.now.getMonth()
       )
     },
-    isInMonth(dayNumber) {
-      return dayNumber > 0 && dayNumber <= this.monthLength
+    isInMonth(day) {
+      return day.month === this.month()
     },
     setMonth(number) {
       this.dateSelector.setMonth(this.month() + number)
@@ -155,6 +172,41 @@ export default {
     setYear(number) {
       this.dateSelector.setFullYear(this.year() + number)
       this.getDays()
+    },
+    getDays() {
+      this.getDayNumbers()
+      this.getAPIDays()
+    },
+    getDayNumbers() {
+      this.dayNumbers = []
+      const maxDaysInWeek = 7
+      let morning = []
+      let evenning = []
+
+      const startDate = new Date(this.year(), this.month(), 1)
+      const endDate = new Date(this.year(), this.month() + 1, 0)
+
+      const startWeekDate = new Date(
+        this.year(),
+        this.month(),
+        1 - (this.getWeekDay(startDate) - 1)
+      )
+      const endWeekDate = new Date(
+        this.year(),
+        this.month(),
+        endDate.getDate() + maxDaysInWeek - this.getWeekDay(endDate)
+      )
+
+      let date = new Date(startWeekDate.valueOf())
+      console.log(date, endWeekDate)
+      while (date <= endWeekDate) {
+        this.dayNumbers.push({
+          year: date.getFullYear(),
+          month: date.getMonth(),
+          number: date.getDate(),
+        })
+        date.setDate(date.getDate() + 1)
+      }
     },
     getAPIDays() {
       this.daysData = {}
@@ -201,6 +253,13 @@ $calendar-color: #e9e9e9;
     justify-content: space-between;
     text-align: center;
   }
+  &__month {
+    font-size: 1.2em;
+  }
+  &__year {
+    font-size: 0.8em;
+    font-weight: 300;
+  }
   &__content {
   }
 }
@@ -230,7 +289,7 @@ $calendar-color: #e9e9e9;
 
       &:hover {
         color: white;
-        background-color: #041fa9;
+        background-color: #ff0057;
         cursor: pointer;
         div {
           transition: all 0.3s;
@@ -245,13 +304,6 @@ $calendar-color: #e9e9e9;
       text-align: center;
     }
 
-    &--day-number {
-      position: relative;
-      top: -0.5em;
-      color: #673ab7;
-      font-weight: bold;
-    }
-
     &--icon-data {
       display: flex;
       justify-content: space-evenly;
@@ -260,13 +312,13 @@ $calendar-color: #e9e9e9;
       color: #607d8b;
     }
 
-    &--disabled {
-      background-color: $calendar-color;
+    &--out-of-month {
+      background-color: #f1f1f1;
     }
 
     &--active {
       color: white;
-      background-color: #5a74ff;
+      background-color: #607d8b;
       cursor: pointer;
       div {
         transition: all 0.3s;
@@ -275,7 +327,18 @@ $calendar-color: #e9e9e9;
     }
   }
 }
+.c-day-number {
+  position: relative;
+  top: -0.5em;
+  color: #607d8b;
+  &--disabled {
+    color: #9b9b9b;
+  }
+}
 .icon.is-small {
   align-self: center;
+}
+.is-pointer {
+  cursor: pointer;
 }
 </style>

@@ -36,6 +36,11 @@ describe('Calendar component', () => {
     date.setMonth(date.getMonth() + 2)
     expect($('#calendar-month-name')).toHaveText(getMonthName(date))
   })
+  it('should show all week days, even if they are not in the current month.', () => {
+    Page.open()
+    let elem = $('#day-2020-06-31')
+    expect(elem).toBeVisible()
+  })
 })
 
 function getMonthName(date) {
