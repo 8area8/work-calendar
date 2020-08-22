@@ -2,11 +2,13 @@
   <div id="work-calendar" class="c-work-calendar">
     <div class="c-work-calendar__header">
       <div class="c-work-calendar__month">
-        <div @click="setMonth(-1)">
+        <div @click="setMonth(-1)" id="month-chevron-left">
           <b-icon pack="fas" icon="chevron-left" size="is-small" />
         </div>
-        {{ monthName() }}
-        <div @click="setMonth(1)">
+        <span id="calendar-month-name">
+          {{ monthName() }}
+        </span>
+        <div @click="setMonth(1)" id="month-chevron-right">
           <b-icon pack="fas" icon="chevron-right" size="is-small" />
         </div>
       </div>
@@ -14,7 +16,9 @@
         <div @click="setYear(-1)">
           <b-icon pack="fas" icon="chevron-left" size="is-small" />
         </div>
-        {{ year() }}
+        <span id="calendar-year">
+          {{ year() }}
+        </span>
         <div @click="setYear(1)">
           <b-icon pack="fas" icon="chevron-right" size="is-small" />
         </div>
@@ -33,32 +37,28 @@
       <div class="c-nodes">
         <div
           class="c-nodes__node c-nodes__node--day"
+          v-for="(day, index) in dayNumbers"
+          :key="`day-${index}`"
           :class="{
-            'c-nodes__node--disabled': day == null,
-            'c-nodes__node--active':
-              day &&
-              day.number == now.getDate() &&
-              year() === now.getFullYear() &&
-              dateSelector.getMonth() === now.getMonth(),
+            'c-nodes__node--disabled': !isInMonth(day),
+            'c-nodes__node--active': isActiveDay(day),
           }"
-          v-for="(day, index) in days"
-          :key="`days-${index}`"
         >
-          <div class="c-nodes__node--wrap-data" v-if="day">
-            <div class="c-nodes__node--day-number">{{ day.number }}</div>
+          <div class="c-nodes__node--wrap-data" v-if="isInMonth(day)">
+            <div class="c-nodes__node--day-number">{{ day }}</div>
             <div
               class="c-nodes__node--icon-data"
-              :class="{ 'is-invisible': !day.day.length }"
+              :class="{ 'is-invisible': !getMorningWorkers(day).length }"
             >
               <b-icon pack="fas" icon="sun" size="is-small"> </b-icon
-              >{{ day.day.length }}
+              >{{ getMorningWorkers(day).length }}
             </div>
             <div
               class="c-nodes__node--icon-data"
-              :class="{ 'is-invisible': !day.night.length }"
+              :class="{ 'is-invisible': !getEvenningWorkers(day).length }"
             >
               <b-icon pack="fas" icon="moon" size="is-small" class=""> </b-icon
-              >{{ day.night.length }}
+              >{{ getEvenningWorkers(day).length }}
             </div>
           </div>
         </div>
@@ -73,7 +73,8 @@ export default {
     return {
       now: new Date(),
       dateSelector: new Date(),
-      days: [],
+      daysData: {},
+      dayNumbers: [],
     }
   },
   mounted() {
@@ -83,26 +84,30 @@ export default {
     dayNames() {
       let name = ''
       let dayNames = []
-      while (this.dateSelector.getDay() !== 1) {
-        this.dateSelector.setDate(this.dateSelector.getDate() + 1)
+      let date = new Date()
+      while (date.getDay() !== 1) {
+        date.setDate(date.getDate() + 1)
       }
       for (let i = 0; i < 7; i++) {
-        name = this.dateSelector.toLocaleDateString('default', {
+        name = date.toLocaleDateString('default', {
           weekday: 'short',
         })
         dayNames.push(name.slice(0, -1).toUpperCase())
-        this.dateSelector.setDate(this.dateSelector.getDate() + 1)
+        date.setDate(date.getDate() + 1)
       }
       return dayNames
     },
     monthLength() {
-      let date = new Date(this.year(), this.dateSelector.getMonth() + 1, 0)
+      let date = new Date(this.year(), this.month() + 1, 0)
       return date.getDate()
     },
   },
   methods: {
     year() {
       return this.dateSelector.getFullYear()
+    },
+    month() {
+      return this.dateSelector.getMonth()
     },
     monthName() {
       let name = this.dateSelector.toLocaleDateString('default', {
@@ -112,36 +117,61 @@ export default {
     },
     getWeekDay(date) {
       let number = date.getDay()
-      return (number === 0 ? 7 : number) - 1
+      return number === 0 ? 7 : number
     },
     getDays() {
-      this.days = []
-      let day = []
-      let night = []
-      let date = new Date(this.year(), this.dateSelector.getMonth(), 1)
-      while (this.days.length < this.getWeekDay(date)) {
-        this.days.push(null)
-      }
-      for (let number = 1; number <= this.monthLength; number++) {
-        if (number == 10) {
-          this.days.push({ number, day: [1, 2], night })
-        } else {
-          this.days.push({ number, day, night })
+      this.dayNumbers = []
+      const maxDaysInWeek = 7
+      let morning = []
+      let evenning = []
+
+      const startDate = new Date(this.year(), this.month(), 1)
+      const endDate = new Date(this.year(), this.month() + 1, 0)
+      let startDay = -(this.getWeekDay(startDate) - 1)
+      let endDay = endDate.getDate() + maxDaysInWeek - this.getWeekDay(endDate)
+
+      for (let dayNumber = startDay; dayNumber <= endDay; dayNumber++) {
+        if (dayNumber !== 0) {
+          this.dayNumbers.push(dayNumber)
         }
       }
-      date.setDate(this.monthLength)
-      for (let num of [...Array(7 - date.getDay())]) {
-        this.days.push(null)
-      }
-      return this.days
+
+      this.getAPIDays()
+    },
+    isActiveDay(dayNumber) {
+      return (
+        dayNumber === this.now.getDate() &&
+        this.year() === this.now.getFullYear() &&
+        this.month() === this.now.getMonth()
+      )
+    },
+    isInMonth(dayNumber) {
+      return dayNumber > 0 && dayNumber <= this.monthLength
     },
     setMonth(number) {
-      this.dateSelector.setMonth(this.dateSelector.getMonth() + number)
+      this.dateSelector.setMonth(this.month() + number)
       this.getDays()
     },
     setYear(number) {
-      this.dateSelector.setFullYear(this.dateSelector.getFullYear() + number)
+      this.dateSelector.setFullYear(this.year() + number)
       this.getDays()
+    },
+    getAPIDays() {
+      this.daysData = {}
+    },
+    getMorningWorkers(dayNumber) {
+      let dayData = this.daysData[dayNumber]
+      if (dayData) {
+        return dayData['morning']
+      }
+      return []
+    },
+    getEvenningWorkers(dayNumber) {
+      let dayData = this.daysData[dayNumber]
+      if (dayData) {
+        return dayData['evenning']
+      }
+      return []
     },
   },
 }
