@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <!-- MESSAGE -->
     <b-message
       :class="{
         'is-invisible':
@@ -14,8 +15,12 @@
     >
       Il est impossible de remplir des dates trop éloignées.
     </b-message>
+
+    <!-- CALENDAR -->
     <div id="work-calendar" class="c-work-calendar">
+      <!-- HEADER -->
       <div class="c-work-calendar__header">
+        <!-- MONTH -->
         <div class="c-work-calendar__month">
           <div
             id="month-chevron-left"
@@ -45,6 +50,7 @@
             />
           </div>
         </div>
+        <!-- YEAR -->
         <div class="c-work-calendar__year">
           <div class="is-flex is-pointer" @click="calendar.setYear(-1)">
             <b-icon
@@ -67,7 +73,9 @@
           </div>
         </div>
       </div>
+      <!-- CONTENT -->
       <div class="c-work-calendar__content">
+        <!-- DAYS NAMES -->
         <div class="c-nodes c-nodes--title">
           <div
             v-for="(name, index) of calendar.getWeekDayNames()"
@@ -77,6 +85,7 @@
             {{ name }}
           </div>
         </div>
+        <!-- DAYS NODES -->
         <div class="c-nodes">
           <div
             v-for="(day, index) in days"
