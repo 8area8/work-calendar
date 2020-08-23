@@ -32,7 +32,7 @@ describe('Workers testing', () => {
     $('#create-worker').click()
     expect($('#morning-workers div')).toExist()
   })
-  it('should not create a worker if some inputs à missing', () => {
+  it('should not create a worker if some inputs is missing', () => {
     $('#name-input').text = 'Jhon Doe'
     $('#preference-input').text = 'morning'
     $('#salary-input').text = '10'

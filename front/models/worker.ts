@@ -2,7 +2,7 @@
  * Worker model.
  */
 interface SalaryWorker {
-  id: number
+  id: null | number
   name: string
   preference: Preference
   salary: number
@@ -15,3 +15,6 @@ enum Preference {
   Morning = 'morning',
   Evening = 'evening',
 }
+
+// eslint-disable-next-line no-undef
+export { SalaryWorker }
