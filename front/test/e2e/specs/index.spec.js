@@ -23,7 +23,7 @@ describe('Calendar component', () => {
     expect(elem).toHaveText(String(now.getFullYear()))
   })
   it('should switch to the next or the last month clicking on the month chevrons', () => {
-    date = new Date()
+    const date = new Date()
     Page.open()
     let elem = $('#month-chevron-left')
     elem.click()
@@ -38,45 +38,46 @@ describe('Calendar component', () => {
   })
   it('should show all week days, even if they are not in the current month.', () => {
     Page.open()
-    let elem = $('#day-2020-06-31')
+    const elem = $('#day-2020-06-31')
     expect(elem).toBeVisible()
   })
   it('should display the correct dates.', () => {
     Page.open()
     setTestDate()
-    expect($("#day-2020-06-26")).not.toExist()
-    expect($("#day-2020-06-27")).toExist()
-    expect($("#day-2020-08-06")).toExist()
-    expect($("#day-2020-08-07")).not.toExist()
+    expect($('#day-2020-06-26')).not.toExist()
+    expect($('#day-2020-06-27')).toExist()
+    expect($('#day-2020-08-06')).toExist()
+    expect($('#day-2020-08-07')).not.toExist()
   })
-  it("should show the active day", () => {
+  it('should show the active day', () => {
     Page.open()
     const now = new Date()
-    const id = `day-${now.getFullYear()}-${String(now.getMonth()).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
-    expect($(`#${id}`)).toHaveClassContaining("--active")
+    const id = `day-${now.getFullYear()}-${String(now.getMonth()).padStart(
+      2,
+      '0'
+    )}-${String(now.getDate()).padStart(2, '0')}`
+    expect($(`#${id}`)).toHaveClassContaining('--active')
   })
-  it("Database limitation: should disable the dates if there is a gap >= 2 months from the current one", () => {
+  it('Database limitation: should disable the dates if there is a gap >= 2 months from the current one', () => {
     Page.open()
     const now = new Date()
     $('#month-chevron-left').click()
     $('#month-chevron-left').click()
-    expect($(".c-message--warning")).toBeVisible()
-    const allDates = $$(".c-nodes__node--day")
+    expect($('.c-message--warning')).toBeVisible()
+    const allDates = $$('.c-nodes__node--day')
     let date
-    for (elem of allDates) {
-      date = new Date(elem.getAttribute("id").slice(5));
-      console.log(date, now.getMonth())
+    for (const elem of allDates) {
+      date = new Date(elem.getAttribute('id').slice(5))
       if (Math.abs(now.getMonth() - date.getMonth()) > 1) {
-        expect(elem).toHaveClassContaining("--disabled")
+        expect(elem).toHaveClassContaining('--disabled')
         expect(elem).not.toBeClickable()
       }
     }
   })
-
 })
 
 function getMonthName(date) {
-  let name = date.toLocaleDateString('fr', {
+  const name = date.toLocaleDateString('fr', {
     month: 'long',
   })
   return name[0].toUpperCase() + name.slice(1)
