@@ -21,6 +21,7 @@
     "intl": "^1.2.5",
     "nuxt": "^2.14.0",
     "nuxt-buefy": "^0.3.31",
+    "nuxt-fontawesome": "^0.4.0",
     "vue": "^2.6.12",
     "vue-template-compiler": "^2.6.12"
   },

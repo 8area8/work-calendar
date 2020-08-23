@@ -1,0 +1,23 @@
+sudo: required
+
+cache:
+  directories:
+    - front/node_modules
+
+language: node_js
+node_js: 12
+
+jobs:
+  include:
+    - stage: "Javascript unit tests"
+      script: "cd front && npm install && npm run test:unit"
+    - stage: "Python unit tests"
+      script: "pip install pipenv && pipenv install --dev && pipenv run pytest back/tests"
+
+deploy:
+  provider: heroku
+  skip_cleanup: true
+  api_key:
+    secure: $HEROKU_KEY
+  app: thefuntains
+  run: "npm run generate"

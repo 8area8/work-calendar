@@ -14,6 +14,10 @@ pytest = "*"
 [packages]
 django = "*"
 djangorestframework = "*"
+django-heroku = "*"
+gunicorn = "*"
+psycopg2 = "*"
+whitenoise = "*"
 
 [requires]
 python_version = "3.7"
