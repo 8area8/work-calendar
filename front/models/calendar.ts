@@ -216,4 +216,4 @@ interface Day {
 const calendar = new Calendar()
 
 // eslint-disable-next-line no-undef
-export { calendar, Day }
+export { calendar, Calendar, Day }

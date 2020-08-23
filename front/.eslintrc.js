@@ -11,8 +11,9 @@ module.exports = {
     'plugin:prettier/recommended',
     'plugin:wdio/recommended',
     'plugin:nuxt/recommended',
+    'plugin:jest/recommended',
   ],
-  plugins: ['prettier', 'wdio'],
+  plugins: ['prettier', 'wdio', 'jest'],
   // add your custom rules here
   rules: {},
 }
