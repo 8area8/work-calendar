@@ -14,7 +14,7 @@ jobs:
     - npm install
   before-script:
     - npm run dev &
-    - sleep 5
   script:
     - npm run test:unit
+    - sleep 15
     - xvfb-run npm run test:e2e
