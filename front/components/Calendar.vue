@@ -3,8 +3,8 @@
     <b-message
       :class="{
         'is-invisible':
-          Math.abs(month() - now.getMonth()) <= 1 &&
-          year() === now.getFullYear(),
+          Math.abs(calendar.getMonth() - calendar.now.getMonth()) <= 1 &&
+          calendar.getYear() === calendar.now.getFullYear(),
       }"
       title="Attention"
       type="is-warning"
@@ -18,9 +18,9 @@
       <div class="c-work-calendar__header">
         <div class="c-work-calendar__month">
           <div
-            @click="setMonth(-1)"
             id="month-chevron-left"
             class="is-flex is-pointer"
+            @click="calendar.setMonth(-1)"
           >
             <b-icon
               pack="fas"
@@ -30,12 +30,12 @@
             />
           </div>
           <span id="calendar-month-name">
-            {{ monthName() }}
+            {{ calendar.getMonthName() }}
           </span>
           <div
-            @click="setMonth(1)"
             id="month-chevron-right"
             class="is-flex is-pointer"
+            @click="calendar.setMonth(1)"
           >
             <b-icon
               pack="fas"
@@ -46,7 +46,7 @@
           </div>
         </div>
         <div class="c-work-calendar__year">
-          <div @click="setYear(-1)" class="is-flex is-pointer">
+          <div class="is-flex is-pointer" @click="calendar.setYear(-1)">
             <b-icon
               pack="fas"
               icon="chevron-left"
@@ -55,9 +55,9 @@
             />
           </div>
           <span id="calendar-year">
-            {{ year() }}
+            {{ calendar.getYear() }}
           </span>
-          <div @click="setYear(1)" class="is-flex is-pointer">
+          <div class="is-flex is-pointer" @click="calendar.setYear(1)">
             <b-icon
               pack="fas"
               icon="chevron-right"
@@ -70,38 +70,38 @@
       <div class="c-work-calendar__content">
         <div class="c-nodes c-nodes--title">
           <div
-            class="c-nodes__node"
-            v-for="(name, index) of dayNames"
+            v-for="(name, index) of calendar.getWeekDayNames()"
             :key="`dayName-${index}`"
+            class="c-nodes__node"
           >
             {{ name }}
           </div>
         </div>
         <div class="c-nodes">
           <div
-            class="c-nodes__node c-day"
-            v-for="(day, index) in dayNumbers"
+            v-for="(day, index) in calendar.days"
+            :id="calendar.getStringDate(day)"
             :key="`day-${index}`"
+            class="c-nodes__node c-day"
             :class="{
-              'c-day--out-of-month': !isInMonth(day),
-              'c-day--active': isActiveDay(day),
-              'c-day--disabled': isOverDatabaseLimit(day),
+              'c-day--out-of-month': !calendar.isInMonth(day),
+              'c-day--active': calendar.isActiveDay(day),
+              'c-day--disabled': calendar.isOverDatabaseLimit(day),
             }"
-            :id="getStringDate(day)"
           >
             <div
               class="c-day__data-wrapper"
-              :class="{ 'is-invisible': isOverDatabaseLimit(day) }"
+              :class="{ 'is-invisible': calendar.isOverDatabaseLimit(day) }"
             >
               <div
                 class="c-day__number"
-                :class="{ 'c-day__number--disabled': !isInMonth(day) }"
+                :class="{ 'c-day__number--disabled': !calendar.isInMonth(day) }"
               >
                 {{ day.number }}
               </div>
               <div
-                v-for="(param, index) in dayParams"
-                :key="'day-data-' + index"
+                v-for="(param, dayParamIndex) in dayParams"
+                :key="'day-data-' + dayParamIndex"
                 class="c-day__data"
                 :class="{ 'is-invisible': !param.getWorkers(day).length }"
               >
@@ -117,14 +117,14 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Calendar } from '../models/calendar'
+
 export default {
-  data: function () {
+  data() {
     return {
-      now: new Date(),
-      dateSelector: new Date(),
+      calendar: new Calendar(),
       daysData: {},
-      dayNumbers: [],
       dayParams: [],
     }
   },
@@ -141,122 +141,25 @@ export default {
       },
     ]
   },
-  computed: {
-    dayNames() {
-      let name = ''
-      let dayNames = []
-      let date = new Date()
-      while (date.getDay() !== 1) {
-        date.setDate(date.getDate() + 1)
-      }
-      for (let i = 0; i < 7; i++) {
-        name = date.toLocaleDateString('default', {
-          weekday: 'short',
-        })
-        dayNames.push(name.slice(0, -1).toUpperCase())
-        date.setDate(date.getDate() + 1)
-      }
-      return dayNames
-    },
-    monthLength() {
-      let date = new Date(this.year(), this.month() + 1, 0)
-      return date.getDate()
-    },
-  },
   methods: {
-    /* def */
-    year() {
-      return this.dateSelector.getFullYear()
-    },
-    month() {
-      return this.dateSelector.getMonth()
-    },
-    monthName() {
-      let name = this.dateSelector.toLocaleDateString('default', {
-        month: 'long',
-      })
-      return name[0].toUpperCase() + name.slice(1)
-    },
-    getWeekDay(date) {
-      let number = date.getDay()
-      return number === 0 ? 7 : number
-    },
-    getStringDate(day) {
-      return `day-${day.year}-${String(day.month).padStart(2, '0')}-${String(
-        day.number
-      ).padStart(2, '0')}`
-    },
-    isActiveDay(day) {
-      return (
-        day.number === this.now.getDate() &&
-        day.year === this.now.getFullYear() &&
-        day.month === this.now.getMonth()
-      )
-    },
-    isInMonth(day) {
-      return day.month === this.month()
-    },
-    isOverDatabaseLimit(day) {
-      let monthDiff = day.month - this.now.getMonth()
-      return Math.abs(monthDiff) >= 2 || day.year !== this.now.getFullYear()
-    },
-    setMonth(number) {
-      this.dateSelector.setMonth(this.month() + number)
-      this.getDays()
-    },
-    setYear(number) {
-      this.dateSelector.setFullYear(this.year() + number)
-      this.getDays()
-    },
     getDays() {
-      this.getDayNumbers()
+      this.calendar.getDays()
       this.getAPIDays()
-    },
-    getDayNumbers() {
-      this.dayNumbers = []
-      const maxDaysInWeek = 7
-      let morning = []
-      let evening = []
-
-      const startDate = new Date(this.year(), this.month(), 1)
-      const endDate = new Date(this.year(), this.month() + 1, 0)
-
-      const startWeekDate = new Date(
-        this.year(),
-        this.month(),
-        1 - (this.getWeekDay(startDate) - 1)
-      )
-      const endWeekDate = new Date(
-        this.year(),
-        this.month(),
-        endDate.getDate() + maxDaysInWeek - this.getWeekDay(endDate)
-      )
-
-      let date = new Date(startWeekDate.valueOf())
-      console.log(date, endWeekDate)
-      while (date <= endWeekDate) {
-        this.dayNumbers.push({
-          year: date.getFullYear(),
-          month: date.getMonth(),
-          number: date.getDate(),
-        })
-        date.setDate(date.getDate() + 1)
-      }
     },
     getAPIDays() {
       this.daysData = {}
     },
     getMorningWorkers(dayNumber) {
-      let dayData = this.daysData[dayNumber]
+      const dayData = this.daysData[dayNumber]
       if (dayData) {
-        return dayData['morning']
+        return dayData.morning
       }
       return []
     },
     getEveningWorkers(dayNumber) {
-      let dayData = this.daysData[dayNumber]
+      const dayData = this.daysData[dayNumber]
       if (dayData) {
-        return dayData['evening']
+        return dayData.evening
       }
       return []
     },
