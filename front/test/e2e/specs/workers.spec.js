@@ -32,11 +32,13 @@ describe('Workers testing', () => {
     $('#create-worker').click()
     expect($('#morning-workers div')).toExist()
   })
-  it('should not create a worker if some inputs is missing', () => {
-    $('#name-input').text = 'Jhon Doe'
+  it('should not create a worker if name input is missing', () => {
+    $('#name-input').text = ''
     $('#preference-input').text = 'morning'
     $('#salary-input').text = '10'
     $('#create-worker').click()
-    expect($('#error-message')).toExist()
+    expect(
+      $('.help.is-danger=Le nom doit contenir au moins 3 caractères.')
+    ).toExist()
   })
 })

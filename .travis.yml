@@ -12,6 +12,8 @@ jobs:
     - cd front
   install:
     - npm install
+  before-script:
+    - npm run dev &
   script:
     - npm run test:unit
     - npm run test:e2e
