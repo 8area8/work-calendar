@@ -60,6 +60,7 @@ describe('Calendar component', () => {
     const now = new Date()
     $('#month-chevron-left').click()
     $('#month-chevron-left').click()
+    expect($(".c-message--warning")).toBeVisible()
     const allDates = $$(".c-nodes__node--day")
     let date
     for (elem of allDates) {
