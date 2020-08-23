@@ -3,13 +3,13 @@
  */
 class Calendar {
   now: Date
-  dateSelector: Date
+  selector: Date
   days: Day[]
   maxDaysInWeek: number
 
   constructor() {
     this.now = new Date()
-    this.dateSelector = new Date()
+    this.selector = new Date()
     this.days = []
     this.maxDaysInWeek = 7
   }
@@ -21,7 +21,7 @@ class Calendar {
    *
    * French example: ["lun", "mar", "mer", "jeu", "ven", "sam", "dim"]
    */
-  getWeekDayNames(): string[] {
+  public getWeekDayNames(): string[] {
     let name = ''
     const dayNames = []
     const date = new Date()
@@ -46,7 +46,7 @@ class Calendar {
    * @returns {number}
    */
   getYear(): number {
-    return this.dateSelector.getFullYear()
+    return this.selector.getFullYear()
   }
 
   /**
@@ -55,7 +55,7 @@ class Calendar {
    * @returns {number}
    */
   getMonth(): number {
-    return this.dateSelector.getMonth()
+    return this.selector.getMonth()
   }
 
   /**
@@ -64,7 +64,7 @@ class Calendar {
    * @returns {string}
    */
   getMonthName(): string {
-    const name = this.dateSelector.toLocaleDateString('default', {
+    const name = this.selector.toLocaleDateString('default', {
       month: 'long',
     })
     return name[0].toUpperCase() + name.slice(1)
@@ -144,30 +144,6 @@ class Calendar {
   }
 
   /**
-   * Select a new month.
-   *
-   * @param {number} difference the desired difference from the current month.
-   *
-   * @returns {void}
-   */
-  setMonth(difference: number): void {
-    this.dateSelector.setMonth(this.getMonth() + difference)
-    this.getDays()
-  }
-
-  /**
-   * Select a new year.
-   *
-   * @param {number} difference the desired difference from the current year.
-   *
-   * @returns {void}
-   */
-  setYear(difference: number): void {
-    this.dateSelector.setFullYear(this.getYear() + difference)
-    this.getDays()
-  }
-
-  /**
    * Get the days of the current month.
    * Returns a list of Days.
    *
@@ -202,6 +178,30 @@ class Calendar {
     }
     return this.days
   }
+
+  /**
+   * Select a new month.
+   *
+   * @param {number} difference the desired difference from the current month.
+   *
+   * @returns {void}
+   */
+  setMonth(difference: number): void {
+    this.selector.setMonth(this.getMonth() + difference)
+    this.getDays()
+  }
+
+  /**
+   * Select a new year.
+   *
+   * @param {number} difference the desired difference from the current year.
+   *
+   * @returns {void}
+   */
+  setYear(difference: number): void {
+    this.selector.setFullYear(this.getYear() + difference)
+    this.getDays()
+  }
 }
 
 /**
@@ -213,4 +213,7 @@ interface Day {
   number: number
 }
 
-export { Calendar }
+const calendar = new Calendar()
+
+// eslint-disable-next-line no-undef
+export { calendar, Day }

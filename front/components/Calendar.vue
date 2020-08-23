@@ -3,8 +3,8 @@
     <b-message
       :class="{
         'is-invisible':
-          Math.abs(calendar.getMonth() - calendar.now.getMonth()) <= 1 &&
-          calendar.getYear() === calendar.now.getFullYear(),
+          Math.abs(calendar.selector.getMonth() - calendar.now.getMonth()) <=
+            1 && calendar.selector.getFullYear() === calendar.now.getFullYear(),
       }"
       title="Attention"
       type="is-warning"
@@ -30,7 +30,7 @@
             />
           </div>
           <span id="calendar-month-name">
-            {{ calendar.getMonthName() }}
+            {{ getMonthName() }}
           </span>
           <div
             id="month-chevron-right"
@@ -79,7 +79,7 @@
         </div>
         <div class="c-nodes">
           <div
-            v-for="(day, index) in calendar.days"
+            v-for="(day, index) in days"
             :id="calendar.getStringDate(day)"
             :key="`day-${index}`"
             class="c-nodes__node c-day"
@@ -118,50 +118,35 @@
 </template>
 
 <script lang="ts">
-import { Calendar } from '../models/calendar'
+import { calendar } from '../models/calendar'
 
 export default {
   data() {
     return {
-      calendar: new Calendar(),
-      daysData: {},
+      calendar,
       dayParams: [],
     }
   },
+  computed: {
+    days() {
+      return this.calendar.getDays()
+    },
+  },
   mounted() {
-    this.getDays()
     this.dayParams = [
       {
-        getWorkers: this.getMorningWorkers,
+        getWorkers: () => [],
         icon: 'sun',
       },
       {
-        getWorkers: this.getEveningWorkers,
+        getWorkers: () => [],
         icon: 'moon',
       },
     ]
   },
   methods: {
-    getDays() {
-      this.calendar.getDays()
-      this.getAPIDays()
-    },
-    getAPIDays() {
-      this.daysData = {}
-    },
-    getMorningWorkers(dayNumber) {
-      const dayData = this.daysData[dayNumber]
-      if (dayData) {
-        return dayData.morning
-      }
-      return []
-    },
-    getEveningWorkers(dayNumber) {
-      const dayData = this.daysData[dayNumber]
-      if (dayData) {
-        return dayData.evening
-      }
-      return []
+    getMonthName() {
+      return this.calendar.getMonthName()
     },
   },
 }
