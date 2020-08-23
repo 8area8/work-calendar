@@ -15,7 +15,8 @@ export default {
    */
   head: {
     title: process.env.npm_package_name || '',
-    meta: [{
+    meta: [
+      {
         charset: 'utf-8',
       },
       {
@@ -28,11 +29,13 @@ export default {
         content: process.env.npm_package_description || '',
       },
     ],
-    link: [{
-      rel: 'icon',
-      type: 'image/x-icon',
-      href: '/favicon.ico',
-    }, ],
+    link: [
+      {
+        rel: 'icon',
+        type: 'image/x-icon',
+        href: '/favicon.ico',
+      },
+    ],
   },
   /*
    ** Global CSS
@@ -66,13 +69,15 @@ export default {
   buefy: {
     materialDesignIcons: false,
     defaultIconPack: 'fas',
-    defaultIconComponent: 'font-awesome-icon'
+    defaultIconComponent: 'font-awesome-icon',
   },
   fontawesome: {
-    imports: [{
-      set: '@fortawesome/free-solid-svg-icons',
-      icons: ['fas']
-    }]
+    imports: [
+      {
+        set: '@fortawesome/free-solid-svg-icons',
+        icons: ['fas'],
+      },
+    ],
   },
   /*
    ** Axios module configuration
