@@ -9,7 +9,8 @@
     "generate": "nuxt-ts generate",
     "lint:js": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "lint": "npm run lint:js",
-    "test:e2e": "cross-env NODE_ICU_DATA=node_modules/full-icu wdio wdio.conf.js"
+    "test:e2e": "cross-env NODE_ICU_DATA=node_modules/full-icu wdio wdio.conf.js",
+    "test:unit": "jest test/unit/"
   },
   "dependencies": {
     "@nuxt/typescript-runtime": "^1.0.0",
@@ -19,7 +20,9 @@
     "full-icu": "^1.3.1",
     "intl": "^1.2.5",
     "nuxt": "^2.14.0",
-    "nuxt-buefy": "^0.3.31"
+    "nuxt-buefy": "^0.3.31",
+    "vue": "^2.6.12",
+    "vue-template-compiler": "^2.6.12"
   },
   "devDependencies": {
     "@nuxt/types": "^2.14.0",
@@ -38,6 +41,7 @@
     "eslint-plugin-nuxt": "^1.0.0",
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-wdio": "^6.0.12",
+    "jest": "^26.4.2",
     "prettier": "^2.0.5",
     "webdriverio": "^6.3.5"
   }
