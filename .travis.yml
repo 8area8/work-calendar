@@ -11,6 +11,7 @@ jobs:
     - stage: Python unit tests
       script: pip install pipenv && pipenv install --dev && pipenv run pytest back/tests
     - stage: Deploy on Heroku
+      script: skip
       deploy:
         provider: heroku
         skip_cleanup: true
