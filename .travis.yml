@@ -8,19 +8,16 @@ language: node_js
 node_js: 12
 
 jobs:
-  before-install:
-    - cd front
-  install:
-    - npm install
-    - sudo apt install python3-dev libpq-dev
-  script:
-    - npm run test:unit
-  after-script:
-    - npm run generate
+  include:
+    - stage: "Javascript unit tests"
+    - script: cd front && npm install && npm run test:unit
+    - stage: "Python unit tests"
+    - script: sudo apt install python3-dev libpq-dev && pip install pipenv && pipenv install && pipenv run pytest back
 
 deploy:
   provider: heroku
+  skip_cleanup: true
   api_key:
     secure: $HEROKU_KEY
   app: thefuntains
-  skip_cleanup: true
+  run: "npm run generate"
