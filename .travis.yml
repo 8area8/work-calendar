@@ -1,33 +1,26 @@
 sudo: required
+
 cache:
   directories:
     - front/node_modules
-addons:
-  chrome: stable
+
 language: node_js
-node_js:
-  - 12
+node_js: 12
+
 jobs:
   before-install:
     - cd front
   install:
     - npm install
-  before-script:
-    - export NODE_OPTIONS=–max_old_space_size=8192
-    - npm run dev &
+    - sudo apt install python3-dev libpq-dev
   script:
     - npm run test:unit
-    - sleep 30
-    - xvfb-run npm run test:e2e
+  after-script:
+    - npm run generate
+
 deploy:
   provider: heroku
   api_key:
     secure: $HEROKU_KEY
   app: thefuntains
   skip_cleanup: true
-  run:
-    - cd front
-    - npm run generate
-    - cd ..
-    - pip install -r requirements.txt
-    - python manage.py runserver
