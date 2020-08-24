@@ -10,7 +10,8 @@ jobs:
       script: cd front && npm install && npm run test:unit
     - stage: Python unit tests
       script: pip install pipenv && pipenv install --dev && pipenv run pytest back/tests
-    - deploy: Heroku deployment
+    - stage: deploy
+      name: Heroku deploy
       provider: heroku
       skip_cleanup: true
       api_key:
