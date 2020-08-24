@@ -11,13 +11,12 @@ jobs:
   before-install:
     - cd front
   install:
-    - npm install --dev
+    - npm install
   before-script:
-    - npm run build
-    - npm run start &
+    - npm run dev
   script:
     - npm run test:unit
-    - sleep 15
+    - sleep 30
     - xvfb-run npm run test:e2e
 deploy:
   provider: heroku
