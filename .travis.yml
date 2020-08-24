@@ -18,3 +18,15 @@ jobs:
     - npm run test:unit
     - sleep 15
     - xvfb-run npm run test:e2e
+deploy:
+  provider: heroku
+  api_key:
+    secure: $HEROKU_KEY
+  app: thefuntains
+  skip_cleanup: true
+  run:
+    - cd front
+    - npm run generate
+    - cd ..
+    - pip install -r requirements.txt
+    - python manage.py runserver
