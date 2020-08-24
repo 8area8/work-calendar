@@ -13,7 +13,7 @@ jobs:
   install:
     - npm install
   before-script:
-    - npm run dev
+    - npm run dev &
   script:
     - npm run test:unit
     - sleep 30
