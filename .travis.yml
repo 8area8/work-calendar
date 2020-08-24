@@ -1,23 +1,19 @@
 sudo: required
-
 cache:
   directories:
-    - front/node_modules
-
+  - front/node_modules
 language: node_js
 node_js: 12
-
 jobs:
   include:
-    - stage: "Javascript unit tests"
-      script: "cd front && npm install && npm run test:unit"
-    - stage: "Python unit tests"
-      script: "pip install pipenv && pipenv install --dev && pipenv run pytest back/tests"
-
+  - stage: Javascript unit tests
+    script: cd front && npm install && npm run test:unit
+  - stage: Python unit tests
+    script: pip install pipenv && pipenv install --dev && pipenv run pytest back/tests
 deploy:
   provider: heroku
   skip_cleanup: true
   api_key:
-    secure: $HEROKU_KEY
+    secure: Hpn6s/loMN84f2vktxywz6YBzEEbxe6p8AfgOwZkQ1Zev640Cr31XitBIrkIpPrdX3gulrwt/iXfwuftOU5nEgZwEBWxLugTvKleUDTeHXWC8jkXPXqWEizmVovRrXUNgv9Y9hzIEVXgrG3MOKXWrhQRFgYfxZMTkTrZLmME1DLM3fu2XRVFUeaeGj5dNJcpcPHm9ZbH3bnoUqCYBWqPHLSwXNsdAngdZGvWNbQY1/kohihApEmLMGqIlw3CrLcwVaLmyqZ3kt744Z7OOlD86XrePa6rVDw8VM47QreyuIn6GY/doT6avJliLfLJ/tyqgNUJ7ofecxY4xMqSbxmutqTqchqzs6EtUsVrMb/OUlibUbpEE2GanSa6tu+xauku54udFWGmFSlYKEXIn0UkyCdphg0/x2C5tzCPuKofgJoKFE7CSWLi5a1MkXBgGJ2ZmEpUXgPcmioBsD6upYBfgxr6GBj/xHAntmSOzAOddxb4t3PjwvyRMi323JXrrvryusAEhCzV63KmZn2EHsveNa6U8RyFC/+i3sS1hNS3dJBUGJNE1VhsYOla3bmEFChBuCs15Z1/mtajxSjSjka0cf5+MaFr6wjA64P7QoWvpjnWPo51KrIOnSVN1eDaTmhv9YgF8izG50f6MTweQeRjCsthYDWb2bkEvCQClLeVmaA=
   app: thefuntains
-  run: "npm run generate"
+  run: npm run generate
