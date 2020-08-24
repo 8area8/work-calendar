@@ -11,7 +11,7 @@ jobs:
   before-install:
     - cd front
   install:
-    - npm install
+    - npm install --dev
   before-script:
     - npm run build
     - npm run start &
