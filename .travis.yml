@@ -12,7 +12,7 @@ jobs:
     - stage: "Javascript unit tests"
       script: "cd front && npm install && npm run test:unit"
     - stage: "Python unit tests"
-      script: "apt install python3-dev libpq-dev && pip install pipenv && pipenv install && pipenv run pytest back"
+      script: "sudo apt install python3-dev libpq-dev && pip install pipenv && pipenv install && pipenv run pytest back"
 
 deploy:
   provider: heroku
