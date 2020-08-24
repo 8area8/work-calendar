@@ -11,11 +11,10 @@ jobs:
     - stage: Python unit tests
       script: pip install pipenv && pipenv install --dev && pipenv run pytest back/tests
     - stage: Deploy on Heroku
-      script: skip
+      script: cd front && npm run generate
       deploy:
         provider: heroku
         skip_cleanup: true
         api_key:
           secure: TZbGiHhRsVzHVVK4yDuBAyGk2HvWS8BCZ6j36l4w3SirOKLlv28WE5XI6rr+o9rdfsicxuzseJo6K0U5BeZf5HgPZfK4osw9M7sqW1LQpqpWTKgNF9iETx/WsvQtrGzfg4n98gseE3J+p9bnuxox+erUbHvx9wr+D6vI2hZU8ud2yi69PqdYF9IaAlypx/ts/dxZyhRAh8FwZFXv1VBWkhML57wBkv+z1UJ6Xq4pK0YWwdQpC6w+vKEYLp1kr9rdITNsYIByZzxpeLZHq6B7c8gpiv0xN3XnSdaoVcD+CbSTcXYi2DhanjKWV8ZvgCWCZ1hL5WIx9G9wUIrZ9n6Lc8saEdakGzG+5uZNeS06Vmuox/HdBkKr0FiecPY1gTJc3sCpcUQWYAYq5vMnP7vmu+mNuCen2pNVm6sCWg5ZE/H7K5ZkB7mIkBPtd466n7D4yuD+6a8VawAMgUgYr8DZ/BK6+fUivnZ+SYG1J2qMGPYdZUu638sRl3j7tETSYYpi5SI9zhttTXof6WPiwp2lkx/GBgJq5w2NlRoeF8Bx8e9jVa+K7U9kxObAhxDwtOU9fUvLJvYtZS/X0OYrtzf9UZZehJCTgL2Dwnk34JiUTZ1chEBtLvyF5pRIvusuNcYJpn59jmjtZQNYbmNoN3OF3fz3hXUujcKV+zVEeiUF5kA=
         app: thefuntains
-        run: npm run generate
