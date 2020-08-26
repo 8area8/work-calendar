@@ -205,6 +205,7 @@ $calendar-color: #e9e9e9;
   &--title {
     background-color: $calendar-header-color;
     color: #7e7e7e;
+    font-size: 1.3em;
   }
 
   &__node {
