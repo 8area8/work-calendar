@@ -5,18 +5,23 @@ A calendar application to manage its employees.
 ![calendar shot](/doc/calendar-shot.jpg)
 Photo by [Estée Janssens](https://unsplash.com/@esteejanssens?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText) on [Unsplash](https://unsplash.com/s/photos/calendar?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText)
 
-## Workflows
-
-- **Git**: Basic messages with Header and Content - Gitmojis
-- **Global**: UsesCases - Test Driven Developement - Clean Architecture
-- **Python**: PEP8 - PEP257
-- **Javascript**: modern Javascript
-
 ## Stack
 
 - Python3 and `Django Rest Framework`
 - NodeJS and `Nuxt.js`, `SCSS`, `Typescript`, `Buefy`
 - PostgreSQL
+- Travis-ci
+- Heroku
+
+## Workflows
+
+- **Git**: [Gitmojis](https://gitmoji.carloscuesta.me/) 🚀
+- **SCSS**: [BEM](http://getbem.com/introduction/)
+- **Javascript**: [AirBnB Style Guide](https://github.com/airbnb/javascript)
+- **Python**: [PEP8](https://www.python.org/dev/peps/pep-0008/) - [PEP257](https://www.python.org/dev/peps/pep-0257/) - [Black](https://github.com/psf/black)
+
+- **leading principle**: [Keep It Simple, Stupid (KISS)](https://en.wikipedia.org/wiki/KISS_principle)
+- **Global**: [UsesCases](https://fr.wikipedia.org/wiki/Cas_d%27utilisation) - [Test Driven Developement](https://fr.wikipedia.org/wiki/Test_driven_development) - [Clean Architecture](<https://en.wikipedia.org/wiki/Hexagonal_architecture_(software)>)
 
 ## Installation
 
@@ -32,7 +37,9 @@ $ cd front && npm install && npm run generate && cd ..
 $ pip install pipenv && pipenv install && pipenv run python manage.py migrate
 ```
 
-The project uses some `env` variables :
+The project uses some `env` variables. It is recommended to create an `.env` file at the root of the project. Pipenv will generate the virtual environment.
+
+The environment variables are :
 
 ```bash
 SECRET_KEY  # Django secret key
@@ -61,16 +68,11 @@ The project uses :
 - **[Jest](https://jestjs.io/)** for frontend unit testing.
 - **[Pytest](https://docs.pytest.org/en/stable/)** for python unit testing.
 
-> Note: Travis-ci only launches unit tests, the end2end tests being very heavy to set up in CI.
-
-### Launch local tests
-
 ```bash
 # End2end tests
 $ cd front; npm run test:e2e  # need a running server.
 # Javascript unit tests
 $ cd front; npm run test:unit
-
 # Python unit tests
 $ pipenv run python pytest back/tests
 ```
@@ -79,9 +81,15 @@ $ pipenv run python pytest back/tests
 
 The project uses Travis-ci. Add your fork to travis-ci.com and enjoy ! Read `.travis.yml` for more informations about the configuration.
 
+> Note: Travis-ci only launches unit tests, the end2end tests being very heavy to set up in CI.
+
 ## Continuous Integration
 
-If the tests pass, Travis-ci deploy the application to Heroku. For more informations, [read the following link](https://docs.travis-ci.com/user/deployment/heroku/).
+Travis-ci is configured to automatically deploy the code on Heroku if the tests pass. For more information, see the documentation [on this topic](https://docs.travis-ci.com/user/deployment/heroku/).
+
+## Credits
+
+- Background photo by [Nicolas Solerieu](https://unsplash.com/@slrncl?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText) on [Unsplash](https://unsplash.com/photos/Hgb4gzB1ZPs)
 
 ## License
 
