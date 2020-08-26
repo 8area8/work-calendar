@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # Third part
+    "rest_framework",
 ]
 
 MIDDLEWARE = [
@@ -130,6 +132,18 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 # https://warehouse.python.org/project/whitenoise/
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+
+# Django REst FRamework
+# https://www.django-rest-framework.org/
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
+    ]
+}
 
 
 # Django Heroku config - need to be at the very bottom of settings.py
