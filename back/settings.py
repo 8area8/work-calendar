@@ -18,9 +18,6 @@ import django_heroku
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
-NUXT_BASE_DIR = BASE_DIR / "front"
-NUXT_DIST = NUXT_BASE_DIR / "dist"
-NUXT_GENERATE_DIR = NUXT_DIST / "_nuxt"
 
 
 # Quick-start development settings - unsuitable for production
@@ -64,7 +61,7 @@ ROOT_URLCONF = "back.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [NUXT_DIST],
+        "DIRS": [],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -126,8 +123,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-MEDIA_URL = "/medias/"
-STATICFILES_DIRS = [NUXT_DIST]
+STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Simplified static file serving.
@@ -140,4 +136,3 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 # https://github.com/heroku/django-heroku
 
 django_heroku.settings(locals())
-STATIC_URL = ""
