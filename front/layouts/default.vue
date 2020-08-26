@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="nuxt-page">
     <b-navbar type="is-dark">
       <template slot="brand">
         <b-navbar-item tag="router-link" :to="{ path: '/' }">
@@ -41,3 +41,13 @@ export default {
   },
 }
 </script>
+
+<style lang="scss">
+.main-content {
+  background: url('~assets/desk.jpg') no-repeat top center fixed;
+  background-size: cover;
+  height: 100%;
+  min-height: 100vh;
+  backdrop-filter: blur(5px);
+}
+</style>

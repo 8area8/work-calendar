@@ -170,12 +170,16 @@ $calendar-color: #e9e9e9;
   margin-left: auto;
   margin-right: auto;
   font-family: 'Lato', sans-serif;
-  border-left: 1px $calendar-color solid;
-
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  // border-left: 1px $calendar-color solid;
+  background-color: $calendar-head-color;
+  -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   &__header {
     padding: 0.5em;
     text-align: center;
-    background-color: $calendar-head-color;
     color: white;
   }
   &__year,
@@ -185,16 +189,18 @@ $calendar-color: #e9e9e9;
     text-align: center;
   }
   &__month {
-    font-size: 1.2em;
+    font-size: 3em;
+    font-family: 'Berkshire Swash', cursive;
   }
   &__year {
-    font-size: 0.8em;
+    font-size: 1.3em;
     font-weight: 300;
   }
 }
 .c-nodes {
   display: flex;
   flex-wrap: wrap;
+  background-color: white;
 
   &--title {
     background-color: $calendar-header-color;
@@ -215,11 +221,11 @@ $calendar-color: #e9e9e9;
 
 .c-day {
   &:not(.c-day--disabled) {
-    border-bottom: 1px $calendar-color solid;
-    border-right: 1px $calendar-color solid;
+    // border-bottom: 1px $calendar-color solid;
+    // border-right: 1px $calendar-color solid;
     &:hover {
       color: white;
-      background-color: #ff0057;
+      background-color: #ffc82c;
       cursor: pointer;
       * {
         transition: all 0.3s;
@@ -233,7 +239,7 @@ $calendar-color: #e9e9e9;
   }
   &--active {
     color: white;
-    background-color: #607d8b;
+    background-color: #ffdd57;
     cursor: pointer;
     div {
       transition: all 0.3s;

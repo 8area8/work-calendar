@@ -35,6 +35,11 @@ export default {
         type: 'image/x-icon',
         href: '/favicon.ico',
       },
+      {
+        rel: 'stylesheet',
+        href:
+          'https://fonts.googleapis.com/css2?family=Berkshire+Swash&display=swap',
+      },
     ],
   },
   /*
