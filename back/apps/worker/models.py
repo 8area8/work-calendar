@@ -1,3 +1,14 @@
+"""Workers models."""
+
 from django.db import models
 
-# Create your models here.
+
+PREFERENCE_CHOICE = (("morning", 0), ("evening", 1))
+
+
+class Salary(models.Model):
+    """Salary model."""
+
+    salary = models.IntegerField()
+    name = models.CharField(max_length=30, unique=True)
+    preference = models.CharField(choices=PREFERENCE_CHOICE, max_length=20)

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 import os
+from typing import Dict, Any
 from pathlib import Path
 
 import django_heroku
@@ -18,6 +19,7 @@ import django_heroku
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
+APPS_DIR = BASE_DIR / "back" / "apps"
 
 
 # Quick-start development settings - unsuitable for production
@@ -43,6 +45,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # Third part
     "rest_framework",
+    # personals
+    "back.apps.worker",
 ]
 
 MIDDLEWARE = [
@@ -137,11 +141,11 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 # Django REst FRamework
 # https://www.django-rest-framework.org/
 
-REST_FRAMEWORK = {
+REST_FRAMEWORK: Dict[str, Any] = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
+        # "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
     ]
 }
 
