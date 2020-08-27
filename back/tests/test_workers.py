@@ -16,7 +16,7 @@ def client():
 @pytest.fixture
 def employee():
     """Return a employee."""
-    return Employee.objects.create(name="jhon", salary=10, preference="morning")
+    return Employee.objects.create(name="john", salary=10, preference="morning")
 
 
 @pytest.mark.django_db
@@ -29,6 +29,13 @@ def test_employee_attributes(employee):
     assert hasattr(employee, "name")
     assert hasattr(employee, "salary")
     assert hasattr(employee, "preference")
+
+
+@pytest.mark.django_db
+def employee_preference_can_be_morning_or_evening():
+    """Expect the employee preference field can be one of the two values."""
+    with pytest.raises(ValueError):
+        Employee.objects.create(name="foo", salary=10, preference="truc")
 
 
 @pytest.mark.django_db
@@ -59,7 +66,7 @@ def test_employee_deletion(client, employee):
 @pytest.mark.django_db
 def test_employee_update(client, employee):
     """Expect that we can update a employee."""
-    assert employee.name == "jhon"
+    assert employee.name == "john"
     data = {"name": "LoLo", "salary": 11}
     response = client.patch(f"/worker/{employee.pk}/", data, "application/json")
     assert response.status_code == 200
@@ -81,7 +88,7 @@ def test_employee_get(client, employee):
     """Expect that we can delete a employee."""
     response = client.get(f"/worker/{employee.pk}/")
     assert response.status_code == 200
-    assert response.json()["name"] == "jhon"
+    assert response.json()["name"] == "john"
 
 
 @pytest.mark.django_db
