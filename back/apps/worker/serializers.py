@@ -2,7 +2,7 @@
 
 from rest_framework import serializers
 
-from .models import Salary
+from .models import Employee
 
 
 # class PrivateField(serializers.ReadOnlyField):
@@ -18,13 +18,13 @@ from .models import Salary
 #         return None
 
 
-class SalarySerializer(serializers.ModelSerializer):
-    """Salary serializer."""
+class EmployeeSerializer(serializers.ModelSerializer):
+    """Employee serializer."""
 
     # salary = PrivateField()
 
     class Meta:
         """Meta."""
 
-        model = Salary
+        model = Employee
         fields = ["id", "name", "salary", "preference"]

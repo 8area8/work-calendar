@@ -2,19 +2,19 @@
 
 from rest_framework import generics
 
-from .models import Salary
-from .serializers import SalarySerializer
+from .models import Employee
+from .serializers import EmployeeSerializer
 
 
-class SalaryList(generics.ListCreateAPIView):
+class EmployeeList(generics.ListCreateAPIView):
     """List salaries or create a salary."""
 
-    queryset = Salary.objects.all()
-    serializer_class = SalarySerializer
+    queryset = Employee.objects.all()
+    serializer_class = EmployeeSerializer
 
 
-class SalaryDetail(generics.RetrieveUpdateDestroyAPIView):
+class EmployeeDetail(generics.RetrieveUpdateDestroyAPIView):
     """Update delete or get a salary."""
 
-    queryset = Salary.objects.all()
-    serializer_class = SalarySerializer
+    queryset = Employee.objects.all()
+    serializer_class = EmployeeSerializer

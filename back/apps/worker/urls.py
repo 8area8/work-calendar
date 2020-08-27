@@ -8,8 +8,8 @@ from . import views
 
 
 urlpatterns = [
-    path("", views.SalaryList.as_view()),
-    path("<int:pk>/", views.SalaryDetail.as_view()),
+    path("", views.EmployeeList.as_view()),
+    path("<int:pk>/", views.EmployeeDetail.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

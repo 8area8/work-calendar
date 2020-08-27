@@ -4,7 +4,7 @@
 import pytest
 from django.test import Client
 
-from back.apps.worker.models import Salary
+from back.apps.worker.models import Employee
 
 
 @pytest.fixture
@@ -14,26 +14,26 @@ def client():
 
 
 @pytest.fixture
-def salary():
-    """Return a salary."""
-    return Salary.objects.create(name="jhon", salary=10, preference="morning")
+def employee():
+    """Return a employee."""
+    return Employee.objects.create(name="jhon", salary=10, preference="morning")
 
 
 @pytest.mark.django_db
-def test_salary_attributes(salary):
-    """Expect that we can get a specific salary.
+def test_employee_attributes(employee):
+    """Expect that we can get a specific employee.
 
-    He has a name, a salary and a preference.
+    He has a name, a employee and a preference.
     """
-    assert salary
-    assert hasattr(salary, "name")
-    assert hasattr(salary, "salary")
-    assert hasattr(salary, "preference")
+    assert employee
+    assert hasattr(employee, "name")
+    assert hasattr(employee, "salary")
+    assert hasattr(employee, "preference")
 
 
 @pytest.mark.django_db
-def test_salary_good_creation(client):
-    """Expect that we can create a salary."""
+def test_employee_good_creation(client):
+    """Expect that we can create a employee."""
     response = client.post(
         "/worker/", {"name": "john", "preference": "morning", "salary": 10}
     )
@@ -41,8 +41,8 @@ def test_salary_good_creation(client):
 
 
 @pytest.mark.django_db
-def test_salary_bad_creation(client):
-    """Expect that we can't create a salary if a field is wrong."""
+def test_employee_bad_creation(client):
+    """Expect that we can't create a employee if a field is wrong."""
     response = client.post(
         "/worker/", {"name": "john", "preference": "truc", "salary": 10}
     )
@@ -50,59 +50,59 @@ def test_salary_bad_creation(client):
 
 
 @pytest.mark.django_db
-def test_salary_deletion(client, salary):
-    """Expect that we can delete a salary."""
-    response = client.delete(f"/worker/{salary.pk}/")
+def test_employee_deletion(client, employee):
+    """Expect that we can delete a employee."""
+    response = client.delete(f"/worker/{employee.pk}/")
     assert response.status_code == 204
 
 
 @pytest.mark.django_db
-def test_salary_update(client, salary):
-    """Expect that we can update a salary."""
-    assert salary.name == "jhon"
+def test_employee_update(client, employee):
+    """Expect that we can update a employee."""
+    assert employee.name == "jhon"
     data = {"name": "LoLo", "salary": 11}
-    response = client.patch(f"/worker/{salary.pk}/", data, "application/json")
+    response = client.patch(f"/worker/{employee.pk}/", data, "application/json")
     assert response.status_code == 200
     assert response.json()["name"] == "LoLo"
-    salary.refresh_from_db()
-    assert salary.name == "LoLo"
+    employee.refresh_from_db()
+    assert employee.name == "LoLo"
 
 
 @pytest.mark.django_db
-def test_salary_bad_update(client, salary):
-    """Expect that we can't update a salary if a field is wrong."""
+def test_employee_bad_update(client, employee):
+    """Expect that we can't update a employee if a field is wrong."""
     data = {"preference": "truc"}
-    response = client.patch(f"/worker/{salary.pk}/", data, "application/json")
+    response = client.patch(f"/worker/{employee.pk}/", data, "application/json")
     assert response.status_code == 400
 
 
 @pytest.mark.django_db
-def test_salary_get(client, salary):
-    """Expect that we can delete a salary."""
-    response = client.get(f"/worker/{salary.pk}/")
+def test_employee_get(client, employee):
+    """Expect that we can delete a employee."""
+    response = client.get(f"/worker/{employee.pk}/")
     assert response.status_code == 200
     assert response.json()["name"] == "jhon"
 
 
 @pytest.mark.django_db
-def test_salary_getall(client, salary):
-    """Expect that we can delete a salary."""
+def test_employee_getall(client, employee):
+    """Expect that we can delete a employee."""
     response = client.get("/worker/")
     assert response.status_code == 200
     assert response.json()[0]
 
 
 @pytest.mark.django_db
-def test_salary_get_salary_if_superuser(client, salary):
-    """Expect that we can delete a salary."""
-    response = client.get(f"/worker/{salary.pk}/")
+def test_employee_get_employee_if_superuser(client, employee):
+    """Expect that we can delete a employee."""
+    response = client.get(f"/worker/{employee.pk}/")
     assert response.status_code == 200
     assert "salary" in response.json()
 
 
 @pytest.mark.django_db
-def test_salary_cant_get_salary_if_not_superuser(client, salary):
-    """Expect that we can delete a salary."""
-    response = client.get(f"/worker/{salary.pk}/")
+def test_employee_cant_get_employee_if_not_superuser(client, employee):
+    """Expect that we can delete a employee."""
+    response = client.get(f"/worker/{employee.pk}/")
     assert response.status_code == 200
     assert "salary" not in response.json()
