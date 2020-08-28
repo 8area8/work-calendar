@@ -43,6 +43,7 @@ The environment variables are :
 
 ```bash
 SECRET_KEY  # Django secret key
+IS_DEBUG  # Define this variable if you want a DEBUG app
 
 DB_USER  # database user name
 DB_PASS  # database user password
@@ -64,9 +65,10 @@ Run `pipenv run python manage.py runserver` to launch the backend API.
 
 The project uses :
 
-- **WebDriver.io** for end2end tests.
+- **[WebDriver.io](WebDriver.io)** for end2end tests.
 - **[Jest](https://jestjs.io/)** for frontend unit testing.
 - **[Pytest](https://docs.pytest.org/en/stable/)** for python unit testing.
+- **[Postman](https://documenter.getpostman.com/view/4488938/TVCb5WRF)** for some Postman tests.
 
 ```bash
 # End2end tests
@@ -75,6 +77,8 @@ $ cd front; npm run test:e2e  # need a running server.
 $ cd front; npm run test:unit
 # Python unit tests
 $ pipenv run python pytest back/tests
+# Postman : import the project from the documentation
+# and open your Postman application and run the tests inside.
 ```
 
 ## Continuous Developement
