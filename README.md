@@ -87,6 +87,11 @@ The project uses Travis-ci. Add your fork to travis-ci.com and enjoy ! Read `.tr
 
 Travis-ci is configured to automatically deploy the code on Heroku if the tests pass. For more information, see the documentation [on this topic](https://docs.travis-ci.com/user/deployment/heroku/).
 
+## Postman documentation
+
+The backend part of the application was designed with the Postman tool. The different use cases are exposed and some automations have been made.
+Get the API documentation and tests [here](https://documenter.getpostman.com/view/4488938/TVCb5WRF) !
+
 ## Credits
 
 - Background photo by [Nicolas Solerieu](https://unsplash.com/@slrncl?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText) on [Unsplash](https://unsplash.com/photos/Hgb4gzB1ZPs)
