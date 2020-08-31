@@ -15,8 +15,22 @@ The calendar has two modes:
 
 ## Admin usage
 
+- all features of user
 - Select a day to access the employee modification on that day
 
 ## The select bar
 
 The select bar allows you to select an employee by name.
+
+- If the selection bar is empty, then the mode will be the general mode.
+- If the selection bar is focused on an employee, then the selection bar will be focused on the filtered mode.
+
+## Day selection
+
+We can click on a day in the calendar to access the workers of that day in a new window.
+
+> Note: users have read-only access.
+
+## Overview of a day
+
+The overview of a day displays a small tooltip with the names of today's employees.
