@@ -41,3 +41,7 @@ The administrator can **change** the hours, **delete** an employee on that day o
 ## Overview of a day
 
 The overview of a day displays a small tooltip with the names of today's employees.
+
+## Technical part
+
+Each employee change on a day sends a query containing all the employees of that day, which finally returns the list of employees and their data. This is for backend safety.
