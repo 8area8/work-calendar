@@ -29,7 +29,14 @@ The select bar allows you to select an employee by name.
 
 We can click on a day in the calendar to access the workers of that day in a new window.
 
-> Note: users have read-only access.
+The window lists the workers:
+
+- their name
+- their start time
+- their end time
+- their total hours (read only for all)
+
+The administrator can **change** the hours, **delete** an employee on that day or **add** new ones. Users have **read-only access**.
 
 ## Overview of a day
 
