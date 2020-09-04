@@ -1,4 +1,4 @@
-import { Calendar } from "../../../frontend/models/calendar";
+import { Calendar } from "../../src/clean_architecture/entities/calendar";
 
 test("getDays should return the days of the selected month", () => {
   const calendar = new Calendar();

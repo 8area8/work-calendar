@@ -2,11 +2,7 @@
   <div class="container">
     <!-- MESSAGE -->
     <b-message
-      :class="{
-        'is-invisible':
-          Math.abs(calendar.selector.getMonth() - calendar.now.getMonth()) <=
-            1 && calendar.selector.getFullYear() === calendar.now.getFullYear()
-      }"
+      :class="{ 'is-invisible': calendar.isInvisible() }"
       title="Attention"
       type="is-warning"
       class="c-message--warning"
@@ -35,7 +31,7 @@
             />
           </div>
           <span id="calendar-month-name">
-            {{ getMonthName() }}
+            {{ calendar.getMonthName() }}
           </span>
           <div
             id="month-chevron-right"
@@ -88,7 +84,7 @@
         <!-- DAYS NODES -->
         <div class="c-nodes">
           <div
-            v-for="(day, index) in days"
+            v-for="(day, index) in calendar.getDays()"
             :id="calendar.getStringDate(day)"
             :key="`day-${index}`"
             class="c-nodes__node c-day"
@@ -108,15 +104,11 @@
               >
                 {{ day.number }}
               </div>
-              <div
-                v-for="(param, dayParamIndex) in dayParams"
-                :key="'day-data-' + dayParamIndex"
-                class="c-day__data"
-                :class="{ 'is-invisible': !param.getWorkers(day).length }"
-              >
-                <b-icon pack="fas" :icon="param.icon" size="is-small" />{{
-                  param.getWorkers(day).length
-                }}
+              <div class="c-day__data" :class="{ 'is-invisible': ![] }">
+                <b-icon pack="fas" icon="sun" size="is-small" />{{ 3 }}
+              </div>
+              <div class="c-day__data" :class="{ 'is-invisible': ![] }">
+                <b-icon pack="fas" icon="sun" size="is-small" />{{ 3 }}
               </div>
             </div>
           </div>
@@ -127,36 +119,14 @@
 </template>
 
 <script lang="ts">
-import { Calendar } from "../entities/calendar";
+import { calendar } from "../clean_architecture/exposers/calendar";
+import { IDay } from "../clean_architecture/entities/calendar";
 
 export default {
   data() {
     return {
-      calendar: new Calendar(),
-      dayParams: []
+      calendar
     };
-  },
-  computed: {
-    days() {
-      return this.calendar.getDays();
-    }
-  },
-  mounted() {
-    this.dayParams = [
-      {
-        getWorkers: () => [],
-        icon: "sun"
-      },
-      {
-        getWorkers: () => [],
-        icon: "moon"
-      }
-    ];
-  },
-  methods: {
-    getMonthName() {
-      return this.calendar.getMonthName();
-    }
   }
 };
 </script>

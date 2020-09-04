@@ -9,7 +9,7 @@
           expanded
           :type="{ 'is-danger': hasError() }"
           :message="{
-            'Le nom doit contenir au moins 3 caractères.': hasError(),
+            'Le nom doit contenir au moins 3 caractères.': hasError()
           }"
         >
           <b-input
@@ -41,24 +41,24 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { SalaryWorker } from '../models/worker'
+import Vue from "vue";
+import { SalaryWorker } from "../clean_architecture/entities/worker";
 
 export default Vue.extend({
   data() {
     return {
       salary: {
         id: null,
-        name: '',
-        preference: 'morning',
-        salary: 10,
-      } as SalaryWorker,
-    }
+        name: "",
+        preference: "morning",
+        salary: 10
+      } as SalaryWorker
+    };
   },
   methods: {
     hasError() {
-      return this.salary.name.length < 3
-    },
-  },
-})
+      return this.salary.name.length < 3;
+    }
+  }
+});
 </script>

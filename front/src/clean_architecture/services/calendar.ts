@@ -1,4 +1,4 @@
-import { httpClient } from "../common/client";
+import { httpClient } from "./client";
 import { IDay, IWork } from "../entities/calendar";
 
 export interface IMonthService {
