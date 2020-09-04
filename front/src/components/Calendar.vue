@@ -5,7 +5,7 @@
       :class="{
         'is-invisible':
           Math.abs(calendar.selector.getMonth() - calendar.now.getMonth()) <=
-            1 && calendar.selector.getFullYear() === calendar.now.getFullYear(),
+            1 && calendar.selector.getFullYear() === calendar.now.getFullYear()
       }"
       title="Attention"
       type="is-warning"
@@ -95,7 +95,7 @@
             :class="{
               'c-day--out-of-month': !calendar.isInMonth(day),
               'c-day--active': calendar.isActiveDay(day),
-              'c-day--disabled': calendar.isOverDatabaseLimit(day),
+              'c-day--disabled': calendar.isOverDatabaseLimit(day)
             }"
           >
             <div
@@ -127,38 +127,38 @@
 </template>
 
 <script lang="ts">
-import { calendar } from '../models/calendar'
+import { Calendar } from "../entities/calendar";
 
 export default {
   data() {
     return {
-      calendar,
-      dayParams: [],
-    }
+      calendar: new Calendar(),
+      dayParams: []
+    };
   },
   computed: {
     days() {
-      return this.calendar.getDays()
-    },
+      return this.calendar.getDays();
+    }
   },
   mounted() {
     this.dayParams = [
       {
         getWorkers: () => [],
-        icon: 'sun',
+        icon: "sun"
       },
       {
         getWorkers: () => [],
-        icon: 'moon',
-      },
-    ]
+        icon: "moon"
+      }
+    ];
   },
   methods: {
     getMonthName() {
-      return this.calendar.getMonthName()
-    },
-  },
-}
+      return this.calendar.getMonthName();
+    }
+  }
+};
 </script>
 
 <style lang="scss">
@@ -169,7 +169,7 @@ $calendar-color: #e9e9e9;
 .c-work-calendar {
   margin-left: auto;
   margin-right: auto;
-  font-family: 'Lato', sans-serif;
+  font-family: "Lato", sans-serif;
   border-top-left-radius: 15px;
   border-top-right-radius: 15px;
   // border-left: 1px $calendar-color solid;
@@ -190,7 +190,7 @@ $calendar-color: #e9e9e9;
   }
   &__month {
     font-size: 3em;
-    font-family: 'Berkshire Swash', cursive;
+    font-family: "Berkshire Swash", cursive;
   }
   &__year {
     font-size: 1.3em;
