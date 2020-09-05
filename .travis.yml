@@ -4,6 +4,8 @@ cache:
     - front/node_modules
 language: node_js
 node_js: 12
+env:
+  - SECRET_KEY=SOSECRET
 jobs:
   include:
     - stage: Javascript unit tests
