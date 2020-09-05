@@ -5,11 +5,10 @@
       :class="{ 'is-invisible': calendar.isInvisible() }"
       title="Attention"
       type="is-warning"
-      class="c-message--warning"
       :closable="false"
       size="is-small"
     >
-      Il est impossible de remplir des dates trop éloignées.
+      {{ overLimitMessage }}
     </b-message>
 
     <!-- CALENDAR -->
@@ -120,11 +119,11 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { calendar } from "../clean_architecture/exposers/calendar";
-// import { IDay } from "../clean_architecture/entities/calendar";
 
 @Component
 export default class Calendar extends Vue {
   calendar = calendar;
+  overLimitMessage = "Il est impossible de remplir des dates trop éloignées.";
 
   get days() {
     return this.calendar.getDays();

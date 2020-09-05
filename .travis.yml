@@ -6,12 +6,11 @@ cache:
 services:
   - postgresql
 node_js: 12
-env:
-  - SECRET_KEY=SOSECRET
-  - DB_NAME=postgres
-  - DB_USER=postgres
-  - DB_HOST=127.0.0.1
-  - DB_PORT=5432
+env: SECRET_KEY=SOSECRET
+  DB_NAME=postgres
+  DB_USER=postgres
+  DB_HOST=127.0.0.1
+  DB_PORT=5432
 jobs:
   include:
     - stage: Javascript unit tests
