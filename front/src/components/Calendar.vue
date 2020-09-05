@@ -84,7 +84,7 @@
         <!-- DAYS NODES -->
         <div class="c-nodes">
           <div
-            v-for="(day, index) in calendar.getDays()"
+            v-for="(day, index) in days"
             :id="calendar.getStringDate(day)"
             :key="`day-${index}`"
             class="c-nodes__node c-day"
@@ -106,9 +106,8 @@
               </div>
               <div class="c-day__data" :class="{ 'is-invisible': ![] }">
                 <b-icon pack="fas" icon="sun" size="is-small" />{{ 3 }}
-              </div>
-              <div class="c-day__data" :class="{ 'is-invisible': ![] }">
-                <b-icon pack="fas" icon="sun" size="is-small" />{{ 3 }}
+                {{ " - " }}
+                <b-icon pack="fas" icon="moon" size="is-small" />{{ 3 }}
               </div>
             </div>
           </div>
@@ -119,16 +118,18 @@
 </template>
 
 <script lang="ts">
+import { Component, Vue } from "vue-property-decorator";
 import { calendar } from "../clean_architecture/exposers/calendar";
-import { IDay } from "../clean_architecture/entities/calendar";
+// import { IDay } from "../clean_architecture/entities/calendar";
 
-export default {
-  data() {
-    return {
-      calendar
-    };
+@Component
+export default class Calendar extends Vue {
+  calendar = calendar;
+
+  get days() {
+    return this.calendar.getDays();
   }
-};
+}
 </script>
 
 <style lang="scss">
@@ -179,7 +180,7 @@ $calendar-color: #e9e9e9;
   }
 
   &__node {
-    padding: 1em;
+    padding: 2em;
     font-size: 0.7em;
     flex: 1 0 14%;
     display: flex;
@@ -225,10 +226,10 @@ $calendar-color: #e9e9e9;
   }
   &__data {
     display: flex;
-    justify-content: space-evenly;
+    justify-content: center;
     align-items: center;
     margin: 0.2em;
-    color: #607d8b;
+    color: #94817b;
   }
   &__number {
     position: relative;

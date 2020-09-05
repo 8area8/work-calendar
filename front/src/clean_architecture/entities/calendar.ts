@@ -23,8 +23,7 @@ interface ICalendar {
   maxDaysInWeek: number;
 
   getWeekDayNames: () => string[];
-  getMonthName: () => string;
-  getMonthLen: () => number;
+  getLastDayOfTheMonth: () => number;
   getWeekDay: (date: Date) => number;
 }
 
@@ -63,19 +62,7 @@ class Calendar implements ICalendar {
         date.setDate(date.getDate() + 1);
       }
     }
-    return this._weekDayNames;
-  }
-
-  /**
-   * Get the selected month name.
-   *
-   * @returns {string}
-   */
-  getMonthName(): string {
-    const name = this.selector.toLocaleDateString("default", {
-      month: "long"
-    });
-    return name[0].toUpperCase() + name.slice(1);
+    return [...this._weekDayNames];
   }
 
   /**
@@ -83,7 +70,7 @@ class Calendar implements ICalendar {
    *
    * @returns {number} Example for august 2020 : 31
    */
-  getMonthLen(): number {
+  getLastDayOfTheMonth(): number {
     const date = new Date(
       this.selector.getFullYear(),
       this.selector.getMonth() + 1,
@@ -124,8 +111,8 @@ class Calendar implements ICalendar {
     );
     const endDate = new Date(
       this.selector.getFullYear(),
-      this.selector.getMonth() + 1,
-      0
+      this.selector.getMonth(),
+      this.getLastDayOfTheMonth()
     );
 
     const startWeekDate = new Date(

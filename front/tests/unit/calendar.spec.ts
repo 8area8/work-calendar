@@ -1,7 +1,8 @@
+import CalendarInteractor from "../../src/clean_architecture/interactors/calendar";
 import { Calendar } from "../../src/clean_architecture/entities/calendar";
 
 test("getDays should return the days of the selected month", () => {
-  const calendar = new Calendar();
+  const calendar = new CalendarInteractor();
   const days = calendar.getDays();
   const date = new Date();
   date.setDate(1);
@@ -9,6 +10,7 @@ test("getDays should return the days of the selected month", () => {
 
   while (date.getMonth() === currentMonth) {
     expect(days).toContainEqual({
+      id: null,
       year: date.getFullYear(),
       month: date.getMonth(),
       number: date.getDate()
@@ -27,7 +29,7 @@ test("getDays can return days of other months if they are part of the weeks of t
   let days = calendar.getDays();
   expect(days[0].month).toBe(date.getMonth() - 1);
 
-  date.setDate(calendar.getMonthLen());
+  date.setDate(calendar.getLastDayOfTheMonth());
   if (date.getDay() === 7) {
     calendar.setMonth(1);
   }

@@ -41,24 +41,20 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import { SalaryWorker } from "../clean_architecture/entities/worker";
+import { Component, Vue } from "vue-property-decorator";
+import { ISalaryWorker } from "../clean_architecture/entities/worker";
 
-export default Vue.extend({
-  data() {
-    return {
-      salary: {
-        id: null,
-        name: "",
-        preference: "morning",
-        salary: 10
-      } as SalaryWorker
-    };
-  },
-  methods: {
-    hasError() {
-      return this.salary.name.length < 3;
-    }
+@Component
+export default class Employees extends Vue {
+  salary = {
+    id: null,
+    name: "",
+    preference: "morning",
+    salary: 10
+  } as ISalaryWorker;
+
+  hasError() {
+    return this.salary.name.length < 3;
   }
-});
+}
 </script>

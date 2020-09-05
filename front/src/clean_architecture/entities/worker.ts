@@ -1,20 +1,20 @@
 /**
  * Worker model.
  */
-interface SalaryWorker {
+interface ISalaryWorker {
   id: null | number;
   name: string;
-  preference: Preference;
+  preference: IPreference;
   salary: number;
 }
 
 /**
  * Work preference: can be morning or evening.
  */
-enum Preference {
+enum IPreference {
   Morning = "morning",
   Evening = "evening"
 }
 
 // eslint-disable-next-line no-undef
-export { SalaryWorker };
+export { ISalaryWorker, IPreference };

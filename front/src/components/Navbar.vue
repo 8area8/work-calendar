@@ -6,7 +6,7 @@
       </b-navbar-item>
     </template>
     <template slot="start">
-      <b-navbar-item href="/workers/">
+      <b-navbar-item tag="router-link" :to="{ name: 'Employees' }">
         Workers
       </b-navbar-item>
     </template>
@@ -17,18 +17,7 @@
 export default {
   data() {
     return {
-      items: [
-        {
-          title: "Home",
-          icon: "home",
-          to: { name: "index" }
-        },
-        {
-          title: "Inspire",
-          icon: "lightbulb",
-          to: { name: "inspire" }
-        }
-      ]
+      items: []
     };
   }
 };

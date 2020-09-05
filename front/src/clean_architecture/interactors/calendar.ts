@@ -1,11 +1,45 @@
 import { IDay, Calendar } from "../entities/calendar";
 import { MonthService } from "../services/calendar";
 
-interface ICalendarInteractor {}
+interface ICalendarInteractor {
+  client: MonthService;
+}
 
 export default class CalendarInteractor implements ICalendarInteractor {
-  calendar: Calendar = new Calendar();
-  client: MonthService = new MonthService();
+  private calendar: Calendar = new Calendar();
+  public client: MonthService = new MonthService();
+
+  getYear(): number {
+    return this.calendar.selector.getFullYear();
+  }
+
+  setYear(difference: number): void {
+    return this.calendar.setYear(difference);
+  }
+
+  getMonth(): number {
+    return this.calendar.selector.getMonth();
+  }
+
+  setMonth(difference: number): void {
+    return this.calendar.setMonth(difference);
+  }
+
+  getWeekDayNames(): Array<string> {
+    return this.calendar.getWeekDayNames();
+  }
+
+  /**
+   * Get the selected month name.
+   *
+   * @returns {string}
+   */
+  getMonthName(): string {
+    const name = this.calendar.selector.toLocaleDateString("default", {
+      month: "long"
+    });
+    return name[0].toUpperCase() + name.slice(1);
+  }
 
   getStringDate(day: IDay): string {
     return `day-${day.year}-${String(day.month).padStart(2, "0")}-${String(
@@ -42,9 +76,10 @@ export default class CalendarInteractor implements ICalendarInteractor {
   }
 
   getDays(): IDay[] {
-    const year = this.calendar.selector.getFullYear();
-    const month = this.calendar.selector.getMonth();
+    // const year = this.calendar.selector.getFullYear();
+    // const month = this.calendar.selector.getMonth();
     // const days = this.client.getDays(year, month);
+    this.calendar.getDays();
     return this.calendar.days;
   }
 }
