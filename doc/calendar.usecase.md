@@ -45,3 +45,5 @@ The overview of a day displays a small tooltip with the names of today's employe
 ## Technical part
 
 Each employee change on a day sends a query containing all the employees of that day, which finally returns the list of employees and their data. This is for backend safety.
+
+This is transparent to the user, but we modify the "Work" model, which is a manytomany relationship table that targets an employee and a day, with a start time and an end time. The ID of the "Work" table is retrieved from the "employees" items of each day.

@@ -22,8 +22,27 @@ interface ICalendar {
   days: IDay[];
   maxDaysInWeek: number;
 
+  /**
+   * Get the short names of the days, according to your locale.
+   *
+   * @returns {string[]} a list of day names.
+   *
+   * French example: ["lun", "mar", "mer", "jeu", "ven", "sam", "dim"]
+   */
   getWeekDayNames: () => string[];
+  /**
+   * Return the number of the last day of the selected month.
+   *
+   * @returns {number} Example for august 2020 : 31
+   */
   getLastDayOfTheMonth: () => number;
+  /**
+   * Get the week day of the specified date, from monday (1) to sunday (7).
+   *
+   * @param {Date} date The wanted date.
+   *
+   * @returns {number}
+   */
   getWeekDay: (date: Date) => number;
   getDays: () => IDay[];
 }
@@ -39,13 +58,6 @@ class Calendar implements ICalendar {
 
   private _weekDayNames: string[] = [];
 
-  /**
-   * Get the short names of the days, according to your locale.
-   *
-   * @returns {string[]} a list of day names.
-   *
-   * French example: ["lun", "mar", "mer", "jeu", "ven", "sam", "dim"]
-   */
   public getWeekDayNames(): string[] {
     if (!this._weekDayNames.length) {
       let name = "";
@@ -66,11 +78,6 @@ class Calendar implements ICalendar {
     return [...this._weekDayNames];
   }
 
-  /**
-   * Return the number of the last day of the selected month.
-   *
-   * @returns {number} Example for august 2020 : 31
-   */
   getLastDayOfTheMonth(): number {
     const date = new Date(
       this.selector.getFullYear(),
@@ -80,13 +87,6 @@ class Calendar implements ICalendar {
     return date.getDate();
   }
 
-  /**
-   * Get the week day of the specified date, from monday (1) to sunday (7).
-   *
-   * @param {Date} date The wanted date.
-   *
-   * @returns {number}
-   */
   getWeekDay(date: Date): number {
     const number = date.getDay();
     return number === 0 ? 7 : number;

@@ -36,3 +36,11 @@ test("getDays can return days of other months if they are part of the weeks of t
   days = calendar.getDays();
   expect(days.pop()?.month).toBe(date.getMonth() + 1);
 });
+
+// test getDays interactor returns the complete list of IDays
+// test get total hours function works properly
+// test
+
+// test add employee interactor returns the day updated with the new employee
+// test delete employee interactor returns the day updated without the deleted employee
+// test modify employee interactir returns the day updated with the modified employee
