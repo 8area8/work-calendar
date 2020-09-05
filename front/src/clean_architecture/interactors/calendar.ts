@@ -2,12 +2,55 @@ import { IDay, Calendar } from "../entities/calendar";
 import { MonthService } from "../services/calendar";
 
 interface ICalendarInteractor {
-  client: MonthService;
+  /**
+   * Get the selected year.
+   */
+  getYear: () => number;
+  /**
+   * Get the selected month.
+   */
+  getMonth: () => number;
+  /**
+   * Set a new year.
+   */
+  setYear: (diference: number) => void;
+  /**
+   * Set a new month.
+   */
+  setMonth: (diference: number) => void;
+  /**
+   * Get the list of day name, from the current locale.
+   *
+   * French example : ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"]
+   *
+   * @returns {Array<string>} the list of days names.
+   */
+  getWeekDayNames: () => Array<string>;
+  /**
+   * Return a string from a given date.
+   *
+   * Format is "day-YY-MM-DD"
+   *
+   * @returns {string} the string format
+   */
+  getStringDate: (day: IDay) => string;
+  /**
+   * Get the selected month name.
+   *
+   * @returns {string}
+   */
+  getMonthName: () => string;
+  /**
+   * Get the days.
+   *
+   * @returns {Array<IDay>} a list of IDays.
+   */
+  getDays: () => IDay[];
 }
 
 export default class CalendarInteractor implements ICalendarInteractor {
   private calendar: Calendar = new Calendar();
-  public client: MonthService = new MonthService();
+  private client: MonthService = new MonthService();
 
   getYear(): number {
     return this.calendar.selector.getFullYear();
@@ -29,11 +72,6 @@ export default class CalendarInteractor implements ICalendarInteractor {
     return this.calendar.getWeekDayNames();
   }
 
-  /**
-   * Get the selected month name.
-   *
-   * @returns {string}
-   */
   getMonthName(): string {
     const name = this.calendar.selector.toLocaleDateString("default", {
       month: "long"

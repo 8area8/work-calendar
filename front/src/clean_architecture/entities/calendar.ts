@@ -25,6 +25,7 @@ interface ICalendar {
   getWeekDayNames: () => string[];
   getLastDayOfTheMonth: () => number;
   getWeekDay: (date: Date) => number;
+  getDays: () => IDay[];
 }
 
 /**
