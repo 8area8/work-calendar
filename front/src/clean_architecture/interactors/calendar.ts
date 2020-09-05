@@ -43,7 +43,7 @@ interface ICalendarInteractor {
   /**
    * Get the days.
    *
-   * @returns {Array<IDay>} a list of IDays.
+   * @returns {IDay[]} a list of IDays
    */
   getDays: () => IDay[];
 }
