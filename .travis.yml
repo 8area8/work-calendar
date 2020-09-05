@@ -1,8 +1,10 @@
 sudo: required
+language: node_js
 cache:
   directories:
     - front/node_modules
-language: node_js
+services:
+  - postgresql
 node_js: 12
 env:
   - SECRET_KEY=SOSECRET
