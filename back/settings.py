@@ -20,6 +20,7 @@ import django_heroku
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 APPS_DIR = BASE_DIR / "back" / "apps"
+VUE_DIST = BASE_DIR / "front" / "dist"
 
 
 # Quick-start development settings - unsuitable for production
@@ -67,7 +68,7 @@ ROOT_URLCONF = "back.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "front" / "dist"],
+        "DIRS": [VUE_DIST],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -131,7 +132,7 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_DIRS = [BASE_DIR / "front" / "dist" / "static", BASE_DIR / "front" / "dist"]
+STATICFILES_DIRS = [VUE_DIST]
 
 # Simplified static file serving.
 # https://warehouse.python.org/project/whitenoise/
