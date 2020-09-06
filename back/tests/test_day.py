@@ -1,4 +1,5 @@
 """Test the day creation."""
+# pylint: disable=all
 
 from datetime import datetime
 from calendar import monthrange
@@ -7,6 +8,7 @@ import pytest
 
 from back.apps.worker.models import Day
 from back.apps.worker.management.commands import update_days, create_initial_days
+from back.tests import admin, get_admin_token, client
 
 
 now = datetime.now()
@@ -72,3 +74,20 @@ def test_days_of_next_month_exists_after_recreation_on_new_month():
 
     days = Day.objects.get_month(2)
     assert len(days) > 0
+
+
+@pytest.mark.django_db
+def test_month_route(client, admin):
+    create_initial_days.Command().handle()
+
+    response = client.get("/api/work/month/0/")
+    assert response.status_code == 200
+    assert 27 < len(response.json()) < 32
+
+    response = client.get("/api/work/month/1/")
+    assert response.status_code == 200
+    assert 27 < len(response.json()) < 32
+
+    response = client.get("/api/work/month/2/")
+    assert response.status_code == 200
+    assert len(response.json()) == 0

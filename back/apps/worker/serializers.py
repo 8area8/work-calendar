@@ -2,7 +2,7 @@
 
 from rest_framework import serializers
 
-from .models import Employee
+from .models import Employee, WorkDay
 
 
 class EmployeeSerializerForUser(serializers.ModelSerializer):
@@ -24,3 +24,13 @@ class EmployeeSerializerForAdmin(serializers.ModelSerializer):
 
         model = Employee
         fields = ["id", "name", "salary", "preference"]
+
+
+class WorkDaySerializer(serializers.ModelSerializer):
+    """WorkDay serializer."""
+
+    class Meta:
+        """Meta."""
+
+        model = WorkDay
+        fields = ["id", "start", "end", "day", "employee"]

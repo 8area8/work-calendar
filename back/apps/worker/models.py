@@ -1,7 +1,7 @@
 """Workers models."""
 
 from typing import Tuple
-from datetime import datetime, date
+from datetime import datetime
 from calendar import monthrange
 
 from django.db import models
@@ -38,12 +38,12 @@ class DayManager(models.Manager):
         year = now.year + month // self.MAX_MONTHS
         return month, year
 
-    def get_month(self, from_now: int = 0):
+    def get_month(self, from_now: int = 0) -> "DayManager":
         """Get a month."""
         month, year = self.set_month(from_now)
         return self.filter(month=month, year=year)
 
-    def create_month(self, from_now: int = 0):
+    def create_month(self, from_now: int = 0) -> None:
         """Create a new month."""
         month, year = self.set_month(from_now)
         month_len = monthrange(year=year, month=month)[1]
@@ -59,9 +59,23 @@ class Day(models.Model):
     year = models.IntegerField()
     month = models.IntegerField()
     number = models.IntegerField()
+    employee = models.ManyToManyField(
+        Employee,
+        through="WorkDay",
+        through_fields=("day", "employee"),
+    )
 
     objects: DayManager = DayManager()
 
     def __str__(self):
         """Define the day."""
         return f"{self.year}-{self.month}-{self.number}"
+
+
+class WorkDay(models.Model):
+    """Work Day class."""
+
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    day = models.ForeignKey(Day, on_delete=models.CASCADE)
+    start = models.IntegerField()
+    end = models.IntegerField()
