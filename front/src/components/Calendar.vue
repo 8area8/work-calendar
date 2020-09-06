@@ -75,7 +75,7 @@
           <div
             v-for="(name, index) of calendar.getWeekDayNames()"
             :key="`dayName-${index}`"
-            class="c-nodes__node"
+            class="c-nodes__node c-nodes__node--day-name"
           >
             {{ name }}
           </div>
@@ -104,12 +104,22 @@
                 {{ day.number }}
               </div>
               <div class="c-day__data" :class="{ 'is-invisible': ![] }">
-                <b-icon pack="fas" icon="sun" size="is-small" />
-                <span>
+                <b-icon
+                  class="c-day__employee-preference"
+                  pack="fas"
+                  icon="sun"
+                  size="is-small"
+                />
+                <span class="c-day__employee-number">
                   {{ 3 }}
                 </span>
-                <b-icon pack="fas" icon="moon" size="is-small" />
-                <span>
+                <b-icon
+                  class="c-day__employee-preference"
+                  pack="fas"
+                  icon="moon"
+                  size="is-small"
+                />
+                <span class="c-day__employee-number">
                   {{ 3 }}
                 </span>
               </div>
@@ -192,6 +202,11 @@ $calendar-color: #e9e9e9;
     justify-content: center;
     align-items: center;
     transition: all 0.1s;
+
+    &:not(.c-nodes__node--day-name) {
+      border-left: solid 1px #c7c7c7;
+      // border-bottom: solid 1px #e0e0e0;
+    }
   }
 }
 
@@ -217,7 +232,7 @@ $calendar-color: #e9e9e9;
     color: white;
     background-color: #ffdd57;
     cursor: pointer;
-    div {
+    * {
       transition: all 0.3s;
       color: white;
     }
@@ -229,14 +244,26 @@ $calendar-color: #e9e9e9;
     text-align: center;
   }
   &__data {
-    color: #636165;
-    font-size: 1.3em;
     margin-top: 0.5em;
+    display: flex;
+    justify-content: center;
+    color: #7e919a;
+  }
+  &__employee-preference {
+    font-size: 1.3em;
+    margin-right: 0.3em;
+  }
+  &__employee-number {
+    font-size: 1.3em;
+    font-weight: bold;
+
+    &:not(:last-child) {
+      margin-right: 1em;
+    }
   }
   &__number {
     position: relative;
     top: -0.5em;
-    color: #607d8b;
     &--disabled {
       color: #9b9b9b;
     }
