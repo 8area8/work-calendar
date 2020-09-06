@@ -104,9 +104,14 @@
                 {{ day.number }}
               </div>
               <div class="c-day__data" :class="{ 'is-invisible': ![] }">
-                <b-icon pack="fas" icon="sun" size="is-small" />{{ 3 }}
-                {{ " - " }}
-                <b-icon pack="fas" icon="moon" size="is-small" />{{ 3 }}
+                <b-icon pack="fas" icon="sun" size="is-small" />
+                <span>
+                  {{ 3 }}
+                </span>
+                <b-icon pack="fas" icon="moon" size="is-small" />
+                <span>
+                  {{ 3 }}
+                </span>
               </div>
             </div>
           </div>
@@ -224,11 +229,9 @@ $calendar-color: #e9e9e9;
     text-align: center;
   }
   &__data {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0.2em;
-    color: #94817b;
+    color: #636165;
+    font-size: 1.3em;
+    margin-top: 0.5em;
   }
   &__number {
     position: relative;
