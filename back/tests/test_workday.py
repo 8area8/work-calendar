@@ -37,13 +37,33 @@ def test_retrieve_workday_in_month(client, admin, employee):
     assert day["employees"][0]["employee_id"] == employee.id
 
 
-# @pytest.mark.django_db
-# def test_work_day_admin_creation(admin, client):
-#     """Test the wrok day creation."""
-#     token_header = get_admin_token(client)
-#     response = client.post(
-#         "/api/work/day/",
-#         {"name": "john", "preference": "morning", "salary": 10},
-#         **token_header,
-#     )
-#     assert response.status_code == 201
+@pytest.mark.django_db
+def test_work_day_admin_creation(admin, client, employee):
+    """Test the wrok day creation."""
+    create_initial_days.Command().handle()
+
+    response = client.get("/api/work/month/0/")
+    day = response.json()[0]
+
+    token_header = get_admin_token(client)
+    response = client.post(
+        "/api/work/workday/",
+        {"day": day["id"], "employee": employee.id, "start": 11, "end": 20},
+        **token_header,
+    )
+    assert response.status_code == 201
+
+
+@pytest.mark.django_db
+def test_work_day_not_admin_creation(admin, client, employee):
+    """Test fail work day creation."""
+    create_initial_days.Command().handle()
+
+    response = client.get("/api/work/month/0/")
+    day = response.json()[0]
+
+    response = client.post(
+        "/api/work/workday/",
+        {"day": day["id"], "employee": employee.id, "start": 11, "end": 20},
+    )
+    assert response.status_code == 401
