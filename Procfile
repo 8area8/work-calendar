@@ -1,2 +1,1 @@
-web: cd front;npm run start
-api: gunicorn back.wsgi
+web: gunicorn back.wsgi
