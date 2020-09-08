@@ -8,7 +8,7 @@
       :closable="false"
       size="is-small"
     >
-      {{ overLimitMessage }}
+      {{ calendar.overLimitMessage }}
     </b-message>
 
     <!-- CALENDAR -->
@@ -47,25 +47,9 @@
         </div>
         <!-- YEAR -->
         <div class="c-work-calendar__year">
-          <div class="is-flex is-pointer" @click="calendar.setYear(-1)">
-            <b-icon
-              pack="fas"
-              icon="chevron-left"
-              size="is-small"
-              class="has-text-grey"
-            />
-          </div>
           <span id="calendar-year">
             {{ calendar.getYear() }}
           </span>
-          <div class="is-flex is-pointer" @click="calendar.setYear(1)">
-            <b-icon
-              pack="fas"
-              icon="chevron-right"
-              size="is-small"
-              class="has-text-grey"
-            />
-          </div>
         </div>
       </div>
       <!-- CONTENT -->
@@ -138,7 +122,6 @@ import { calendar } from "../clean_architecture/exposers/calendar";
 @Component
 export default class Calendar extends Vue {
   calendar = calendar;
-  overLimitMessage = "Il est impossible de remplir des dates trop éloignées.";
 
   get days() {
     return this.calendar.getDays();
@@ -180,6 +163,7 @@ $calendar-color: #e9e9e9;
   &__year {
     font-size: 1.3em;
     font-weight: 300;
+    justify-content: center;
   }
 }
 .c-nodes {
