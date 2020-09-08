@@ -1,8 +1,10 @@
 """Worker views."""
 
 from django.http.response import JsonResponse
+from django.http import HttpRequest
 from rest_framework import viewsets
 from rest_framework.permissions import SAFE_METHODS, BasePermission
+from rest_framework.decorators import api_view, permission_classes
 
 from .models import Employee, Day, WorkDay
 from .serializers import (
@@ -12,9 +14,13 @@ from .serializers import (
 )
 
 
-class IsAdminUserOrReadOnly(BasePermission):
-    def has_permission(self, request, view):
-        return request.method in SAFE_METHODS or request.user.is_superuser
+class IsAdminOrAuthenticatedReadOnly(BasePermission):
+    def has_permission(self, request: HttpRequest, view):
+        return (
+            request.method in SAFE_METHODS
+            and request.user.is_authenticated
+            or request.user.is_superuser
+        )
 
 
 class EmployeeViewSet(viewsets.ModelViewSet):
@@ -27,7 +33,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 
     queryset = Employee.objects.all()
 
-    permission_classes = [IsAdminUserOrReadOnly]
+    permission_classes = [IsAdminOrAuthenticatedReadOnly]
 
     def get_serializer_class(self):
         """Get the good serializer."""
@@ -37,6 +43,8 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         return EmployeeSerializerForUser
 
 
+@api_view(["GET"])
+@permission_classes([IsAdminOrAuthenticatedReadOnly])
 def get_month(request, from_now: int):
     """Return a list of days, from a specific month."""
     days = []
@@ -55,13 +63,8 @@ def get_month(request, from_now: int):
 
 
 class WorkDayViewSet(viewsets.ModelViewSet):
-    """
-    This viewset automatically provides `list`, `create`, `retrieve`,
-    `update` and `destroy` actions.
-
-    Additionally we also provide an extra `highlight` action.
-    """
+    """WorkDay viewset."""
 
     queryset = WorkDay.objects.all()
     serializer_class = WorkDaySerializer
-    permission_classes = [IsAdminUserOrReadOnly]
+    permission_classes = [IsAdminOrAuthenticatedReadOnly]
