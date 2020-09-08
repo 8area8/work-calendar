@@ -116,6 +116,7 @@
 </template>
 
 <script lang="ts">
+import axios from "axios";
 import { Component, Vue } from "vue-property-decorator";
 import { calendar } from "../clean_architecture/exposers/calendar";
 
@@ -125,6 +126,18 @@ export default class Calendar extends Vue {
 
   get days() {
     return this.calendar.getDays();
+  }
+
+  async mounted() {
+    try {
+      const res = await axios.post("http://localhost:8000/api/token/", {
+        username: "foo",
+        password: "admin"
+      });
+      console.log("response is", res);
+    } catch (err) {
+      console.log(err);
+    }
   }
 }
 </script>

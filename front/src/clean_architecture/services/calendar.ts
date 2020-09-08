@@ -3,6 +3,7 @@ import { IDay, IWork } from "../entities/calendar";
 
 export interface IMonthService {
   getDays: (year: number, month: number) => Promise<IDay[]>;
+  getDay: (id: number) => Promise<IDay>;
   addEmployee: (work: IWork) => Promise<IWork>;
   modifyEmployee: (work: IWork) => Promise<IWork>;
   deleteEmployee: (work: IWork) => Promise<IWork>;
