@@ -15,7 +15,10 @@ from .serializers import (
 
 
 class IsAdminOrAuthenticatedReadOnly(BasePermission):
+    """Is admin or read only for authenticated users."""
+
     def has_permission(self, request: HttpRequest, view):
+        """Return bool."""
         return (
             request.method in SAFE_METHODS
             and request.user.is_authenticated
@@ -24,12 +27,7 @@ class IsAdminOrAuthenticatedReadOnly(BasePermission):
 
 
 class EmployeeViewSet(viewsets.ModelViewSet):
-    """
-    This viewset automatically provides `list`, `create`, `retrieve`,
-    `update` and `destroy` actions.
-
-    Additionally we also provide an extra `highlight` action.
-    """
+    """Employee view set."""
 
     queryset = Employee.objects.all()
 
