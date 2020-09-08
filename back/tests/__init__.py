@@ -1,4 +1,5 @@
 """Tests package."""
+# pylint: skip-file
 
 import pytest
 
@@ -29,7 +30,7 @@ def client():
 def admin():
     """Return a employee."""
     User = get_user_model()
-    return User.objects.create_superuser(
+    return User.objects.create_superuser(  # type: ignore
         username="admin", password="admin", email="foo@bar.com"
     )
 
@@ -38,7 +39,7 @@ def admin():
 def user():
     """Return a employee."""
     User = get_user_model()
-    return User.objects.create_user(username="user", password="user")
+    return User.objects.create_user(username="user", password="user")  # type: ignore
 
 
 @pytest.fixture

@@ -1,4 +1,5 @@
 """Test the work day."""
+# pylint: skip-file
 
 import pytest
 
@@ -10,15 +11,16 @@ from back.tests import client, admin, user, employee, get_token
 @pytest.mark.django_db
 def test_work_day_attributes():
     """Test WorkDay attributes."""
-    assert WorkDay.id
-    assert WorkDay.day
-    assert WorkDay.employee
-    assert WorkDay.start
-    assert WorkDay.end
+    assert WorkDay.id  # type: ignore
+    assert WorkDay.day  # type: ignore
+    assert WorkDay.employee  # type: ignore
+    assert WorkDay.start  # type: ignore
+    assert WorkDay.end  # type: ignore
 
 
 @pytest.mark.django_db
 def test_retrieve_workday_in_month(client, admin, employee):
+    """Find a spectifi workday."""
     create_initial_days.Command().handle()
     token_header = get_token(client)
 

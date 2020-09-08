@@ -1,5 +1,5 @@
 """Test the workers feature."""
-# pylint: disable=redefined-outer-name, unused-argument
+# pylint: skip-file
 
 import pytest
 from django.test import Client
