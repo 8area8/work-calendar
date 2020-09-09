@@ -1,111 +1,115 @@
 <template>
-  <div class="container">
-    <!-- MESSAGE -->
-    <b-message
-      :class="{ 'is-invisible': calendar.isInvisible() }"
-      title="Attention"
-      type="is-warning"
-      :closable="false"
-      size="is-small"
-    >
-      {{ calendar.overLimitMessage }}
-    </b-message>
+  <div id="calendar" class="">
+    <div class="container ">
+      <!-- MESSAGE -->
+      <b-message
+        :class="{ 'is-invisible': calendar.isInvisible() }"
+        title="Attention"
+        type="is-warning"
+        :closable="false"
+        size="is-small"
+      >
+        {{ calendar.overLimitMessage }}
+      </b-message>
 
-    <!-- CALENDAR -->
-    <div id="work-calendar" class="c-work-calendar">
-      <!-- HEADER -->
-      <div class="c-work-calendar__header">
-        <!-- MONTH -->
-        <div class="c-work-calendar__month">
-          <div
-            id="month-chevron-left"
-            class="is-flex is-pointer"
-            @click="calendar.setMonth(-1)"
-          >
-            <b-icon
-              pack="fas"
-              icon="chevron-left"
-              size="is-small"
-              class="has-text-grey"
-            />
-          </div>
-          <span id="calendar-month-name">
-            {{ calendar.getMonthName() }}
-          </span>
-          <div
-            id="month-chevron-right"
-            class="is-flex is-pointer"
-            @click="calendar.setMonth(1)"
-          >
-            <b-icon
-              pack="fas"
-              icon="chevron-right"
-              size="is-small"
-              class="has-text-grey"
-            />
-          </div>
-        </div>
-        <!-- YEAR -->
-        <div class="c-work-calendar__year">
-          <span id="calendar-year">
-            {{ calendar.getYear() }}
-          </span>
-        </div>
-      </div>
-      <!-- CONTENT -->
-      <div class="c-work-calendar__content">
-        <!-- DAYS NAMES -->
-        <div class="c-nodes c-nodes--title">
-          <div
-            v-for="(name, index) of calendar.getWeekDayNames()"
-            :key="`dayName-${index}`"
-            class="c-nodes__node c-nodes__node--day-name"
-          >
-            {{ name }}
-          </div>
-        </div>
-        <!-- DAYS NODES -->
-        <div class="c-nodes">
-          <div
-            v-for="(day, index) in days"
-            :id="calendar.getStringDate(day)"
-            :key="`day-${index}`"
-            class="c-nodes__node c-day"
-            :class="{
-              'c-day--out-of-month': !calendar.isInMonth(day),
-              'c-day--active': calendar.isActiveDay(day),
-              'c-day--disabled': calendar.isOverDatabaseLimit(day)
-            }"
-          >
+      <!-- CALENDAR -->
+      <div id="work-calendar" class="c-work-calendar">
+        <!-- HEADER -->
+        <div class="c-work-calendar__header">
+          <!-- MONTH -->
+          <div class="c-work-calendar__month">
             <div
-              class="c-day__data-wrapper"
-              :class="{ 'is-invisible': calendar.isOverDatabaseLimit(day) }"
+              id="month-chevron-left"
+              class="is-flex is-pointer"
+              @click="calendar.setMonth(-1)"
+            >
+              <b-icon
+                pack="fas"
+                icon="chevron-left"
+                size="is-small"
+                class="has-text-grey"
+              />
+            </div>
+            <span id="calendar-month-name">
+              {{ calendar.getMonthName() }}
+            </span>
+            <div
+              id="month-chevron-right"
+              class="is-flex is-pointer"
+              @click="calendar.setMonth(1)"
+            >
+              <b-icon
+                pack="fas"
+                icon="chevron-right"
+                size="is-small"
+                class="has-text-grey"
+              />
+            </div>
+          </div>
+          <!-- YEAR -->
+          <div class="c-work-calendar__year">
+            <span id="calendar-year">
+              {{ calendar.getYear() }}
+            </span>
+          </div>
+        </div>
+        <!-- CONTENT -->
+        <div class="c-work-calendar__content">
+          <!-- DAYS NAMES -->
+          <div class="c-nodes c-nodes--title">
+            <div
+              v-for="(name, index) of calendar.getWeekDayNames()"
+              :key="`dayName-${index}`"
+              class="c-nodes__node c-nodes__node--day-name"
+            >
+              {{ name }}
+            </div>
+          </div>
+          <!-- DAYS NODES -->
+          <div class="c-nodes">
+            <div
+              v-for="(day, index) in days"
+              :id="calendar.getStringDate(day)"
+              :key="`day-${index}`"
+              class="c-nodes__node c-day"
+              :class="{
+                'c-day--out-of-month': !calendar.isInMonth(day),
+                'c-day--active': calendar.isActiveDay(day),
+                'c-day--disabled': calendar.isOverDatabaseLimit(day)
+              }"
             >
               <div
-                class="c-day__number"
-                :class="{ 'c-day__number--disabled': !calendar.isInMonth(day) }"
+                class="c-day__data-wrapper"
+                :class="{ 'is-invisible': calendar.isOverDatabaseLimit(day) }"
               >
-                {{ day.number }}
-              </div>
-              <div class="c-day__data" :class="{ 'is-invisible': ![] }">
-                <b-icon
-                  class="c-day__employee-preference"
-                  pack="fas"
-                  icon="sun"
-                  size="is-small"
-                />
-                <span class="c-day__employee-number">
-                  {{ 3 }}
-                </span>
-                <b-icon
-                  class="c-day__employee-preference"
-                  pack="fas"
-                  icon="moon"
-                  size="is-small"
-                />
-                <span class="c-day__employee-number">
-                  {{ 3 }}
-                </span>
+                <div
+                  class="c-day__number"
+                  :class="{
+                    'c-day__number--disabled': !calendar.isInMonth(day)
+                  }"
+                >
+                  {{ day.number }}
+                </div>
+                <div class="c-day__data" :class="{ 'is-invisible': ![] }">
+                  <b-icon
+                    class="c-day__employee-preference"
+                    pack="fas"
+                    icon="sun"
+                    size="is-small"
+                  />
+                  <span class="c-day__employee-number">
+                    {{ 3 }}
+                  </span>
+                  <b-icon
+                    class="c-day__employee-preference"
+                    pack="fas"
+                    icon="moon"
+                    size="is-small"
+                  />
+                  <span class="c-day__employee-number">
+                    {{ 3 }}
+                  </span>
+                </div>
               </div>
             </div>
           </div>

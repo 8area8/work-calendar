@@ -2,7 +2,7 @@
   <b-navbar type="is-dark">
     <template slot="brand">
       <b-navbar-item tag="router-link" :to="{ path: '/' }">
-        Les Fontaines
+        {{ title }}
       </b-navbar-item>
     </template>
     <template slot="start">
@@ -17,7 +17,7 @@
 export default {
   data() {
     return {
-      items: []
+      title: process.env.VUE_APP_TITLE
     };
   }
 };

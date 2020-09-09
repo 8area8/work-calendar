@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="main-content">
+  <div id="app">
     <Navbar />
     <router-view />
   </div>
@@ -21,11 +21,14 @@ export default {
   color: #2c3e50;
 }
 
-.main-content {
+.back-image {
   background: url("./assets/desk.jpg") no-repeat top center fixed;
   background-size: cover;
-  height: 100%;
-  min-height: 100vh;
   backdrop-filter: blur(5px);
+
+  &--full {
+    height: 100%;
+    min-height: 100vh;
+  }
 }
 </style>

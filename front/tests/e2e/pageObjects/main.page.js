@@ -1,7 +1,7 @@
 class Page {
-  open(path = '/') {
-    browser.url(path)
+  open(path = "http://localhost:8000/") {
+    browser.url(path);
   }
 }
 
-module.exports = new Page()
+module.exports = new Page();

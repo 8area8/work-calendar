@@ -9,31 +9,31 @@ export interface ITokens {
 export { IError } from "../common/base_api";
 
 export interface IAuthService {
-  authenticate: (name: string, password: string) => Promise<ITokens | IError>;
+  authenticate: (
+    username: string,
+    password: string
+  ) => Promise<ITokens | false>;
   refresh: (token: string) => Promise<string | IError>;
+  checkAuthentication: () => Promise<boolean>;
 }
 
 export class MockAuthService implements IAuthService {
   async authenticate(
-    name: string,
+    username: string,
     password: string
-  ): Promise<ITokens | IError> {
-    if (name === "user" && password === "user") {
+  ): Promise<ITokens | false> {
+    if (username === "user" && password === "user") {
       return {
         token: "usertoken",
         refresh: "userrefresh"
       };
-    } else if (name === "admin" && password === "admin") {
+    } else if (username === "admin" && password === "admin") {
       return {
         token: "admintoken",
         refresh: "adminrefresh"
       };
-    } else {
-      return {
-        type: 401,
-        message: "unhautorized"
-      } as IError;
     }
+    return false;
   }
 
   async refresh(token: string): Promise<string | IError> {
@@ -46,28 +46,63 @@ export class MockAuthService implements IAuthService {
       } as IError;
     }
   }
+
+  async checkAuthentication(): Promise<boolean> {
+    const token = localStorage.getItem("token");
+    if (token == "usertoken" || token == "admintoken") {
+      return true;
+    }
+    return false;
+  }
 }
 
 export class AuthService implements IAuthService {
   public async authenticate(
-    name: string,
+    username: string,
     password: string
-  ): Promise<ITokens | IError> {
-    return await httpClient
-      .post<ITokens>("/token/", {
-        name,
-        password
-      })
-      .then(data => data as ITokens)
-      .catch(error => error as IError);
+  ): Promise<ITokens | false> {
+    const result = await httpClient.post<ITokens>("/token/", {
+      username,
+      password
+    });
+    if ("type" in result) {
+      return false;
+    }
+    localStorage.setItem("token", result.token);
+    localStorage.setItem("refresh", result.refresh);
+    return result;
   }
 
   public async refresh(token: string): Promise<string | IError> {
-    return await httpClient
-      .post<string>("/token/refresh/", {
-        token
-      })
-      .then(data => data as string)
-      .catch(error => error as IError);
+    return await httpClient.post<string>("/token/refresh/", {
+      token
+    });
+  }
+
+  async checkAuthentication(): Promise<boolean> {
+    if (!(await this._checkToken()) && !(await this._refreshToken())) {
+      return false;
+    }
+    return true;
+  }
+
+  async _checkToken(): Promise<boolean> {
+    const token = localStorage.getItem("token") || "";
+    const result = await httpClient.post<any>("/token/verify/", {
+      token
+    });
+    return !("type" in result);
+  }
+
+  async _refreshToken(): Promise<boolean> {
+    const refresh = localStorage.getItem("refresh") || "";
+    const reloaded = await httpClient.post<any>("/token/refresh/", {
+      refresh
+    });
+    if ("type" in reloaded) {
+      return false;
+    }
+    localStorage.setItem("token", reloaded.access);
+    return true;
   }
 }

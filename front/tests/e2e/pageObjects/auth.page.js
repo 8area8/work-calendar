@@ -1,5 +1,5 @@
 class Page {
-  open(path = "http://localhost:8000/#/workers/") {
+  open(path = "http://localhost:8000/auth/") {
     browser.url(path);
   }
 }

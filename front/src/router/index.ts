@@ -1,6 +1,9 @@
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 import Index from "../views/index.vue";
+import { AuthService } from "../clean_architecture/services/auth";
+
+const auth = new AuthService();
 
 Vue.use(VueRouter);
 
@@ -8,7 +11,10 @@ const routes: Array<RouteConfig> = [
   {
     path: "/",
     name: "Home",
-    component: Index
+    component: Index,
+    beforeEnter: async (to, from, next) => {
+      (await auth.checkAuthentication()) ? next() : next({ name: "Auth" });
+    }
   },
   {
     path: "/employees",
@@ -17,7 +23,19 @@ const routes: Array<RouteConfig> = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/Employees.vue")
+      import(/* webpackChunkName: "employees" */ "../views/Employees.vue"),
+    beforeEnter: async (to, from, next) => {
+      (await auth.checkAuthentication()) ? next() : next({ name: "Auth" });
+    }
+  },
+  {
+    path: "/auth",
+    name: "Auth",
+    component: () => import(/* webpackChunkName: "auth" */ "../views/Auth.vue"),
+    beforeEnter: async (to, from, next) => {
+      if (await auth.checkAuthentication()) next({ name: "Home" });
+      next();
+    }
   }
 ];
 

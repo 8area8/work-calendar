@@ -4,7 +4,7 @@ import {
   IError
 } from "../../src/clean_architecture/services/auth";
 
-test("auth can return two token on good authentication.", async () => {
+test("auth can return two tokens on good authentication.", async () => {
   const auth = new MockAuthService();
   let response = await auth.authenticate("user", "user");
   expect(response).toHaveProperty("token");

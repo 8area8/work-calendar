@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div class="back-image back-image--full">
     <section class="section">
       <Calendar />
     </section>
