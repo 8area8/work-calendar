@@ -40,7 +40,6 @@
 </template>
 
 <script lang="ts">
-import axios from "axios";
 import { Component, Vue } from "vue-property-decorator";
 import { AuthService } from "../clean_architecture/services/auth";
 

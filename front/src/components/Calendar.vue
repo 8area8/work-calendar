@@ -120,16 +120,21 @@
 </template>
 
 <script lang="ts">
-import axios from "axios";
 import { Component, Vue } from "vue-property-decorator";
 import { calendar } from "../clean_architecture/exposers/calendar";
+import { IDay } from "../clean_architecture/entities/calendar";
 
 @Component
 export default class Calendar extends Vue {
   calendar = calendar;
+  days: IDay[] = [];
 
-  get days() {
-    return this.calendar.getDays();
+  async getDays() {
+    this.days = await this.calendar.getDays();
+  }
+
+  async mounted() {
+    await this.getDays();
   }
 }
 </script>

@@ -39,12 +39,17 @@ class HttpClient implements IHttpClient {
     });
   }
 
+  private setToken() {
+    const token = localStorage.getItem("token");
+    return { headers: { Authorization: `Bearer ${token}` } };
+  }
+
   public async get<T>(
     url: string,
     config?: AxiosRequestConfig
   ): Promise<T | IError> {
     return await this._http
-      .get(url, config)
+      .get(url, { ...config, ...this.setToken() })
       .then(response => {
         return response.data as T;
       })
@@ -62,7 +67,7 @@ class HttpClient implements IHttpClient {
     config?: AxiosRequestConfig
   ): Promise<T | IError> {
     return await this._http
-      .post(url, data, config)
+      .post(url, data, { ...config, ...this.setToken() })
       .then(response => {
         return response.data as T;
       })
@@ -80,7 +85,7 @@ class HttpClient implements IHttpClient {
     config?: AxiosRequestConfig
   ): Promise<T | IError> {
     return await this._http
-      .patch(url, data, config)
+      .patch(url, data, { ...config, ...this.setToken() })
       .then(response => {
         return response.data as T;
       })
@@ -98,7 +103,7 @@ class HttpClient implements IHttpClient {
     config?: AxiosRequestConfig
   ): Promise<T | IError> {
     return await this._http
-      .delete(url, config)
+      .delete(url, { ...config, ...this.setToken() })
       .then(response => {
         return response.data as T;
       })

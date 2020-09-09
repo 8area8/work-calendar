@@ -46,7 +46,7 @@ interface ICalendarInteractor {
    *
    * @returns {IDay[]} a list of IDays
    */
-  getDays: () => IDay[];
+  getDays: () => Promise<IDay[]>;
 }
 
 export default class CalendarInteractor implements ICalendarInteractor {
@@ -116,10 +116,11 @@ export default class CalendarInteractor implements ICalendarInteractor {
     );
   }
 
-  getDays(): IDay[] {
-    // const year = this.calendar.selector.getFullYear();
-    // const month = this.calendar.selector.getMonth();
-    // const days = this.client.getDays(year, month);
+  async getDays(): Promise<IDay[]> {
+    const month = this.calendar.selector.getMonth();
+    const monthDiff = month - this.calendar.now.getMonth();
+    const days = await this.client.getDays(monthDiff);
+    console.log(days);
     this.calendar.getDays();
     return this.calendar.days;
   }

@@ -1,8 +1,5 @@
-import {
-  MockAuthService,
-  ITokens,
-  IError
-} from "../../src/clean_architecture/services/auth";
+import { ITokens, IError } from "../../src/clean_architecture/services/auth";
+import { MockAuthService } from "../../src/clean_architecture/services/auth.mock";
 
 test("auth can return two tokens on good authentication.", async () => {
   const auth = new MockAuthService();
