@@ -1,29 +1,32 @@
-import { MockAuthService } from "../../src/clean_architecture/services/auth";
-import axios from "axios";
+import {
+  MockAuthService,
+  ITokens,
+  IError
+} from "../../src/clean_architecture/services/auth";
 
 test("auth can return two token on good authentication.", async () => {
   const auth = new MockAuthService();
   let response = await auth.authenticate("user", "user");
-  expect(response).toBeTruthy();
+  expect(response).toHaveProperty("token");
 
   response = await auth.authenticate("admin", "admin");
-  expect(response).toBeTruthy();
+  expect(response).toHaveProperty("token");
 });
 
 test("auth return false on bad authentication.", async () => {
   const auth = new MockAuthService();
   let response = await auth.authenticate("foo", "foo");
-  expect(response).toBeFalsy();
+  expect(response).toHaveProperty("type");
 });
 
 test("auth refresh existing token.", async () => {
   const auth = new MockAuthService();
   let response = await auth.refresh("userrefresh");
-  expect(response).toBeTruthy();
+  expect(typeof response).toEqual("string");
 });
 
-test("auth refresh existing token.", async () => {
+test("auth refresh bad token.", async () => {
   const auth = new MockAuthService();
   let response = await auth.refresh("foo");
-  expect(response).toBeFalsy();
+  expect(response).toHaveProperty("type");
 });

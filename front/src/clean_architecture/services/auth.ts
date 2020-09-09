@@ -1,4 +1,4 @@
-import { httpClient } from "../common/base_api";
+import { httpClient, IError } from "../common/base_api";
 import { AxiosResponse } from "axios";
 
 export interface ITokens {
@@ -6,17 +6,18 @@ export interface ITokens {
   refresh: string;
 }
 
-export interface ITokensError {
-  detail: string;
-}
+export { IError } from "../common/base_api";
 
 export interface IAuthService {
-  authenticate: (name: string, password: string) => Promise<ITokens | false>;
-  refresh: (token: string) => Promise<string | false>;
+  authenticate: (name: string, password: string) => Promise<ITokens | IError>;
+  refresh: (token: string) => Promise<string | IError>;
 }
 
 export class MockAuthService implements IAuthService {
-  async authenticate(name: string, password: string): Promise<ITokens | false> {
+  async authenticate(
+    name: string,
+    password: string
+  ): Promise<ITokens | IError> {
     if (name === "user" && password === "user") {
       return {
         token: "usertoken",
@@ -28,28 +29,45 @@ export class MockAuthService implements IAuthService {
         refresh: "adminrefresh"
       };
     } else {
-      return false;
+      return {
+        type: 401,
+        message: "unhautorized"
+      } as IError;
     }
   }
 
-  async refresh(token: string): Promise<string | false> {
+  async refresh(token: string): Promise<string | IError> {
     if (["userrefresh", "adminrefresh"].includes(token)) {
       return "newtoken";
     } else {
-      return false;
+      return {
+        type: 401,
+        message: "unhautorized"
+      } as IError;
     }
   }
 }
 
-// export class AuthService implements IAuthService {
-//   public async authenticate(
-//     name: string,
-//     password: string
-//   ): Promise<ITokens | false> {
-//     const response = await httpClient.post<ITokens | ITokensError>("/token/", {
-//       name,
-//       password
-//     });
-//     return response;
-//   }
-// }
+export class AuthService implements IAuthService {
+  public async authenticate(
+    name: string,
+    password: string
+  ): Promise<ITokens | IError> {
+    return await httpClient
+      .post<ITokens>("/token/", {
+        name,
+        password
+      })
+      .then(data => data as ITokens)
+      .catch(error => error as IError);
+  }
+
+  public async refresh(token: string): Promise<string | IError> {
+    return await httpClient
+      .post<string>("/token/refresh/", {
+        token
+      })
+      .then(data => data as string)
+      .catch(error => error as IError);
+  }
+}
