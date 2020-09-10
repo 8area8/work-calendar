@@ -1,7 +1,7 @@
 import { IDay, Calendar } from "../entities/calendar";
 import { MonthService } from "../services/calendar";
 
-interface ICalendarInteractor {
+export interface ICalendarInteractor {
   overLimitMessage: string;
   /**
    * Get the selected year.
@@ -49,7 +49,7 @@ interface ICalendarInteractor {
   getDays: () => Promise<IDay[]>;
 }
 
-export default class CalendarInteractor implements ICalendarInteractor {
+export class CalendarInteractor implements ICalendarInteractor {
   public overLimitMessage =
     "Il est impossible de remplir des dates trop éloignées.";
   private calendar: Calendar = new Calendar();

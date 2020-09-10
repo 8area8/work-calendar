@@ -125,17 +125,17 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { calendar } from "../clean_architecture/exposers/calendar";
+import { CalendarInteractor } from "../clean_architecture/exposers/calendar";
 import { IDay } from "../clean_architecture/entities/calendar";
 
 @Component
 export default class Calendar extends Vue {
-  calendar = calendar;
+  calendar = new CalendarInteractor();
   days: IDay[] = [];
   monthName = "";
 
   async getDays() {
-    this.days = await calendar.getDays();
+    this.days = await this.calendar.getDays();
   }
 
   setMonth(difference: number) {

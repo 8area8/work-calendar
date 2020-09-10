@@ -13,7 +13,7 @@ test("auth can return two tokens on good authentication.", async () => {
 test("auth return false on bad authentication.", async () => {
   const auth = new MockAuthService();
   let response = await auth.authenticate("foo", "foo");
-  expect(response).toHaveProperty("type");
+  expect(typeof response).toEqual("boolean");
 });
 
 test("auth refresh existing token.", async () => {

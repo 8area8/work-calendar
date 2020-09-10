@@ -1,4 +1,3 @@
-import CalendarInteractor from "../interactors/calendar";
-// import { IDay } from "../entities/calendar";
+import { CalendarInteractor } from "../interactors/calendar";
 
-export const calendar = new CalendarInteractor();
+export { CalendarInteractor };
