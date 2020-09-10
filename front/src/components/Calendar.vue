@@ -21,7 +21,7 @@
             <div
               id="month-chevron-left"
               class="is-flex is-pointer"
-              @click="calendar.setMonth(-1)"
+              @click="setMonth(-1)"
             >
               <b-icon
                 pack="fas"
@@ -31,12 +31,12 @@
               />
             </div>
             <span id="calendar-month-name">
-              {{ calendar.getMonthName() }}
+              {{ monthName }}
             </span>
             <div
               id="month-chevron-right"
               class="is-flex is-pointer"
-              @click="calendar.setMonth(1)"
+              @click="setMonth(1)"
             >
               <b-icon
                 pack="fas"
@@ -128,13 +128,25 @@ import { IDay } from "../clean_architecture/entities/calendar";
 export default class Calendar extends Vue {
   calendar = calendar;
   days: IDay[] = [];
+  monthName = "";
 
   async getDays() {
-    this.days = await this.calendar.getDays();
+    this.days = await calendar.getDays();
   }
 
-  async mounted() {
-    await this.getDays();
+  setMonth(difference: number) {
+    this.calendar.setMonth(difference);
+    this.getMonthName();
+    this.getDays();
+  }
+
+  getMonthName() {
+    this.monthName = this.calendar.getMonthName();
+  }
+
+  mounted() {
+    this.getDays();
+    this.getMonthName();
   }
 }
 </script>
