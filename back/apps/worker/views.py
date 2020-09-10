@@ -51,9 +51,9 @@ def get_month(request, from_now: int):
         employees = day.workday_set.values()
         serialized_day = {
             "id": day.id,
-            "year": day.year,
-            "month": day.month,
-            "number": day.number,
+            "year": day.date.year,
+            "month": day.date.month,
+            "number": day.date.day,
             "employees": list(employees),
         }
         days.append(serialized_day)

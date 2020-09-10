@@ -89,12 +89,23 @@ export function verifyAuth(
 ) {
   const auth = new AuthService();
   const originalMethod = descriptor.value;
+
   descriptor.value = async function(...args: any[]) {
-    const result = await originalMethod.apply(this, args);
+    let result = await originalMethod.apply(this, args);
+
     if ("type" in result) {
-      if (!(await auth.checkAuthentication())) auth.router.redirectToAuth();
-      return await originalMethod.apply(this, args);
+      const isAuth = await auth.checkAuthentication();
+
+      if (!isAuth) {
+        console.log("Redirection to authentication.");
+        auth.router.redirectToAuth();
+      } else if (result.type >= 500) {
+        return result;
+      } else {
+        result = await originalMethod.apply(this, args);
+      }
     }
+
     return result;
   };
 

@@ -1,3 +1,5 @@
+import { ISalaryWorker } from "./worker";
+
 /**
  * Represent a Day object.
  */
@@ -6,6 +8,7 @@ interface IDay {
   year: number;
   month: number;
   number: number;
+  employees: ISalaryWorker[] | null;
 }
 
 interface IWork {
@@ -132,6 +135,7 @@ class Calendar implements ICalendar {
     while (date <= endWeekDate) {
       this.days.push({
         id: null,
+        employees: [],
         year: date.getFullYear(),
         month: date.getMonth(),
         number: date.getDate()

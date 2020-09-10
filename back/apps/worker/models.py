@@ -2,7 +2,9 @@
 
 from typing import Tuple
 from datetime import datetime
-from calendar import monthrange
+from calendar import Calendar
+
+from django.db import IntegrityError
 
 from django.db import models
 
@@ -34,31 +36,37 @@ class DayManager(models.Manager):
         """
         now = datetime.now()
         month = now.month + from_now
-        month = month % self.MAX_MONTHS
+        month = month % self.MAX_MONTHS or 1
         year = now.year + month // self.MAX_MONTHS
         return month, year
 
     def get_month(self, from_now: int = 0) -> "DayManager":
         """Get a month."""
         month, year = self.set_month(from_now)
-        return self.filter(month=month, year=year)
+        monthdays = Calendar().monthdatescalendar(year, month)
+        start = monthdays[0][0]
+        end = monthdays[-1][-1]
+        return self.filter(date__range=(start, end)).order_by("date")
 
-    def create_month(self, from_now: int = 0) -> None:
+    def create_month(self, from_now: int = 0, safe: bool = False) -> None:
         """Create a new month."""
         month, year = self.set_month(from_now)
-        month_len = monthrange(year=year, month=month)[1]
-        days = range(1, month_len + 1)
-
+        monthdays = Calendar().monthdatescalendar(year, month)
+        days = [day for days in monthdays for day in days]
         for day in days:
-            Day.objects.create(year=year, month=month, number=day)
+            try:
+                self.create(date=day)
+                print(f"{day} created.")
+            except IntegrityError as error:
+                if not safe:
+                    raise error
+                print(f"{day} is a duplicate !")
 
 
 class Day(models.Model):
     """Day model."""
 
-    year = models.IntegerField()
-    month = models.IntegerField()
-    number = models.IntegerField()
+    date = models.DateField(unique=True)
     employee = models.ManyToManyField(
         Employee,
         through="WorkDay",
@@ -69,7 +77,7 @@ class Day(models.Model):
 
     def __str__(self):
         """Define the day."""
-        return f"{self.year}-{self.month}-{self.number}"
+        return f"{self.date.year}-{self.date.month}-{self.date.day}"
 
 
 class WorkDay(models.Model):

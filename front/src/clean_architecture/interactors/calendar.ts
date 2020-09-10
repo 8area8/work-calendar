@@ -120,8 +120,27 @@ export default class CalendarInteractor implements ICalendarInteractor {
     const month = this.calendar.selector.getMonth();
     const monthDiff = month - this.calendar.now.getMonth();
     const days = await this.client.getDays(monthDiff);
-    console.log(days);
     this.calendar.getDays();
+
+    if ("type" in days) {
+      return this.calendar.days;
+    }
+
+    days.forEach((day, index) => {
+      const baseDay = this.calendar.days.find(item => {
+        return (
+          item.number == day.number &&
+          item.month == day.month - 1 &&
+          item.year == day.year
+        );
+      });
+      if (baseDay) {
+        baseDay.id = day.id;
+        baseDay.employees = day.employees;
+      }
+    });
+
+    console.log("days are", this.calendar.days);
     return this.calendar.days;
   }
 }
