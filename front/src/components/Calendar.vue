@@ -67,7 +67,7 @@
           </div>
           <!-- DAYS NODES -->
           <div class="c-nodes">
-            <div
+            <b-tooltip
               v-for="(day, index) in days"
               :id="calendar.getStringDate(day)"
               :key="`day-${index}`"
@@ -77,6 +77,9 @@
                 'c-day--active': calendar.isActiveDay(day),
                 'c-day--disabled': calendar.isOverDatabaseLimit(day)
               }"
+              :label="getDayTooltip(day)"
+              multilined
+              type="is-dark"
             >
               <div
                 class="c-day__data-wrapper"
@@ -111,7 +114,8 @@
                   </span>
                 </div>
               </div>
-            </div>
+              <!-- AFTER DAY -->
+            </b-tooltip>
           </div>
         </div>
       </div>
@@ -142,6 +146,10 @@ export default class Calendar extends Vue {
 
   getMonthName() {
     this.monthName = this.calendar.getMonthName();
+  }
+
+  getDayTooltip(day: IDay): string {
+    return `employés: ${day.employees.length ? day.employees : "aucun"}`;
   }
 
   mounted() {
