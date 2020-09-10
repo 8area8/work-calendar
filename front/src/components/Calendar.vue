@@ -288,5 +288,9 @@ $calendar-color: #e9e9e9;
 }
 .is-pointer {
   cursor: pointer;
+  &:hover * {
+    transition: all 0.3s;
+    color: rgb(230, 230, 230);
+  }
 }
 </style>
