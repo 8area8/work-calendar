@@ -1,8 +1,7 @@
 import { Calendar } from "../../src/clean_architecture/entities/calendar";
-import { CalendarInteractor } from "../../src/clean_architecture/interactors/calendar";
 
 test("getDays should return the days of the selected month", () => {
-  const calendar = new CalendarInteractor();
+  const calendar = new Calendar();
   const days = calendar.getDays();
   const date = new Date();
   date.setDate(1);
@@ -13,7 +12,8 @@ test("getDays should return the days of the selected month", () => {
       id: null,
       year: date.getFullYear(),
       month: date.getMonth(),
-      number: date.getDate()
+      number: date.getDate(),
+      employees: []
     });
     date.setDate(date.getDate() + 1);
   }

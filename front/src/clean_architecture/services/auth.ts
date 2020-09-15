@@ -1,5 +1,4 @@
 import { httpClient, IError } from "../common/base_api";
-import router from "@/router";
 
 export { IError } from "../common/base_api";
 
@@ -23,7 +22,7 @@ export interface IAuthService {
 }
 
 export class Router implements IRouter {
-  _router = router;
+  _router = require("@/router");
   redirectToAuth() {
     this._router.push({ name: "Auth" });
   }

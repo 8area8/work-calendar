@@ -3,9 +3,8 @@ import VueRouter, { RouteConfig } from "vue-router";
 import Index from "../views/index.vue";
 import { AuthService } from "../clean_architecture/services/auth";
 
-const auth = new AuthService();
-
 Vue.use(VueRouter);
+const auth = new AuthService();
 
 const routes: Array<RouteConfig> = [
   {
