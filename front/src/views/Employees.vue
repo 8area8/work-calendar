@@ -13,55 +13,69 @@
       </div>
 
       <!-- FIELDS -->
-      <div class="box has-text-centered">
-        <div class="title">Créer un employée</div>
-        <!-- NAME -->
-        <b-field
-          label="Nom"
-          position="is-centered"
-          :type="{ 'is-danger': hasError() }"
-          :message="{
-            'Le nom doit contenir au moins 3 caractères.': hasError()
-          }"
-        >
-          <b-input
-            id="name-input"
-            @input="firstInput = true"
-            v-model="employee.name"
-            maxlength="30"
-          ></b-input>
-        </b-field>
-        <!-- PREFERENCE -->
-        <b-field label="Préférence" position="is-centered">
-          <b-select
-            class="has-text-centered"
-            id="preference-input"
-            v-model="employee.preference"
-          >
-            <option value="morning">matin</option>
-            <option value="evening">soir</option>
-          </b-select>
-        </b-field>
-        <!-- SALARY -->
-        <b-field
-          label="Salaire net/heure"
-          position="is-centered"
-          class="has-text-centered"
-        >
-          <b-numberinput
-            class="has-text-centered"
-            style="justify-content: center;"
-            id="salary-input"
-            v-model="employee.salary"
-            controls-position="compact"
-            max="30"
-            min="1"
-            type="is-dark"
-          ></b-numberinput>
-        </b-field>
-        <b-button id="create-worker" type="is-primary"
-          >Nouveau salarié</b-button
-        >
+      <div class="container">
+        <div class="card">
+          <header class="card-header">
+            <p class="card-header-title title card-header-title--centered">
+              Créer un employée
+            </p>
+          </header>
+          <div class="card-content">
+            <div class="content">
+              <div class="notification is-notification--light">
+                <strong>Note :</strong> Le nouvel employée doit posséder un nom,
+                une préférence d'horaires et un salaire net par heure.
+              </div>
+              <!-- NAME -->
+              <b-field
+                label="Nom"
+                position="is-centered"
+                :type="{ 'is-danger': hasError() }"
+                :message="{
+                  'Le nom doit contenir au moins 3 caractères.': hasError()
+                }"
+              >
+                <b-input
+                  id="name-input"
+                  @input="firstInput = true"
+                  v-model="employee.name"
+                  maxlength="30"
+                ></b-input>
+              </b-field>
+              <!-- PREFERENCE -->
+              <b-field label="Préférence" position="is-centered">
+                <b-select
+                  class="has-text-centered"
+                  id="preference-input"
+                  v-model="employee.preference"
+                >
+                  <option value="morning">matin</option>
+                  <option value="evening">soir</option>
+                </b-select>
+              </b-field>
+              <!-- SALARY -->
+              <b-field
+                label="Salaire net/heure"
+                position="is-centered"
+                class="has-text-centered"
+              >
+                <b-numberinput
+                  class="has-text-centered"
+                  style="justify-content: center;"
+                  id="salary-input"
+                  v-model="employee.salary"
+                  controls-position="compact"
+                  max="30"
+                  min="1"
+                  type="is-dark"
+                ></b-numberinput>
+              </b-field>
+              <b-button id="create-worker" type="is-primary"
+                >Nouvel employée</b-button
+              >
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -98,3 +112,19 @@ export default class Employees extends Vue {
   }
 }
 </script>
+
+<style lang="scss">
+.card-header-title--centered {
+  justify-content: center;
+  // background: url("../assets/andrea-riezzo--glass.jpg") no-repeat center center
+  //   fixed;
+  // background-size: cover;
+  // height: 5em;
+  // color: black;
+}
+
+.is-notification--light {
+  background-color: #fff5c1;
+  color: #7b6229;
+}
+</style>
