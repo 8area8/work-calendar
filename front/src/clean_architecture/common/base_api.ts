@@ -24,7 +24,11 @@ export enum ErrorType {
   Unauthenticated = 401,
   Unauthorized = 403,
   NotFound = 404,
-  Server = 500
+  Server = 500,
+}
+
+export function isError(object: any): object is IError {
+  return "type" in object;
 }
 
 class HttpClient implements IHttpClient {
@@ -34,8 +38,8 @@ class HttpClient implements IHttpClient {
     this._http = axios.create({
       baseURL: "/api",
       headers: {
-        "Content-Type": "application/json"
-      }
+        "Content-Type": "application/json",
+      },
     });
   }
 
@@ -50,13 +54,13 @@ class HttpClient implements IHttpClient {
   ): Promise<T | IError> {
     return await this._http
       .get(url, { ...config, ...this.setToken() })
-      .then(response => {
+      .then((response) => {
         return response.data as T;
       })
-      .catch(error => {
+      .catch((error) => {
         return {
           message: error.response.data.detail,
-          type: error.response.status
+          type: error.response.status,
         } as IError;
       });
   }
@@ -68,13 +72,13 @@ class HttpClient implements IHttpClient {
   ): Promise<T | IError> {
     return await this._http
       .post(url, data, { ...config, ...this.setToken() })
-      .then(response => {
+      .then((response) => {
         return response.data as T;
       })
-      .catch(error => {
+      .catch((error) => {
         return {
           message: error.response.data.detail,
-          type: error.response.status
+          type: error.response.status,
         } as IError;
       });
   }
@@ -86,13 +90,13 @@ class HttpClient implements IHttpClient {
   ): Promise<T | IError> {
     return await this._http
       .patch(url, data, { ...config, ...this.setToken() })
-      .then(response => {
+      .then((response) => {
         return response.data as T;
       })
-      .catch(error => {
+      .catch((error) => {
         return {
           message: error.response.data.detail,
-          type: error.response.status
+          type: error.response.status,
         } as IError;
       });
   }
@@ -104,13 +108,13 @@ class HttpClient implements IHttpClient {
   ): Promise<T | IError> {
     return await this._http
       .delete(url, { ...config, ...this.setToken() })
-      .then(response => {
+      .then((response) => {
         return response.data as T;
       })
-      .catch(error => {
+      .catch((error) => {
         return {
           message: error.response.data.detail,
-          type: error.response.status
+          type: error.response.status,
         } as IError;
       });
   }

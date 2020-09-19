@@ -1,5 +1,6 @@
 import { IDay, Calendar } from "../entities/calendar";
 import { MonthService } from "../services/calendar";
+import { isError } from "../common/base_api";
 
 export interface ICalendarInteractor {
   overLimitMessage: string;
@@ -77,7 +78,7 @@ export class CalendarInteractor implements ICalendarInteractor {
 
   getMonthName(): string {
     const name = this.calendar.selector.toLocaleDateString("default", {
-      month: "long"
+      month: "long",
     });
     return name[0].toUpperCase() + name.slice(1);
   }
@@ -122,12 +123,12 @@ export class CalendarInteractor implements ICalendarInteractor {
     const days = await this.client.getDays(monthDiff);
     this.calendar.getDays();
 
-    if ("type" in days) {
+    if (isError(days)) {
       return this.calendar.days;
     }
 
     days.forEach((day, index) => {
-      const baseDay = this.calendar.days.find(item => {
+      const baseDay = this.calendar.days.find((item) => {
         return (
           item.number == day.number &&
           item.month == day.month - 1 &&

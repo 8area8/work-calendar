@@ -37,7 +37,7 @@ export class AuthService implements IAuthService {
   ): Promise<ITokens | false> {
     const result = await httpClient.post<ITokens>("/token/", {
       username,
-      password
+      password,
     });
     if ("type" in result) {
       return false;
@@ -49,7 +49,7 @@ export class AuthService implements IAuthService {
 
   public async refresh(token: string): Promise<string | IError> {
     return await httpClient.post<string>("/token/refresh/", {
-      token
+      token,
     });
   }
 
@@ -63,7 +63,7 @@ export class AuthService implements IAuthService {
   async _checkToken(): Promise<boolean> {
     const token = localStorage.getItem("token") || "";
     const result = await httpClient.post<any>("/token/verify/", {
-      token
+      token,
     });
     return !("type" in result);
   }
@@ -71,7 +71,7 @@ export class AuthService implements IAuthService {
   async _refreshToken(): Promise<boolean> {
     const refresh = localStorage.getItem("refresh") || "";
     const reloaded = await httpClient.post<any>("/token/refresh/", {
-      refresh
+      refresh,
     });
     if ("type" in reloaded) {
       return false;
@@ -89,7 +89,7 @@ export function verifyAuth(
   const auth = new AuthService();
   const originalMethod = descriptor.value;
 
-  descriptor.value = async function(...args: any[]) {
+  descriptor.value = async function (...args: any[]) {
     let result = await originalMethod.apply(this, args);
 
     if ("type" in result) {

@@ -4,7 +4,11 @@
       <div class="box" v-if="hasEmployees()">
         <div v-if="getMorningEmployees().length">
           <div class="title">Matin</div>
-          <ul id="morning-workers" class=""></ul>
+          <ul id="morning-workers" class="">
+            <li v-for="employee in getMorningEmployees()" :key="employee.id">
+              {{employee.name}}
+            </li>
+          </ul>
         </div>
         <div v-if="getEveningEmployees().length">
           <div class="title">Soir</div>
@@ -70,7 +74,12 @@
                   type="is-dark"
                 ></b-numberinput>
               </b-field>
-              <b-button id="create-worker" type="is-primary">
+              <b-button
+                id="create-worker"
+                type="is-primary"
+                :disabled="this.employee.name.length < 3"
+                @click="service.add(employee)"
+              >
                 Nouvel employé
               </b-button>
             </div>
@@ -84,9 +93,12 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { ISalaryWorker } from "../clean_architecture/entities/worker";
+import { EmployeeInteractor } from "../clean_architecture/interactors/employee";
 
 @Component
 export default class Employees extends Vue {
+  service = new EmployeeInteractor();
+
   firstInput = false;
   employee = {
     id: null,
@@ -94,21 +106,24 @@ export default class Employees extends Vue {
     preference: "morning",
     salary: 10,
   } as ISalaryWorker;
-  employees: ISalaryWorker[] = [];
 
   hasError(): boolean {
     return this.employee.name.length < 3 && this.firstInput;
   }
 
   getMorningEmployees(): ISalaryWorker[] {
-    return [];
+    return this.service.employees;
   }
   getEveningEmployees(): ISalaryWorker[] {
     return [];
   }
 
   hasEmployees(): boolean {
-    return this.employees.length > 0;
+    return this.service.employees.length > 0;
+  }
+
+  async mounted() {
+    this.service.employees = await this.service.get();
   }
 }
 </script>
