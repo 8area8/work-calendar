@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 import os
+from typing import Dict, Any
 from pathlib import Path
 
 import django_heroku
@@ -18,6 +19,8 @@ import django_heroku
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
+APPS_DIR = BASE_DIR / "back" / "apps"
+VUE_DIST = BASE_DIR / "front" / "dist"
 
 
 # Quick-start development settings - unsuitable for production
@@ -41,6 +44,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # Third part
+    "rest_framework",
+    # personals
+    "back.apps.worker",
 ]
 
 MIDDLEWARE = [
@@ -61,7 +68,7 @@ ROOT_URLCONF = "back.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "front" / "dist"],
+        "DIRS": [VUE_DIST],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -124,8 +131,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = "/static/"
+<<<<<<< HEAD
 STATICFILES_DIRS = [BASE_DIR / "front" / "dist" / "_nuxt" / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
+=======
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_DIRS = [VUE_DIST]
+>>>>>>> 9872cc758e21ba41b776a40a1f4e6df362e53b99
 
 # Simplified static file serving.
 # https://warehouse.python.org/project/whitenoise/
@@ -133,6 +145,19 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 
+<<<<<<< HEAD
+=======
+# Django REst FRamework
+# https://www.django-rest-framework.org/
+
+REST_FRAMEWORK: Dict[str, Any] = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    )
+}
+
+
+>>>>>>> 9872cc758e21ba41b776a40a1f4e6df362e53b99
 # Django Heroku config - need to be at the very bottom of settings.py
 # https://github.com/heroku/django-heroku
 

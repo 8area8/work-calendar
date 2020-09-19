@@ -1,17 +1,26 @@
 sudo: required
+language: node_js
 cache:
   directories:
     - front/node_modules
-language: node_js
+services:
+  - postgresql
 node_js: 12
+env: SECRET_KEY=SOSECRET
+  DB_NAME=example
+  DB_USER=postgres
+  DB_PASS=""
+  DB_HOST=127.0.0.1
+  DB_PORT=5432
 jobs:
   include:
     - stage: Javascript unit tests
       script: cd front && npm install && npm run test:unit
     - stage: Python unit tests
+      before_script: psql -c 'create database example;' -U postgres
       script: pip install pipenv && pipenv install --dev && pipenv run pytest back/tests
     - stage: Deploy on Heroku
-      script: cd front && npm install && npm run generate
+      script: cd front && npm install && npm run build && cd ..
       deploy:
         provider: heroku
         skip_cleanup: true

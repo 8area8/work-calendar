@@ -221,3 +221,5 @@ sw.*
 *.swp
 
 .vscode
+
+staticfiles

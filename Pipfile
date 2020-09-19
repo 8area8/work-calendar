@@ -10,6 +10,7 @@ pydocstyle = "*"
 mypy = "*"
 black = "*"
 pytest = "*"
+pylint-django = "*"
 
 [packages]
 django = "*"
@@ -18,6 +19,8 @@ django-heroku = "*"
 gunicorn = "*"
 psycopg2 = "*"
 whitenoise = "*"
+pytest-django = "*"
+djangorestframework-simplejwt = "*"
 
 [requires]
 python_version = "3.7"

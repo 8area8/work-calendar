@@ -1,19 +1,33 @@
 module.exports = {
   root: true,
   env: {
-    browser: true,
-    node: true,
+    node: true
   },
   extends: [
-    '@nuxtjs/eslint-config-typescript',
-    'prettier',
-    'prettier/vue',
-    'plugin:prettier/recommended',
-    'plugin:wdio/recommended',
-    'plugin:nuxt/recommended',
-    'plugin:jest/recommended',
+    "plugin:vue/essential",
+    "eslint:recommended",
+    "@vue/typescript/recommended",
+    "@vue/prettier",
+    "@vue/prettier/@typescript-eslint"
   ],
-  plugins: ['prettier', 'wdio', 'jest'],
-  // add your custom rules here
-  rules: {},
-}
+  parserOptions: {
+    ecmaVersion: 2020
+  },
+  rules: {
+    "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
+    "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
+    "interface-name": 0,
+    "@typescript-eslint/interface-name-prefix": "off"
+  },
+  overrides: [
+    {
+      files: [
+        "**/__tests__/*.{j,t}s?(x)",
+        "**/tests/unit/**/*.spec.{j,t}s?(x)"
+      ],
+      env: {
+        jest: true
+      }
+    }
+  ]
+};
