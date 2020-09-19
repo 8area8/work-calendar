@@ -7,7 +7,7 @@
     </template>
     <template slot="start">
       <b-navbar-item tag="router-link" :to="{ name: 'Employees' }">
-        Workers
+        Employés
       </b-navbar-item>
     </template>
   </b-navbar>
@@ -17,7 +17,7 @@
 export default {
   data() {
     return {
-      title: process.env.VUE_APP_TITLE
+      title: process.env.VUE_APP_TITLE || "Calendar"
     };
   }
 };

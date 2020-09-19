@@ -17,13 +17,13 @@
         <div class="card">
           <header class="card-header">
             <p class="card-header-title title card-header-title--centered">
-              Créer un employée
+              Créer un employé
             </p>
           </header>
           <div class="card-content">
             <div class="content">
               <div class="notification is-notification--light">
-                <strong>Note :</strong> Le nouvel employée doit posséder un nom,
+                <strong>Note :</strong> Le nouvel employé doit posséder un nom,
                 une préférence d'horaires et un salaire net par heure.
               </div>
               <!-- NAME -->
@@ -70,9 +70,9 @@
                   type="is-dark"
                 ></b-numberinput>
               </b-field>
-              <b-button id="create-worker" type="is-primary"
-                >Nouvel employée</b-button
-              >
+              <b-button id="create-worker" type="is-primary">
+                Nouvel employé
+              </b-button>
             </div>
           </div>
         </div>
@@ -92,7 +92,7 @@ export default class Employees extends Vue {
     id: null,
     name: "",
     preference: "morning",
-    salary: 10
+    salary: 10,
   } as ISalaryWorker;
   employees: ISalaryWorker[] = [];
 
