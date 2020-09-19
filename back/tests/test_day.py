@@ -38,7 +38,7 @@ def test_days_of_last_month_exists():
     """Test days of last month."""
     create_initial_days.Command().handle()
     days = Day.objects.get_month(-1)
-    assert monthrange(year=now.year, month=now.month + -1)[1] <= len(days) <= 40
+    assert monthrange(year=now.year, month=now.month + -1)[1] <= len(days) <= 46
 
 
 @pytest.mark.django_db
@@ -58,11 +58,13 @@ def test_days_of_next_month_exists():
 
 
 @pytest.mark.django_db
-def test_days_of_two_months_difference_doesnt_exists():
+def test_days_of_two_months_difference_is_equal_to_seven_or_zero():
     """Test there is no days in others months."""
     create_initial_days.Command().handle()
-    assert len(Day.objects.get_month(-2)) < 7
-    assert len(Day.objects.get_month(2)) < 7
+    last_days = len(Day.objects.get_month(-2))
+    next_days = len(Day.objects.get_month(2))
+    assert last_days == 7 or last_days == 0
+    assert next_days == 7 or next_days == 0
 
 
 @pytest.mark.django_db
@@ -105,7 +107,8 @@ def test_month_route(client, user):
 
     response = client.get("/api/work/month/2/", **token_header)
     assert response.status_code == 200
-    assert len(response.json()) < 7
+    days = len(response.json())
+    assert days == 7 or days == 0
 
 
 @pytest.mark.django_db

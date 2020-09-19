@@ -5,6 +5,7 @@ from datetime import datetime
 from calendar import Calendar
 
 from django.db import IntegrityError
+from django.db import transaction
 
 from django.db import models
 
@@ -48,18 +49,16 @@ class DayManager(models.Manager):
         end = monthdays[-1][-1]
         return self.filter(date__range=(start, end)).order_by("date")
 
-    def create_month(self, from_now: int = 0, safe: bool = False) -> None:
+    def create_month(self, from_now: int = 0) -> None:
         """Create a new month."""
         month, year = self.set_month(from_now)
         monthdays = Calendar().monthdatescalendar(year, month)
         days = [day for days in monthdays for day in days]
         for day in days:
             try:
-                self.create(date=day)
-                print(f"{day} created.")
-            except IntegrityError as error:
-                if not safe:
-                    raise error
+                with transaction.atomic():
+                    self.create(date=day)
+            except IntegrityError:
                 print(f"{day} is a duplicate !")
 
 
