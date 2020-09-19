@@ -131,13 +131,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = "/static/"
-<<<<<<< HEAD
-STATICFILES_DIRS = [BASE_DIR / "front" / "dist" / "_nuxt" / "static"]
-STATIC_ROOT = BASE_DIR / "staticfiles"
-=======
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [VUE_DIST]
->>>>>>> 9872cc758e21ba41b776a40a1f4e6df362e53b99
 
 # Simplified static file serving.
 # https://warehouse.python.org/project/whitenoise/
@@ -145,8 +140,6 @@ STATICFILES_DIRS = [VUE_DIST]
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 
-<<<<<<< HEAD
-=======
 # Django REst FRamework
 # https://www.django-rest-framework.org/
 
@@ -157,7 +150,6 @@ REST_FRAMEWORK: Dict[str, Any] = {
 }
 
 
->>>>>>> 9872cc758e21ba41b776a40a1f4e6df362e53b99
 # Django Heroku config - need to be at the very bottom of settings.py
 # https://github.com/heroku/django-heroku
 

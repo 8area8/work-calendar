@@ -1,6 +1,6 @@
 <template>
   <div id="calendar" class="">
-    <div class="container ">
+    <div class="container">
       <!-- MESSAGE -->
       <b-message
         :class="{ 'is-invisible': calendar.isInvisible() }"
@@ -149,7 +149,7 @@ export default class Calendar extends Vue {
   }
 
   getDayTooltip(day: IDay): string {
-    return `employés: ${day.employees.length ? day.employees : "aucun"}`;
+    return `employés: ${day.employees?.length ? day.employees : "aucun"}`;
   }
 
   mounted() {
