@@ -30,6 +30,11 @@ export class Router implements IRouter {
 
 export class AuthService implements IAuthService {
   public router = new Router();
+  public isAdmin = false;
+
+  constructor() {
+    this.isAdmin = localStorage.getItem("right") === "admin";
+  }
 
   public async authenticate(
     username: string,
@@ -39,11 +44,18 @@ export class AuthService implements IAuthService {
       username,
       password,
     });
-    if ("type" in result) {
+    if (isError(result)) {
       return false;
     }
     localStorage.setItem("token", result.token);
     localStorage.setItem("refresh", result.refresh);
+    if (username == "admin") {
+      localStorage.setItem("right", "admin");
+      this.isAdmin = true;
+    } else {
+      localStorage.setItem("right", "user");
+      this.isAdmin = false;
+    }
     return result;
   }
 
@@ -65,7 +77,7 @@ export class AuthService implements IAuthService {
     const result = await httpClient.post<any>("/token/verify/", {
       token,
     });
-    return !("type" in result);
+    return !isError(result);
   }
 
   async _refreshToken(): Promise<boolean> {
@@ -73,7 +85,7 @@ export class AuthService implements IAuthService {
     const reloaded = await httpClient.post<any>("/token/refresh/", {
       refresh,
     });
-    if ("type" in reloaded) {
+    if (isError(reloaded)) {
       return false;
     }
     localStorage.setItem("token", reloaded.access);
@@ -81,12 +93,13 @@ export class AuthService implements IAuthService {
   }
 }
 
+export const auth = new AuthService();
+
 export function verifyAuth(
   target: Record<string, any>,
   propertyKey: string,
   descriptor: TypedPropertyDescriptor<any>
 ) {
-  const auth = new AuthService();
   const originalMethod = descriptor.value;
 
   descriptor.value = async function(...args: any[]) {

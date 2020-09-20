@@ -6,7 +6,11 @@
       </b-navbar-item>
     </template>
     <template slot="start">
-      <b-navbar-item tag="router-link" :to="{ name: 'Employees' }">
+      <b-navbar-item
+        v-if="auth.isAdmin"
+        tag="router-link"
+        :to="{ name: 'Employees' }"
+      >
         Employés
       </b-navbar-item>
     </template>
@@ -14,11 +18,13 @@
 </template>
 
 <script>
+import { auth } from "../clean_architecture/services/auth";
 export default {
   data() {
     return {
-      title: process.env.VUE_APP_TITLE || "Calendar"
+      auth: auth,
+      title: process.env.VUE_APP_TITLE || "Calendar",
     };
-  }
+  },
 };
 </script>

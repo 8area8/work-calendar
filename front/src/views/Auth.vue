@@ -41,14 +41,14 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { AuthService } from "../clean_architecture/services/auth";
+import { auth } from "../clean_architecture/services/auth";
 
 @Component
 export default class Calendar extends Vue {
   username = "";
   password = "";
   authError = false;
-  auth = new AuthService();
+  auth = auth;
 
   async authenticate() {
     this.authError = false;

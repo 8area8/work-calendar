@@ -1,10 +1,9 @@
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 import Index from "../views/index.vue";
-import { AuthService } from "../clean_architecture/services/auth";
+import { auth } from "../clean_architecture/services/auth";
 
 Vue.use(VueRouter);
-const auth = new AuthService();
 
 const routes: Array<RouteConfig> = [
   {
@@ -13,7 +12,7 @@ const routes: Array<RouteConfig> = [
     component: Index,
     beforeEnter: async (to, from, next) => {
       (await auth.checkAuthentication()) ? next() : next({ name: "Auth" });
-    }
+    },
   },
   {
     path: "/employees",
@@ -24,8 +23,10 @@ const routes: Array<RouteConfig> = [
     component: () =>
       import(/* webpackChunkName: "employees" */ "../views/Employees.vue"),
     beforeEnter: async (to, from, next) => {
-      (await auth.checkAuthentication()) ? next() : next({ name: "Auth" });
-    }
+      (await auth.checkAuthentication()) && auth.isAdmin
+        ? next()
+        : next({ name: "Auth" });
+    },
   },
   {
     path: "/auth",
@@ -34,12 +35,12 @@ const routes: Array<RouteConfig> = [
     beforeEnter: async (to, from, next) => {
       if (await auth.checkAuthentication()) next({ name: "Home" });
       next();
-    }
-  }
+    },
+  },
 ];
 
 const router = new VueRouter({
-  routes
+  routes,
 });
 
 export default router;
