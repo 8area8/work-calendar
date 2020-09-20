@@ -10,7 +10,7 @@
               <thead>
                 <tr>
                   <th><abbr title="Identifiant">ID</abbr></th>
-                  <th>Nom</th>
+                  <th>Nom de l'employé</th>
                   <th><abbr>Préférence</abbr></th>
                   <th><abbr>Salaire</abbr></th>
                   <th><abbr>Modifier</abbr></th>
