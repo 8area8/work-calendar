@@ -1,4 +1,4 @@
-import { httpClient, IError } from "../common/base_api";
+import { httpClient, IError, isError } from "../common/base_api";
 
 export { IError } from "../common/base_api";
 
@@ -89,10 +89,10 @@ export function verifyAuth(
   const auth = new AuthService();
   const originalMethod = descriptor.value;
 
-  descriptor.value = async function (...args: any[]) {
+  descriptor.value = async function(...args: any[]) {
     let result = await originalMethod.apply(this, args);
 
-    if ("type" in result) {
+    if (isError(result)) {
       const isAuth = await auth.checkAuthentication();
 
       if (!isAuth) {

@@ -8,7 +8,7 @@
 <script>
 import Navbar from "./components/Navbar";
 export default {
-  components: { Navbar }
+  components: { Navbar },
 };
 </script>
 
@@ -30,5 +30,13 @@ export default {
     height: 100%;
     min-height: 100vh;
   }
+}
+
+ul li {
+  list-style-type: none !important;
+}
+
+.bulma-control--nomargin > .control {
+  margin: 0 !important;
 }
 </style>

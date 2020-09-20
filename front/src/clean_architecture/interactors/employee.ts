@@ -7,12 +7,16 @@ export interface IEmployeeInteractor {
   get: () => Promise<ISalaryWorker[]>;
   add: (employee: ISalaryWorker) => Promise<ISalaryWorker[]>;
   modify: (employee: ISalaryWorker) => Promise<ISalaryWorker[]>;
-  delete: (employee: ISalaryWorker) => Promise<ISalaryWorker[]>;
+  delete_: (employee: ISalaryWorker) => Promise<ISalaryWorker[]>;
 }
 
 export class EmployeeInteractor implements IEmployeeInteractor {
   private service = new EmployeeService();
   public employees: ISalaryWorker[] = [];
+
+  constructor() {
+    this.get().then((res) => (this.employees = res));
+  }
 
   async get() {
     const result = await this.service.getEmployees();
@@ -33,8 +37,8 @@ export class EmployeeInteractor implements IEmployeeInteractor {
     return await this.get();
   }
 
-  async delete(employee: ISalaryWorker) {
-    await this.service.deleteEmployee(employee);
+  async delete_(employee: ISalaryWorker) {
+    await this.service.deleteEmployee(employee.id);
     return await this.get();
   }
 }

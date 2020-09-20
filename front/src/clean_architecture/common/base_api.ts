@@ -28,7 +28,7 @@ export enum ErrorType {
 }
 
 export function isError(object: any): object is IError {
-  return "type" in object;
+  return !object || "type" in object;
 }
 
 class HttpClient implements IHttpClient {

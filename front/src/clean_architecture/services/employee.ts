@@ -6,7 +6,7 @@ export interface IEmployeeService {
   getEmployees: () => Promise<ISalaryWorker[] | IError>;
   addEmployee: (employee: ISalaryWorker) => Promise<ISalaryWorker | IError>;
   modifyEmployee: (employee: ISalaryWorker) => Promise<ISalaryWorker | IError>;
-  deleteEmployee: (employee: ISalaryWorker) => Promise<ISalaryWorker | IError>;
+  deleteEmployee: (id: number | null) => Promise<ISalaryWorker | IError>;
 }
 
 export class EmployeeService implements IEmployeeService {
@@ -28,17 +28,16 @@ export class EmployeeService implements IEmployeeService {
   @verifyAuth
   public async modifyEmployee(employee: ISalaryWorker) {
     const response = await httpClient.patch<ISalaryWorker>(
-      "/work/employees/",
+      `/work/employees/${employee.id}/`,
       employee
     );
     return response;
   }
 
   @verifyAuth
-  public async deleteEmployee(employee: ISalaryWorker) {
+  public async deleteEmployee(id: number | null) {
     const response = await httpClient.delete<ISalaryWorker>(
-      "/work/employees/",
-      employee
+      `/work/employees/${id}/`
     );
     return response;
   }

@@ -2,17 +2,71 @@
   <section class="section back-image back-image--full">
     <div class="content container">
       <div class="box" v-if="hasEmployees()">
-        <div v-if="getMorningEmployees().length">
-          <div class="title">Matin</div>
-          <ul id="morning-workers" class="">
-            <li v-for="employee in getMorningEmployees()" :key="employee.id">
-              {{employee.name}}
-            </li>
-          </ul>
-        </div>
-        <div v-if="getEveningEmployees().length">
-          <div class="title">Soir</div>
-          <ul id="evening-workers" class=""></ul>
+        <div v-if="service.employees.length">
+          <div class="title">Employés</div>
+
+          <div class="table-container">
+            <table class="table is-striped">
+              <thead>
+                <tr>
+                  <th><abbr title="Identifiant">ID</abbr></th>
+                  <th>Nom</th>
+                  <th><abbr>Préférence</abbr></th>
+                  <th><abbr>Salaire</abbr></th>
+                  <th><abbr>Modifier</abbr></th>
+                  <th><abbr>Suprimer</abbr></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="employee in service.employees" :key="employee.id">
+                  <th>{{ employee.id }}</th>
+                  <td>
+                    <b-input v-model="employee.name"></b-input>
+                  </td>
+                  <td>
+                    <b-select
+                      class="has-text-centered"
+                      expanded
+                      id="preference-input"
+                      v-model="employee.preference"
+                    >
+                      <option value="morning">matin</option>
+                      <option value="evening">soir</option>
+                    </b-select>
+                  </td>
+                  <td>
+                    <b-numberinput
+                      expanded
+                      v-model="employee.salary"
+                      controls-position="compact"
+                      class="bulma-control--nomargin"
+                      max="30"
+                      min="1"
+                      type="is-info"
+                    ></b-numberinput>
+                  </td>
+                  <td class="has-text-centered">
+                    <b-button
+                      expanded
+                      outlined
+                      type="is-info"
+                      @click="modify(employee)"
+                      >Modifier</b-button
+                    >
+                  </td>
+                  <td class="has-text-centered">
+                    <b-button
+                      type="is-danger"
+                      expanded
+                      outlined
+                      @click="delete_(employee)"
+                      >Supprimer</b-button
+                    >
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
@@ -36,7 +90,7 @@
                 position="is-centered"
                 :type="{ 'is-danger': hasError() }"
                 :message="{
-                  'Le nom doit contenir au moins 3 caractères.': hasError()
+                  'Le nom doit contenir au moins 3 caractères.': hasError(),
                 }"
               >
                 <b-input
@@ -78,7 +132,7 @@
                 id="create-worker"
                 type="is-primary"
                 :disabled="this.employee.name.length < 3"
-                @click="service.add(employee)"
+                @click="create(employee)"
               >
                 Nouvel employé
               </b-button>
@@ -111,19 +165,36 @@ export default class Employees extends Vue {
     return this.employee.name.length < 3 && this.firstInput;
   }
 
-  getMorningEmployees(): ISalaryWorker[] {
-    return this.service.employees;
-  }
-  getEveningEmployees(): ISalaryWorker[] {
-    return [];
-  }
-
   hasEmployees(): boolean {
     return this.service.employees.length > 0;
   }
 
-  async mounted() {
-    this.service.employees = await this.service.get();
+  preferenceName(preference: string) {
+    return preference === "morning" ? "matin" : "soir";
+  }
+
+  create(employee: ISalaryWorker) {
+    this.service.add(employee);
+    this.$buefy.toast.open(`${employee.name} est créé !`);
+  }
+
+  modify(employee: ISalaryWorker) {
+    this.service.modify(employee);
+    this.$buefy.toast.open(`${employee.name} a bien été modifié !`);
+  }
+
+  delete_(employee: ISalaryWorker) {
+    this.$buefy.dialog.confirm({
+      title: `Supprimer ${employee.name} ?`,
+      message: `Es-tu sûre de vouloir <b>supprimer</b> ${employee.name} ? Cette action est irréversible.`,
+      confirmText: "Surrpimer",
+      type: "is-danger",
+      hasIcon: true,
+      onConfirm: () => {
+        this.service.delete_(employee);
+        this.$buefy.toast.open(`${employee.name} est supprimé !`);
+      },
+    });
   }
 }
 </script>
