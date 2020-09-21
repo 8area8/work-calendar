@@ -67,7 +67,8 @@
           </div>
           <!-- DAYS NODES -->
           <div class="c-nodes">
-            <b-tooltip
+            <div
+              @click="openDayModale(day)"
               v-for="(day, index) in days"
               :id="calendar.getStringDate(day)"
               :key="`day-${index}`"
@@ -75,51 +76,51 @@
               :class="{
                 'c-day--out-of-month': !calendar.isInMonth(day),
                 'c-day--active': calendar.isActiveDay(day),
-                'c-day--disabled': calendar.isOverDatabaseLimit(day)
+                'c-day--disabled': calendar.isOverDatabaseLimit(day),
               }"
-              :label="getDayTooltip(day)"
-              multilined
-              type="is-dark"
             >
-              <div
-                class="c-day__data-wrapper"
-                :class="{ 'is-invisible': calendar.isOverDatabaseLimit(day) }"
-              >
+              <b-tooltip :label="getDayTooltip(day)" multilined type="is-dark">
                 <div
-                  class="c-day__number"
-                  :class="{
-                    'c-day__number--disabled': !calendar.isInMonth(day)
-                  }"
+                  class="c-day__data-wrapper"
+                  :class="{ 'is-invisible': calendar.isOverDatabaseLimit(day) }"
                 >
-                  {{ day.number }}
+                  <div
+                    class="c-day__number"
+                    :class="{
+                      'c-day__number--disabled': !calendar.isInMonth(day),
+                    }"
+                  >
+                    {{ day.number }}
+                  </div>
+                  <div class="c-day__data" :class="{ 'is-invisible': ![] }">
+                    <b-icon
+                      class="c-day__employee-preference"
+                      pack="fas"
+                      icon="sun"
+                      size="is-small"
+                    />
+                    <span class="c-day__employee-number">
+                      {{ 3 }}
+                    </span>
+                    <b-icon
+                      class="c-day__employee-preference"
+                      pack="fas"
+                      icon="moon"
+                      size="is-small"
+                    />
+                    <span class="c-day__employee-number">
+                      {{ 3 }}
+                    </span>
+                  </div>
                 </div>
-                <div class="c-day__data" :class="{ 'is-invisible': ![] }">
-                  <b-icon
-                    class="c-day__employee-preference"
-                    pack="fas"
-                    icon="sun"
-                    size="is-small"
-                  />
-                  <span class="c-day__employee-number">
-                    {{ 3 }}
-                  </span>
-                  <b-icon
-                    class="c-day__employee-preference"
-                    pack="fas"
-                    icon="moon"
-                    size="is-small"
-                  />
-                  <span class="c-day__employee-number">
-                    {{ 3 }}
-                  </span>
-                </div>
-              </div>
-              <!-- AFTER DAY -->
-            </b-tooltip>
+              </b-tooltip>
+            </div>
+            <!-- AFTER DAY -->
           </div>
         </div>
       </div>
     </div>
+    <Day :dayModale="dayModale" />
   </div>
 </template>
 
@@ -127,12 +128,27 @@
 import { Component, Vue } from "vue-property-decorator";
 import { CalendarInteractor } from "../clean_architecture/exposers/calendar";
 import { IDay } from "../clean_architecture/entities/calendar";
+import Day, { IDayModale } from "./Day.vue";
+// import Day from "./Day.vue";
 
-@Component
+@Component({
+  components: {
+    Day,
+  },
+})
 export default class Calendar extends Vue {
   calendar = new CalendarInteractor();
   days: IDay[] = [];
   monthName = "";
+  dayModale: IDayModale = {
+    isActive: false,
+    day: null,
+  };
+
+  openDayModale(day: IDay) {
+    this.dayModale.isActive = true;
+    this.dayModale.day = day;
+  }
 
   async getDays() {
     this.days = await this.calendar.getDays();

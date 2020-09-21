@@ -8,11 +8,11 @@ interface IDay {
   year: number;
   month: number;
   number: number;
-  employees: ISalaryWorker[] | null;
+  employees: ISalaryWorker[];
 }
 
 interface IWork {
-  id: number;
+  id: number | null;
   employeeId: number;
   dayId: number;
   start: string;
@@ -72,7 +72,7 @@ class Calendar implements ICalendar {
 
       for (let i = 0; i < 7; i++) {
         name = date.toLocaleDateString("default", {
-          weekday: "short"
+          weekday: "short",
         });
         this._weekDayNames.push(name.slice(0, -1).toUpperCase());
         date.setDate(date.getDate() + 1);
@@ -138,7 +138,7 @@ class Calendar implements ICalendar {
         employees: [],
         year: date.getFullYear(),
         month: date.getMonth(),
-        number: date.getDate()
+        number: date.getDate(),
       });
       date.setDate(date.getDate() + 1);
     }

@@ -13,7 +13,7 @@ export default {
   name: "HomePage",
 
   components: {
-    Calendar
-  }
+    Calendar,
+  },
 };
 </script>
