@@ -18,7 +18,7 @@
           Le nom d'utilisateur et/ou le mot de passe est invalide.
         </b-message>
 
-        <form :action="authenticate">
+        <form v-on:keyup.enter="authenticate">
           <b-field label="Nom d'utilisateur">
             <b-input id="username" v-model="username"></b-input>
           </b-field>
@@ -28,6 +28,7 @@
           <b-button
             id="authenticate"
             type="is-warning"
+            value="Submit"
             expanded
             @click="authenticate"
           >
