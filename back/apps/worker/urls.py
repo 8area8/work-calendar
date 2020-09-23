@@ -26,9 +26,14 @@ register_converter(NegativeIntConverter, "negint")
 
 router = DefaultRouter()
 router.register("employees", views.EmployeeViewSet)
-router.register("workday", views.WorkDayViewSet)
+router.register("workdays", views.WorkDayViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),
     path("month/<negint:from_now>/", views.get_month, name="get_month"),
+    path(
+        "workdays_from_day/<int:day_id>/",
+        views.get_workday_from_day_id,
+        name="workdays_from_day",
+    ),
 ]

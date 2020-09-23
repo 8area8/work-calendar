@@ -13,10 +13,18 @@ interface IDay {
 
 interface IWork {
   id: number | null;
-  employeeId: number;
-  dayId: number;
-  start: string;
-  end: string;
+  employee: number;
+  day: number;
+  start: string | Date;
+  end: string | Date;
+}
+
+export interface IWorkDate {
+  id: number | null;
+  day: number;
+  employee: number;
+  start: Date;
+  end: Date;
 }
 
 interface ICalendar {

@@ -6,6 +6,7 @@ interface ISalaryWorker {
   name: string;
   preference: IPreference;
   salary: number;
+  employee_id: number | null;
 }
 
 /**
@@ -13,7 +14,7 @@ interface ISalaryWorker {
  */
 enum IPreference {
   Morning = "morning",
-  Evening = "evening"
+  Evening = "evening",
 }
 
 // eslint-disable-next-line no-undef

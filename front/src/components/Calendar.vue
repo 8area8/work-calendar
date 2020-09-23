@@ -92,24 +92,30 @@
                   >
                     {{ day.number }}
                   </div>
-                  <div class="c-day__data" :class="{ 'is-invisible': ![] }">
+                  <div class="c-day__data">
                     <b-icon
+                      :class="{
+                        'is-invisible': !getMorningEmployees(day.employees),
+                      }"
                       class="c-day__employee-preference"
                       pack="fas"
                       icon="sun"
                       size="is-small"
                     />
                     <span class="c-day__employee-number">
-                      {{ 3 }}
+                      {{ getMorningEmployees(day.employees) || null }}
                     </span>
                     <b-icon
+                      :class="{
+                        'is-invisible': !getEveningEmployees(day.employees),
+                      }"
                       class="c-day__employee-preference"
                       pack="fas"
                       icon="moon"
                       size="is-small"
                     />
                     <span class="c-day__employee-number">
-                      {{ 3 }}
+                      {{ getEveningEmployees(day.employees) || null }}
                     </span>
                   </div>
                 </div>
@@ -120,15 +126,23 @@
         </div>
       </div>
     </div>
-    <Day :dayModale="dayModale" />
+    <Day
+      ref="day"
+      :dayModal="dayModal"
+      :employees="employees"
+      :service="workService"
+    />
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { CalendarInteractor } from "../clean_architecture/exposers/calendar";
+import { EmployeeInteractor } from "../clean_architecture/interactors/employee";
 import { IDay } from "../clean_architecture/entities/calendar";
 import Day, { IDayModale } from "./Day.vue";
+import { ISalaryWorker } from "../clean_architecture/entities/worker";
+import { WorkInteractor } from "../clean_architecture/interactors/work";
 // import Day from "./Day.vue";
 
 @Component({
@@ -138,16 +152,25 @@ import Day, { IDayModale } from "./Day.vue";
 })
 export default class Calendar extends Vue {
   calendar = new CalendarInteractor();
+  employeesService = new EmployeeInteractor();
+  workService = new WorkInteractor();
+
   days: IDay[] = [];
+  employees: ISalaryWorker[] = [];
   monthName = "";
-  dayModale: IDayModale = {
+  dayModal: IDayModale = {
     isActive: false,
     day: null,
   };
 
   openDayModale(day: IDay) {
-    this.dayModale.isActive = true;
-    this.dayModale.day = day;
+    this.dayModal.isActive = true;
+    this.dayModal.day = day;
+    if (this.dayModal.day?.id) {
+      this.workService
+        .get(this.dayModal.day.id)
+        .then((res) => console.log("works are", res));
+    }
   }
 
   async getDays() {
@@ -165,12 +188,38 @@ export default class Calendar extends Vue {
   }
 
   getDayTooltip(day: IDay): string {
-    return `employés: ${day.employees?.length ? day.employees : "aucun"}`;
+    return `employés: ${
+      day.employees?.length
+        ? day.employees.map((item) => this.getEmployee(item.employee_id).name)
+        : "aucun"
+    }`;
   }
 
-  mounted() {
+  getEmployee(id: number | null) {
+    return (
+      this.employees.find((elem) => elem.id == id) || {
+        preference: "",
+        name: "",
+      }
+    );
+  }
+
+  async mounted() {
     this.getDays();
     this.getMonthName();
+    this.employees = await this.employeesService.get();
+  }
+
+  getMorningEmployees(employees: ISalaryWorker[]) {
+    return employees.filter(
+      (elem) => this.getEmployee(elem.employee_id).preference == "morning"
+    ).length;
+  }
+
+  getEveningEmployees(employees: ISalaryWorker[]) {
+    return employees.filter(
+      (elem) => this.getEmployee(elem.employee_id).preference == "evening"
+    ).length;
   }
 }
 </script>

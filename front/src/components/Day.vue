@@ -1,63 +1,134 @@
 <template>
-  <div class="modal is-clipped" :class="{ 'is-active': dayModale.isActive }">
-    <div class="modal-background" @click="dayModale.isActive = false"></div>
+  <div class="modal is-clipped" :class="{ 'is-active': dayModal.isActive }">
+    <div class="modal-background" @click="dayModal.isActive = false"></div>
     <div class="modal-card">
       <header class="modal-card-head">
         <p class="modal-card-title">{{ getDayName() }}</p>
       </header>
       <section class="modal-card-body">
         <div class="container">
-          <div class="line">
-            <b-select
-              class="has-text-centered"
-              id="preference-input"
-              v-model="work.employeeId"
-            >
-              <option
-                v-for="employee in employees"
-                :key="'select-employee' + employee.id"
-                :value="employee.id"
-                >{{ employee.name }}</option
-              >
-            </b-select>
-            <b-numberinput
-              v-model="work.start"
-              controls-position="compact"
-              class="bulma-control--nomargin"
-              max="30"
-              min="1"
-              type="is-info"
-            ></b-numberinput>
-            <b-numberinput
-              v-model="work.end"
-              controls-position="compact"
-              class="bulma-control--nomargin"
-              max="30"
-              min="1"
-              type="is-info"
-            ></b-numberinput>
-            <b-button outlined type="is-info">Ajouter</b-button>
+          <div class="title">
+            Liste des horaires
+          </div>
+          <div class="table-container box" v-if="service.works.length">
+            <table class="table is-striped">
+              <thead>
+                <tr>
+                  <th>Employé</th>
+                  <th><abbr>Début</abbr></th>
+                  <th><abbr>Fin</abbr></th>
+                  <th><abbr>Total</abbr></th>
+                  <th><abbr>Modifier</abbr></th>
+                  <th><abbr>Suprimer</abbr></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="work in service.works" :key="'work-' + work.id">
+                  <td style="vertical-align: middle;">
+                    {{ getEmployeeName(work.employee) }}
+                  </td>
+                  <td style="vertical-align: middle;">
+                    <b-timepicker v-model="work.start" inline></b-timepicker>
+                  </td>
+                  <td style="vertical-align: middle;">
+                    <b-timepicker v-model="work.end" inline></b-timepicker>
+                  </td>
+                  <td class="total-hours" style="vertical-align: middle;">
+                    {{ getTotalHours(work.start, work.end) }}
+                  </td>
+                  <td class="has-text-centered" style="vertical-align: middle;">
+                    <b-button
+                      expanded
+                      outlined
+                      type="is-info"
+                      @click="modify(work)"
+                      >Modifier</b-button
+                    >
+                  </td>
+                  <td class="has-text-centered" style="vertical-align: middle;">
+                    <b-button
+                      type="is-danger"
+                      expanded
+                      outlined
+                      @click="delete_(work)"
+                      >Supprimer</b-button
+                    >
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="title">
+            Créer un horaire
+          </div>
+          <div class="table-container box">
+            <table class="table is-striped">
+              <thead>
+                <tr>
+                  <th>Employé</th>
+                  <th><abbr>Début</abbr></th>
+                  <th><abbr>Fin</abbr></th>
+                  <th><abbr>Total</abbr></th>
+                  <th><abbr>Ajouter</abbr></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="vertical-align: middle;">
+                    <b-select
+                      class="has-text-centered"
+                      id="preference-input"
+                      v-model="work.employee"
+                    >
+                      <option
+                        v-for="employee in employees"
+                        :key="'select-employee' + employee.id"
+                        :value="employee.id"
+                        >{{ employee.name }}</option
+                      >
+                    </b-select>
+                  </td>
+                  <td style="vertical-align: middle;">
+                    <b-timepicker v-model="work.start" inline></b-timepicker>
+                  </td>
+                  <td style="vertical-align: middle;">
+                    <b-timepicker v-model="work.end" inline></b-timepicker>
+                  </td>
+                  <td style="vertical-align: middle;">
+                    <div class="total-hours">
+                      {{ getTotalHours() }}
+                    </div>
+                  </td>
+                  <td style="vertical-align: middle;">
+                    <b-button outlined type="is-info" @click="create(work)"
+                      >Ajouter</b-button
+                    >
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </section>
       <footer class="modal-card-foot">
-        <button class="button is-success">Save changes</button>
-        <button class="button">Cancel</button>
+        <button class="button" @click="dayModal.isActive = false">
+          Fermer
+        </button>
       </footer>
     </div>
+
     <button
       class="modal-close is-large"
       aria-label="close"
-      @click="dayModale.isActive = false"
+      @click="dayModal.isActive = false"
     ></button>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Watch } from "vue-property-decorator";
 import { ISalaryWorker } from "../clean_architecture/entities/worker";
 import { IDay, IWork } from "../clean_architecture/entities/calendar";
-import { EmployeeInteractor } from "../clean_architecture/interactors/employee";
 
 export interface IDayModale {
   isActive: boolean;
@@ -66,26 +137,23 @@ export interface IDayModale {
 
 const DayProps = Vue.extend({
   props: {
-    dayModale: Object,
+    dayModal: Object,
+    employees: Array as () => ISalaryWorker[],
+    service: Object,
   },
 });
 
 @Component
 export default class Day extends DayProps {
-  service = new EmployeeInteractor();
-  employees: ISalaryWorker[] = [];
   work = {
-    employeeId: null,
-    start: 12,
-    end: 21,
+    day: null,
+    employee: null,
+    start: new Date(2020, 1, 1, 17),
+    end: new Date(2020, 1, 2, 2),
   };
 
-  async mounted() {
-    this.employees = await this.service.get();
-  }
-
   getDayName() {
-    const day = this.dayModale.day;
+    const day = this.dayModal.day;
     if (!day) {
       return "";
     }
@@ -98,6 +166,55 @@ export default class Day extends DayProps {
     });
     return `${dayName} ${day.number} ${monthName}`;
   }
+
+  getTotalHours(start?: Date, end?: Date) {
+    const startDate = start ? new Date(start) : this.work.start;
+    const endDate = end ? new Date(end) : new Date(this.work.end.getTime());
+
+    if (endDate.getHours() > 6) {
+      endDate.setDate(endDate.getDate() - 1);
+    }
+    let milliseconds = endDate.getTime() - startDate.getTime();
+
+    const hours = Math.floor(milliseconds / 1000 / 60 / 60);
+    milliseconds -= hours * 1000 * 60 * 60;
+
+    const minutes = Math.floor(milliseconds / 1000 / 60);
+    const twoDigits = minutes < 10 ? "0" + minutes : minutes;
+
+    return `${hours}H${twoDigits}`;
+  }
+
+  getEmployeeName(id: number) {
+    return this.employees.find((employee: ISalaryWorker) => employee.id == id)
+      ?.name;
+  }
+
+  create(work: IWork) {
+    work.day = this.dayModal.day?.id;
+    console.log("avant le drame", work);
+    this.service.add(work);
+    this.$buefy.toast.open(`Horaires créés !`);
+  }
+
+  modify(work: IWork) {
+    this.service.modify(work);
+    this.$buefy.toast.open(`L'horaire a bien été modifié !`);
+  }
+
+  delete_(work: IWork) {
+    this.$buefy.dialog.confirm({
+      title: `Supprimer l'horaire ?`,
+      message: `Es-tu sûre de vouloir <b>supprimer</b> cet horaire ? Cette action est irréversible.`,
+      confirmText: "Supprimer",
+      type: "is-danger",
+      hasIcon: true,
+      onConfirm: () => {
+        this.service.delete_(work);
+        this.$buefy.toast.open(`L'horaire est supprimé !`);
+      },
+    });
+  }
 }
 </script>
 
@@ -106,5 +223,10 @@ export default class Day extends DayProps {
   display: flex;
   justify-content: space-evenly;
   text-align: center;
+}
+.total-hours {
+  color: #363636;
+  font-weight: 600;
+  padding: 0.3em;
 }
 </style>

@@ -27,7 +27,7 @@ export class MonthService implements IMonthService {
   public async addEmployee(work: IWork): Promise<IWork | IError> {
     const response = await httpClient.post<IWork>(`/works/`, work);
     if (response) {
-      await this.getDay(work.dayId);
+      await this.getDay(work.day);
     }
     return response;
   }
@@ -36,7 +36,7 @@ export class MonthService implements IMonthService {
   public async modifyEmployee(work: IWork): Promise<IWork | IError> {
     const response = await httpClient.patch<IWork>(`/works/${work.id}`, work);
     if (response) {
-      await this.getDay(work.dayId);
+      await this.getDay(work.day);
     }
     return response;
   }
@@ -45,7 +45,7 @@ export class MonthService implements IMonthService {
   public async deleteEmployee(work: IWork): Promise<IWork | IError> {
     const response = await httpClient.delete<IWork>(`/works/${work.id}`);
     if (response) {
-      await this.getDay(work.dayId);
+      await this.getDay(work.day);
     }
     return response;
   }

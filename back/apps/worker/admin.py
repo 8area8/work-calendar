@@ -3,15 +3,15 @@ from .models import Day, WorkDay, Employee
 
 
 class DayAdmin(admin.ModelAdmin):
-    pass
+    readonly_fields = ("id",)
 
 
 class EmployeeAdmin(admin.ModelAdmin):
-    pass
+    readonly_fields = ("id",)
 
 
 class WorkDayAdmin(admin.ModelAdmin):
-    pass
+    readonly_fields = ("id",)
 
 
 admin.site.register(Day, DayAdmin)

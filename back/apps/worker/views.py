@@ -48,13 +48,13 @@ def get_month(request, from_now: int):
     days = []
     queryset = Day.objects.get_month(from_now)
     for day in queryset:
-        employees = day.workday_set.values()
+        workdays = day.workday_set.values()
         serialized_day = {
             "id": day.id,
             "year": day.date.year,
             "month": day.date.month,
             "number": day.date.day,
-            "employees": list(employees),
+            "employees": list(workdays),
         }
         days.append(serialized_day)
     return JsonResponse(days, safe=False)
@@ -66,3 +66,21 @@ class WorkDayViewSet(viewsets.ModelViewSet):
     queryset = WorkDay.objects.all()
     serializer_class = WorkDaySerializer
     permission_classes = [IsAdminOrAuthenticatedReadOnly]
+
+
+@api_view(["GET"])
+@permission_classes([IsAdminOrAuthenticatedReadOnly])
+def get_workday_from_day_id(request, day_id: int):
+    """Return a list of workdays, from a specific day."""
+    workdays = []
+    queryset = WorkDay.objects.filter(day_id=day_id)
+    for workday in queryset:
+        serialized_workday = {
+            "id": workday.id,
+            "day": workday.day.id,
+            "employee": workday.employee.id,
+            "start": workday.start,
+            "end": workday.end,
+        }
+        workdays.append(serialized_workday)
+    return JsonResponse(workdays, safe=False)
