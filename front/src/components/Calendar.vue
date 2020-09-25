@@ -142,7 +142,7 @@ import { Component, Vue } from "vue-property-decorator";
 import { CalendarInteractor } from "../clean_architecture/exposers/calendar";
 import { EmployeeInteractor } from "../clean_architecture/interactors/employee";
 import { IDay, IWorkDate } from "../clean_architecture/entities/calendar";
-import Day, { IDayModale } from "./Day.vue";
+import Day from "./Day.vue";
 import { ISalaryWorker } from "../clean_architecture/entities/worker";
 import { WorkInteractor } from "../clean_architecture/interactors/work";
 // import Day from "./Day.vue";

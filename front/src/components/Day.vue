@@ -196,7 +196,8 @@ export default class Day extends DayProps {
   }
 
   modify(work: IWork) {
-    this.service.modify(work);
+    const works = this.service.modify(work);
+    this.day.works = works;
     this.$buefy.toast.open(`L'horaire a bien été modifié !`);
   }
 
