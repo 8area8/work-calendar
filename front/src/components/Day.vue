@@ -81,7 +81,7 @@
                       v-model="work.employee"
                     >
                       <option
-                        v-for="employee in employees"
+                        v-for="employee in employeesService.employees"
                         :key="'select-employee' + employee.id"
                         :value="employee.id"
                         >{{ employee.name }}</option
@@ -138,7 +138,7 @@ export interface IDayModale {
 const DayProps = Vue.extend({
   props: {
     dayModal: Object,
-    employees: Array as () => ISalaryWorker[],
+    employeesService: Object,
     service: Object,
   },
 });
@@ -186,8 +186,9 @@ export default class Day extends DayProps {
   }
 
   getEmployeeName(id: number) {
-    return this.employees.find((employee: ISalaryWorker) => employee.id == id)
-      ?.name;
+    return this.employeesService.employees.find(
+      (employee: ISalaryWorker) => employee.id == id
+    )?.name;
   }
 
   create(work: IWork) {

@@ -54,7 +54,7 @@ def get_month(request, from_now: int):
             "year": day.date.year,
             "month": day.date.month,
             "number": day.date.day,
-            "employees": list(workdays),
+            "works": list(workdays),
         }
         days.append(serialized_day)
     return JsonResponse(days, safe=False)

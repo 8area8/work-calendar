@@ -8,7 +8,7 @@ interface IDay {
   year: number;
   month: number;
   number: number;
-  employees: ISalaryWorker[];
+  works: IWorkDate[];
 }
 
 interface IWork {
@@ -143,7 +143,7 @@ class Calendar implements ICalendar {
     while (date <= endWeekDate) {
       this.days.push({
         id: null,
-        employees: [],
+        works: [],
         year: date.getFullYear(),
         month: date.getMonth(),
         number: date.getDate(),

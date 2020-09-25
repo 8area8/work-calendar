@@ -1,7 +1,5 @@
 import { httpClient, IError, isError } from "../common/base_api";
 
-export { IError } from "../common/base_api";
-
 export interface ITokens {
   token: string;
   refresh: string;

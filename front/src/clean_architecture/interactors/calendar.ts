@@ -120,28 +120,35 @@ export class CalendarInteractor implements ICalendarInteractor {
   async getDays(): Promise<IDay[]> {
     const month = this.calendar.selector.getMonth();
     const monthDiff = month - this.calendar.now.getMonth();
-    const days = await this.client.getDays(monthDiff);
-    this.calendar.getDays();
 
-    if (isError(days)) {
-      return this.calendar.days;
+    const djangoDays = await this.client.getDays(monthDiff);
+    const jsDays = this.calendar.getDays();
+
+    if (isError(djangoDays)) {
+      console.log("Error when getting django days");
+      return jsDays;
     }
 
-    days.forEach((day, index) => {
-      const baseDay = this.calendar.days.find((item) => {
-        return (
-          item.number == day.number &&
-          item.month == day.month - 1 &&
-          item.year == day.year
-        );
-      });
-      if (baseDay) {
-        baseDay.id = day.id;
-        baseDay.employees = day.employees;
+    djangoDays.forEach((djangoDay, index) => {
+      const jsDay = jsDays[index];
+
+      djangoDay.month = djangoDay.month - 1; // js style
+
+      if (this.isSimilarDays(djangoDay, jsDay)) {
+        jsDay.id = djangoDay.id;
+        jsDay.works = djangoDay.works;
       }
     });
 
-    console.log("days are", this.calendar.days);
-    return this.calendar.days;
+    console.log("days are", jsDays);
+    return jsDays;
+  }
+
+  isSimilarDays(day1: IDay, day2: IDay) {
+    return (
+      day1.number == day2.number &&
+      day1.month == day2.month &&
+      day1.year == day2.year
+    );
   }
 }
