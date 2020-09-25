@@ -10,7 +10,7 @@
           <div class="title">
             Liste des horaires
           </div>
-          <div class="table-container box" v-if="service.works.length">
+          <div class="table-container box" v-if="day.works.length">
             <table class="table is-striped">
               <thead>
                 <tr>

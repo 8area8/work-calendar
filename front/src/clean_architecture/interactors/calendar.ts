@@ -137,6 +137,11 @@ export class CalendarInteractor implements ICalendarInteractor {
       if (this.isSimilarDays(djangoDay, jsDay)) {
         jsDay.id = djangoDay.id;
         jsDay.works = djangoDay.works;
+
+        for (const work of jsDay.works) {
+          work.start = new Date(work.start);
+          work.end = new Date(work.end);
+        }
       }
     });
 

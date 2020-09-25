@@ -159,7 +159,7 @@ export default class Calendar extends Vue {
 
   days: IDay[] = [];
   monthName = "";
-  modalDay = {};
+  modalDay: IDay = { works: [], id: null, number: 0, month: 0, year: 0 };
   isModalActive = false;
 
   openDayModale(day: IDay) {
