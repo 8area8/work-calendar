@@ -11,8 +11,9 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 import os
-from typing import Dict, Any
+import locale
 from pathlib import Path
+from typing import Dict, Any
 
 import django_heroku
 
@@ -154,3 +155,7 @@ REST_FRAMEWORK: Dict[str, Any] = {
 # https://github.com/heroku/django-heroku
 
 django_heroku.settings(locals())
+
+
+# Set the locale
+locale.setlocale(locale.LC_ALL, "")

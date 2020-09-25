@@ -19,27 +19,16 @@ export class WorkInteractor implements IWorkInteractor {
     if (isError(result)) {
       return [];
     }
+    for (const work of result) {
+      work.start = new Date(work.start);
+      work.end = new Date(work.end);
+    }
     this.works = result;
-    this.convertTimeToDate();
     return result;
   }
 
-  convertTimeToDate() {
-    for (const work of this.works) {
-      work.start = new Date(`2020-01-01 ${work.start}`);
-      work.end = new Date(`2020-01-02 ${work.end}`);
-    }
-  }
-
   async add(work: IWorkDate) {
-    const workSend = {
-      id: work.id,
-      day: work.day,
-      employee: work.employee,
-      start: `${work.start.getHours()}h${work.start.getMinutes()}`,
-      end: `${work.start.getHours()}h${work.start.getMinutes()}`,
-    };
-    await this.service.addWork(workSend);
+    await this.service.addWork(work);
     return await this.get(work.day);
   }
 

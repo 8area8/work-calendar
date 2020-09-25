@@ -84,5 +84,5 @@ class WorkDay(models.Model):
 
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     day = models.ForeignKey(Day, on_delete=models.CASCADE)
-    start = models.TimeField(auto_now=True)
-    end = models.TimeField(auto_now=True)
+    start = models.DateTimeField(default=None)
+    end = models.DateTimeField(default=None)

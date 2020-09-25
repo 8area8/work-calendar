@@ -77,7 +77,7 @@ class HttpClient implements IHttpClient {
       })
       .catch((error) => {
         return {
-          message: error.response.data.detail,
+          message: error.response.data,
           type: error.response.status,
         } as IError;
       });
