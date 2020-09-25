@@ -95,7 +95,7 @@
                   <div class="c-day__data">
                     <b-icon
                       :class="{
-                        'is-invisible': !getMorningEmployees(day.works),
+                        'is-invisible': !getMorningEmployees(day.works).length,
                       }"
                       class="c-day__employee-preference"
                       pack="fas"
@@ -103,11 +103,11 @@
                       size="is-small"
                     />
                     <span class="c-day__employee-number">
-                      {{ getMorningEmployees(day.works) || null }}
+                      {{ getMorningEmployees(day.works).length || null }}
                     </span>
                     <b-icon
                       :class="{
-                        'is-invisible': !getEveningEmployees(day.works),
+                        'is-invisible': !getEveningEmployees(day.works).length,
                       }"
                       class="c-day__employee-preference"
                       pack="fas"
@@ -115,7 +115,7 @@
                       size="is-small"
                     />
                     <span class="c-day__employee-number">
-                      {{ getEveningEmployees(day.works) || null }}
+                      {{ getEveningEmployees(day.works).length || null }}
                     </span>
                   </div>
                 </div>
@@ -128,9 +128,11 @@
     </div>
     <Day
       ref="day"
-      :dayModal="dayModal"
+      :isActive="isModalActive"
+      :day="modalDay"
       :employeesService="employeesService"
       :service="workService"
+      @close-modal="isModalActive = false"
     />
   </div>
 </template>
@@ -157,19 +159,12 @@ export default class Calendar extends Vue {
 
   days: IDay[] = [];
   monthName = "";
-  dayModal: IDayModale = {
-    isActive: false,
-    day: null,
-  };
+  modalDay = {};
+  isModalActive = false;
 
   openDayModale(day: IDay) {
-    this.dayModal.isActive = true;
-    this.dayModal.day = day;
-    if (this.dayModal.day?.id) {
-      this.workService
-        .get(this.dayModal.day.id)
-        .then((res) => console.log("works are", res));
-    }
+    this.isModalActive = true;
+    this.modalDay = day;
   }
 
   async getDays() {
@@ -188,7 +183,7 @@ export default class Calendar extends Vue {
 
   getDayTooltip(day: IDay): string {
     return `employés: ${
-      day.works?.length
+      day.works.length
         ? day.works.map((item) => this.getEmployee(item.employee).name)
         : "aucun"
     }`;
@@ -211,14 +206,14 @@ export default class Calendar extends Vue {
 
   getMorningEmployees(works: IWorkDate[]) {
     return works.filter(
-      (elem) => this.getEmployee(elem.employee).preference == "morning"
-    ).length;
+      (work) => this.getEmployee(work.employee).preference == "morning"
+    );
   }
 
   getEveningEmployees(works: IWorkDate[]) {
     return works.filter(
-      (elem) => this.getEmployee(elem.employee).preference == "evening"
-    ).length;
+      (work) => this.getEmployee(work.employee).preference == "evening"
+    );
   }
 }
 </script>

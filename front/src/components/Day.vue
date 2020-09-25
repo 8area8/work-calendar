@@ -1,6 +1,6 @@
 <template>
-  <div class="modal is-clipped" :class="{ 'is-active': dayModal.isActive }">
-    <div class="modal-background" @click="dayModal.isActive = false"></div>
+  <div class="modal is-clipped" :class="{ 'is-active': isActive }">
+    <div class="modal-background" @click="$emit('close-modal')"></div>
     <div class="modal-card">
       <header class="modal-card-head">
         <p class="modal-card-title">{{ getDayName() }}</p>
@@ -23,7 +23,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="work in service.works" :key="'work-' + work.id">
+                <tr v-for="work in day.works" :key="'work-' + work.id">
                   <td style="vertical-align: middle;">
                     {{ getEmployeeName(work.employee) }}
                   </td>
@@ -111,7 +111,7 @@
         </div>
       </section>
       <footer class="modal-card-foot">
-        <button class="button" @click="dayModal.isActive = false">
+        <button class="button" @click="$emit('close-modal')">
           Fermer
         </button>
       </footer>
@@ -120,7 +120,7 @@
     <button
       class="modal-close is-large"
       aria-label="close"
-      @click="dayModal.isActive = false"
+      @click="$emit('close-modal')"
     ></button>
   </div>
 </template>
@@ -130,14 +130,10 @@ import { Component, Vue, Watch } from "vue-property-decorator";
 import { ISalaryWorker } from "../clean_architecture/entities/worker";
 import { IDay, IWork } from "../clean_architecture/entities/calendar";
 
-export interface IDayModale {
-  isActive: boolean;
-  day: IDay | null;
-}
-
 const DayProps = Vue.extend({
   props: {
-    dayModal: Object,
+    isActive: Boolean,
+    day: Object,
     employeesService: Object,
     service: Object,
   },
@@ -153,7 +149,7 @@ export default class Day extends DayProps {
   };
 
   getDayName() {
-    const day = this.dayModal.day;
+    const day = this.day;
     if (!day) {
       return "";
     }
@@ -192,9 +188,10 @@ export default class Day extends DayProps {
   }
 
   create(work: IWork) {
-    work.day = this.dayModal.day?.id;
+    work.day = this.day?.id;
     console.log("avant le drame", work);
-    this.service.add(work);
+    const works = this.service.add(work);
+    this.day.works = works;
     this.$buefy.toast.open(`Horaires créés !`);
   }
 

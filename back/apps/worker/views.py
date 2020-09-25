@@ -49,6 +49,17 @@ def get_month(request, from_now: int):
     queryset = Day.objects.get_month(from_now)
     for day in queryset:
         workdays = day.workday_set.values()
+        workdays = list(workdays)
+        workdays = [
+            {
+                "id": work["id"],
+                "day": work["day_id"],
+                "employee": work["employee_id"],
+                "start": work["start"],
+                "end": work["end"],
+            }
+            for work in workdays
+        ]
         serialized_day = {
             "id": day.id,
             "year": day.date.year,
