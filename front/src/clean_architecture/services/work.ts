@@ -21,7 +21,6 @@ export class WorkService implements IWorkService {
   @verifyAuth
   public async addWork(work: IWork) {
     const response = await httpClient.post<IWork>("/work/workdays/", work);
-    console.log("error:", response);
     return response;
   }
 

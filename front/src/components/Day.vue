@@ -79,13 +79,28 @@
                       class="has-text-centered"
                       id="preference-input"
                       v-model="work.employee"
+                      label="Grouped"
                     >
-                      <option
-                        v-for="employee in employeesService.employees"
-                        :key="'select-employee' + employee.id"
-                        :value="employee.id"
-                        >{{ employee.name }}</option
-                      >
+                      <optgroup label="Matin">
+                        <option
+                          v-for="employee in getMorning(
+                            employeesService.employees
+                          )"
+                          :key="'select-employee' + employee.id"
+                          :value="employee.id"
+                          >{{ employee.name }}</option
+                        >
+                      </optgroup>
+                      <optgroup label="Soir">
+                        <option
+                          v-for="employee in getEvening(
+                            employeesService.employees
+                          )"
+                          :key="'select-employee' + employee.id"
+                          :value="employee.id"
+                          >{{ employee.name }}</option
+                        >
+                      </optgroup>
                     </b-select>
                   </td>
                   <td style="vertical-align: middle;">
@@ -128,7 +143,11 @@
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
 import { ISalaryWorker } from "../clean_architecture/entities/worker";
-import { IDay, IWork } from "../clean_architecture/entities/calendar";
+import {
+  IDay,
+  IWork,
+  IWorkDate,
+} from "../clean_architecture/entities/calendar";
 
 const DayProps = Vue.extend({
   props: {
@@ -187,16 +206,34 @@ export default class Day extends DayProps {
     )?.name;
   }
 
-  create(work: IWork) {
+  getMorning() {
+    return this.availableEmployees().filter((employee: ISalaryWorker) => {
+      return employee.preference == "morning";
+    });
+  }
+  getEvening() {
+    return this.availableEmployees().filter((employee: ISalaryWorker) => {
+      return employee.preference == "evening";
+    });
+  }
+
+  availableEmployees() {
+    return this.employeesService.employees.filter((employee: ISalaryWorker) => {
+      return !this.day.works.find((work: IWorkDate) => {
+        work.employee === employee.id;
+      });
+    });
+  }
+
+  async create(work: IWork) {
     work.day = this.day?.id;
-    console.log("avant le drame", work);
-    const works = this.service.add(work);
+    const works = await this.service.add(work);
     this.day.works = works;
     this.$buefy.toast.open(`Horaires créés !`);
   }
 
-  modify(work: IWork) {
-    const works = this.service.modify(work);
+  async modify(work: IWork) {
+    const works = await this.service.modify(work);
     this.day.works = works;
     this.$buefy.toast.open(`L'horaire a bien été modifié !`);
   }
@@ -209,7 +246,9 @@ export default class Day extends DayProps {
       type: "is-danger",
       hasIcon: true,
       onConfirm: () => {
-        this.service.delete_(work);
+        this.service
+          .delete_(work)
+          .then((res: IWorkDate[]) => (this.day.works = res));
         this.$buefy.toast.open(`L'horaire est supprimé !`);
       },
     });
