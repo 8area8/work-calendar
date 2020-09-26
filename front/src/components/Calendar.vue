@@ -12,6 +12,22 @@
         {{ calendar.overLimitMessage }}
       </b-message>
 
+      <div class="container box has-background-dark">
+        <div class=" has-text-light filter">Filtrer</div>
+        <b-field expanded>
+          <b-select expanded placeholder="Filtrer par employé">
+            <option value="all">Tous</option>
+            <option
+              v-for="employee in employeesService.employees"
+              :value="employee.id"
+              :key="employee.id"
+            >
+              {{ employee.name }}
+            </option>
+          </b-select>
+        </b-field>
+      </div>
+
       <!-- CALENDAR -->
       <div id="work-calendar" class="c-work-calendar">
         <!-- HEADER -->
@@ -93,40 +109,10 @@
                     {{ day.number }}
                   </div>
                   <div class="c-day__data">
-                    <b-icon
-                      :class="{
-                        'is-invisible': !getWorksPreference(
-                          day.works,
-                          'morning'
-                        ).length,
-                      }"
-                      class="c-day__employee-preference"
-                      pack="fas"
-                      icon="sun"
-                      size="is-small"
+                    <CalendarDataAll
+                      :eveningWorks="getWorksPreference(day.works, 'evening')"
+                      :morningWorks="getWorksPreference(day.works, 'morning')"
                     />
-                    <span class="c-day__employee-number">
-                      {{
-                        getWorksPreference(day.works, "morning").length || null
-                      }}
-                    </span>
-                    <b-icon
-                      :class="{
-                        'is-invisible': !getWorksPreference(
-                          day.works,
-                          'evening'
-                        ).length,
-                      }"
-                      class="c-day__employee-preference"
-                      pack="fas"
-                      icon="moon"
-                      size="is-small"
-                    />
-                    <span class="c-day__employee-number">
-                      {{
-                        getWorksPreference(day.works, "evening").length || null
-                      }}
-                    </span>
                   </div>
                 </div>
               </b-tooltip>
@@ -152,14 +138,16 @@ import { Component, Vue } from "vue-property-decorator";
 import { CalendarInteractor } from "../clean_architecture/exposers/calendar";
 import { EmployeeInteractor } from "../clean_architecture/interactors/employee";
 import { IDay, IWorkDate } from "../clean_architecture/entities/calendar";
-import Day from "./Day.vue";
 import { ISalaryWorker } from "../clean_architecture/entities/worker";
 import { WorkInteractor } from "../clean_architecture/interactors/work";
+import Day from "./Day.vue";
+import CalendarDataAll from "./CalendarDataAll.vue";
 // import Day from "./Day.vue";
 
 @Component({
   components: {
     Day,
+    CalendarDataAll,
   },
 })
 export default class Calendar extends Vue {
@@ -360,5 +348,9 @@ $calendar-color: #e9e9e9;
     transition: all 0.3s;
     color: rgb(230, 230, 230);
   }
+}
+.filter {
+  font-size: 3em;
+  font-family: "Berkshire Swash", cursive;
 }
 </style>

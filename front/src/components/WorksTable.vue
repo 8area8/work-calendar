@@ -93,14 +93,14 @@ const Props = Vue.extend({
 @Component
 export default class WorksTable extends Props {
   auth = auth;
-  getEmployeeName(id: number) {
+  getEmployeeName(id: number): string {
     const employee = this.employees.find(
       (employee: ISalaryWorker) => employee.id == id
     );
-    return employee?.name;
+    return employee ? employee.name : "";
   }
 
-  getTotalHours(start: Date, end: Date) {
+  getTotalHours(start: Date, end: Date): string {
     end = new Date(end.getTime());
     if (end.getHours() > 6) {
       end.setDate(start.getDate());

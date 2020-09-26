@@ -3,7 +3,7 @@
     <div class="modal-background" @click="$emit('close-modal')"></div>
     <div class="modal-card">
       <header class="modal-card-head">
-        <p class="modal-card-title is-size-3">{{ getDayName() }}</p>
+        <p class="modal-card-title is-size-3">{{ dayName }}</p>
       </header>
       <section class="modal-card-body">
         <WorksTable
@@ -82,6 +82,21 @@ export default class Day extends DayProps {
     end: new Date(2020, 1, 2, 2),
   };
 
+  get dayName() {
+    const day = this.day;
+    if (!day) {
+      return "";
+    }
+    const date = new Date(day.year, day.month, day.number);
+    const dayName = date.toLocaleDateString("default", {
+      weekday: "long",
+    });
+    const monthName = date.toLocaleDateString("default", {
+      month: "long",
+    });
+    return `${dayName} ${day.number} ${monthName}`;
+  }
+
   get employees(): ISalaryWorker[] {
     return this.employeesService.employees as ISalaryWorker[];
   }
@@ -103,21 +118,6 @@ export default class Day extends DayProps {
         ? dayHours.includes(startHour)
         : nightHours.includes(startHour);
     });
-  }
-
-  getDayName() {
-    const day = this.day;
-    if (!day) {
-      return "";
-    }
-    const date = new Date(day.year, day.month, day.number);
-    const dayName = date.toLocaleDateString("default", {
-      weekday: "long",
-    });
-    const monthName = date.toLocaleDateString("default", {
-      month: "long",
-    });
-    return `${dayName} ${day.number} ${monthName}`;
   }
 
   async create() {
