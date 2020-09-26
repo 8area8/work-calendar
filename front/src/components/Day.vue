@@ -20,73 +20,11 @@
           @modify="modify($event)"
           @delete="delete_($event)"
         />
-        <div class="container" style="margin-top: 1.5em">
-          <div class="table-container box">
-            <div class="title is-size-4">
-              Ajouter un employé
-            </div>
-            <table class="table is-striped">
-              <thead>
-                <tr>
-                  <th>Employé</th>
-                  <th><abbr>Début</abbr></th>
-                  <th><abbr>Fin</abbr></th>
-                  <th><abbr>Total</abbr></th>
-                  <th><abbr>Ajouter</abbr></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style="vertical-align: middle;">
-                    <b-select
-                      class="has-text-centered"
-                      id="preference-input"
-                      v-model="work.employee"
-                      label="Grouped"
-                    >
-                      <optgroup label="Matin">
-                        <option
-                          v-for="employee in getAvailableEmployeesPreference(
-                            'morning'
-                          )"
-                          :key="'select-employee' + employee.id"
-                          :value="employee.id"
-                          >{{ employee.name }}</option
-                        >
-                      </optgroup>
-                      <optgroup label="Soir">
-                        <option
-                          v-for="employee in getAvailableEmployeesPreference(
-                            'evening'
-                          )"
-                          :key="'select-employee' + employee.id"
-                          :value="employee.id"
-                          >{{ employee.name }}</option
-                        >
-                      </optgroup>
-                    </b-select>
-                  </td>
-                  <td style="vertical-align: middle;">
-                    <b-timepicker v-model="work.start" inline></b-timepicker>
-                  </td>
-                  <td style="vertical-align: middle;">
-                    <b-timepicker v-model="work.end" inline></b-timepicker>
-                  </td>
-                  <td style="vertical-align: middle;">
-                    <div class="total-hours">
-                      {{ getTotalHours() }}
-                    </div>
-                  </td>
-                  <td style="vertical-align: middle;">
-                    <b-button outlined type="is-info" @click="create(work)"
-                      >Ajouter</b-button
-                    >
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <AddWorkTable
+          :employees="availableEmployees"
+          :work="work"
+          @create="create()"
+        />
       </section>
       <footer class="modal-card-foot">
         <button class="button" @click="$emit('close-modal')">
@@ -114,6 +52,7 @@ import {
 } from "../clean_architecture/entities/calendar";
 import { EmployeeInteractor } from "../clean_architecture/interactors/employee";
 import WorksTable from "./WorksTable.vue";
+import AddWorkTable from "./AddWorkTable.vue";
 
 const DayProps = Vue.extend({
   props: {
@@ -127,6 +66,7 @@ const DayProps = Vue.extend({
   },
   components: {
     WorksTable,
+    AddWorkTable,
   },
 });
 
@@ -148,12 +88,6 @@ export default class Day extends DayProps {
       return !this.day.works.find((work: IWorkDate) => {
         return work.employee === employee.id;
       });
-    });
-  }
-
-  getAvailableEmployeesPreference(preference: string): ISalaryWorker[] {
-    return this.availableEmployees.filter((employee: ISalaryWorker) => {
-      return employee.preference == preference;
     });
   }
 
@@ -183,29 +117,9 @@ export default class Day extends DayProps {
     return `${dayName} ${day.number} ${monthName}`;
   }
 
-  getTotalHours() {
-    const startDate = this.work.start;
-    const endDate = new Date(this.work.end.getTime());
-
-    if (endDate.getHours() > 6) {
-      endDate.setDate(startDate.getDate());
-    } else if (endDate.getHours() < 6) {
-      endDate.setDate(startDate.getDate() + 1);
-    }
-    let milliseconds = endDate.getTime() - startDate.getTime();
-
-    const hours = Math.floor(milliseconds / 1000 / 60 / 60);
-    milliseconds -= hours * 1000 * 60 * 60;
-
-    const minutes = Math.floor(milliseconds / 1000 / 60);
-    const twoDigits = minutes < 10 ? "0" + minutes : minutes;
-
-    return `${hours}H${twoDigits}`;
-  }
-
-  async create(work: IWork) {
-    work.day = this.day?.id;
-    const works = await this.service.add(work);
+  async create() {
+    this.work.day = this.day?.id;
+    const works = await this.service.add(this.work);
     this.day.works = works;
     this.$buefy.toast.open(`Horaires créés !`);
   }
