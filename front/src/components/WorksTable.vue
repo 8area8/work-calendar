@@ -4,15 +4,18 @@
       <div class="title is-size-4">
         {{ tableTitle }}
       </div>
-      <table class="table is-striped" v-if="works.length">
+      <table
+        class="table is-fullwidth is-bordered is-striped"
+        v-if="works.length"
+      >
         <thead>
           <tr>
             <th>Employé</th>
             <th><abbr>Début</abbr></th>
             <th><abbr>Fin</abbr></th>
             <th><abbr>Total</abbr></th>
-            <th><abbr>Modifier</abbr></th>
-            <th><abbr>Suprimer</abbr></th>
+            <th v-if="auth.isAdmin"><abbr>Modifier</abbr></th>
+            <th v-if="auth.isAdmin"><abbr>Suprimer</abbr></th>
           </tr>
         </thead>
         <tbody>
@@ -21,15 +24,29 @@
               {{ getEmployeeName(work.employee) }}
             </td>
             <td style="vertical-align: middle;">
-              <b-timepicker v-model="work.start" inline></b-timepicker>
+              <b-timepicker
+                v-if="auth.isAdmin"
+                v-model="work.start"
+                inline
+              ></b-timepicker>
+              <div v-else>{{ getTime(work.start) }}</div>
             </td>
             <td style="vertical-align: middle;">
-              <b-timepicker v-model="work.end" inline></b-timepicker>
+              <b-timepicker
+                v-if="auth.isAdmin"
+                v-model="work.end"
+                inline
+              ></b-timepicker>
+              <div v-else>{{ getTime(work.end) }}</div>
             </td>
             <td class="total-hours" style="vertical-align: middle;">
               {{ getTotalHours(work.start, work.end) }}
             </td>
-            <td class="has-text-centered" style="vertical-align: middle;">
+            <td
+              class="has-text-centered"
+              style="vertical-align: middle;"
+              v-if="auth.isAdmin"
+            >
               <b-button
                 expanded
                 outlined
@@ -38,7 +55,11 @@
                 >Modifier</b-button
               >
             </td>
-            <td class="has-text-centered" style="vertical-align: middle;">
+            <td
+              class="has-text-centered"
+              style="vertical-align: middle;"
+              v-if="auth.isAdmin"
+            >
               <b-button
                 type="is-danger"
                 expanded
@@ -59,6 +80,7 @@ import { Component, Vue, Watch } from "vue-property-decorator";
 import { PropType } from "vue";
 import { ISalaryWorker } from "../clean_architecture/entities/worker";
 import { IWorkDate } from "../clean_architecture/entities/calendar";
+import { auth } from "../clean_architecture/services/auth";
 
 const Props = Vue.extend({
   props: {
@@ -70,6 +92,7 @@ const Props = Vue.extend({
 
 @Component
 export default class WorksTable extends Props {
+  auth = auth;
   getEmployeeName(id: number) {
     const employee = this.employees.find(
       (employee: ISalaryWorker) => employee.id == id
@@ -92,6 +115,14 @@ export default class WorksTable extends Props {
 
     const minutes = Math.floor(milliseconds / 1000 / 60);
     const twoDigits = minutes < 10 ? "0" + minutes : minutes;
+
+    return `${hours}H${twoDigits}`;
+  }
+
+  getTime(date: Date): string {
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const twoDigits = minutes < 10 ? `0${minutes}` : minutes;
 
     return `${hours}H${twoDigits}`;
   }

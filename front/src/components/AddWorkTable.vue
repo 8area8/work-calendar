@@ -4,7 +4,7 @@
       <div class="title is-size-4">
         Ajouter un employé
       </div>
-      <table class="table is-striped">
+      <table class="table is-fullwidth is-bordered is-striped">
         <thead>
           <tr>
             <th>Employé</th>

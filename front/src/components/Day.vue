@@ -21,6 +21,7 @@
           @delete="delete_($event)"
         />
         <AddWorkTable
+          v-if="auth.isAdmin"
           :employees="availableEmployees"
           :work="work"
           @create="create()"
@@ -51,6 +52,7 @@ import {
   IWorkDate,
 } from "../clean_architecture/entities/calendar";
 import { EmployeeInteractor } from "../clean_architecture/interactors/employee";
+import { auth } from "../clean_architecture/services/auth";
 import WorksTable from "./WorksTable.vue";
 import AddWorkTable from "./AddWorkTable.vue";
 
@@ -72,6 +74,7 @@ const DayProps = Vue.extend({
 
 @Component
 export default class Day extends DayProps {
+  auth = auth;
   work = {
     day: null,
     employee: null,
