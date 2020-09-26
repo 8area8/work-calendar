@@ -6,64 +6,25 @@
         <p class="modal-card-title is-size-3">{{ getDayName() }}</p>
       </header>
       <section class="modal-card-body">
-        <div class="container" v-if="day.works.length">
-          <div class="title is-size-4">
-            Employés du matin
-          </div>
-          <div class="table-container box">
-            <table class="table is-striped">
-              <thead>
-                <tr>
-                  <th>Employé</th>
-                  <th><abbr>Début</abbr></th>
-                  <th><abbr>Fin</abbr></th>
-                  <th><abbr>Total</abbr></th>
-                  <th><abbr>Modifier</abbr></th>
-                  <th><abbr>Suprimer</abbr></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="work in day.works" :key="'work-' + work.id">
-                  <td style="vertical-align: middle;">
-                    {{ getEmployeeName(work.employee) }}
-                  </td>
-                  <td style="vertical-align: middle;">
-                    <b-timepicker v-model="work.start" inline></b-timepicker>
-                  </td>
-                  <td style="vertical-align: middle;">
-                    <b-timepicker v-model="work.end" inline></b-timepicker>
-                  </td>
-                  <td class="total-hours" style="vertical-align: middle;">
-                    {{ getTotalHours(work.start, work.end) }}
-                  </td>
-                  <td class="has-text-centered" style="vertical-align: middle;">
-                    <b-button
-                      expanded
-                      outlined
-                      type="is-info"
-                      @click="modify(work)"
-                      >Modifier</b-button
-                    >
-                  </td>
-                  <td class="has-text-centered" style="vertical-align: middle;">
-                    <b-button
-                      type="is-danger"
-                      expanded
-                      outlined
-                      @click="delete_(work)"
-                      >Supprimer</b-button
-                    >
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <WorksTable
+          :employees="employees"
+          :works="getWorksPreference('morning')"
+          tableTitle="Matin"
+          @modify="modify($event)"
+          @delete="delete_($event)"
+        />
+        <WorksTable
+          :employees="employees"
+          :works="getWorksPreference('evening')"
+          tableTitle="Soir"
+          @modify="modify($event)"
+          @delete="delete_($event)"
+        />
         <div class="container" style="margin-top: 1.5em">
-          <div class="title is-size-4">
-            Ajouter un employé
-          </div>
           <div class="table-container box">
+            <div class="title is-size-4">
+              Ajouter un employé
+            </div>
             <table class="table is-striped">
               <thead>
                 <tr>
@@ -85,8 +46,8 @@
                     >
                       <optgroup label="Matin">
                         <option
-                          v-for="employee in getMorning(
-                            employeesService.employees
+                          v-for="employee in getAvailableEmployeesPreference(
+                            'morning'
                           )"
                           :key="'select-employee' + employee.id"
                           :value="employee.id"
@@ -95,8 +56,8 @@
                       </optgroup>
                       <optgroup label="Soir">
                         <option
-                          v-for="employee in getEvening(
-                            employeesService.employees
+                          v-for="employee in getAvailableEmployeesPreference(
+                            'evening'
                           )"
                           :key="'select-employee' + employee.id"
                           :value="employee.id"
@@ -143,6 +104,7 @@
 </template>
 
 <script lang="ts">
+import { PropType } from "vue";
 import { Component, Vue, Watch } from "vue-property-decorator";
 import { ISalaryWorker } from "../clean_architecture/entities/worker";
 import {
@@ -150,13 +112,21 @@ import {
   IWork,
   IWorkDate,
 } from "../clean_architecture/entities/calendar";
+import { EmployeeInteractor } from "../clean_architecture/interactors/employee";
+import WorksTable from "./WorksTable.vue";
 
 const DayProps = Vue.extend({
   props: {
     isActive: Boolean,
     day: Object,
-    employeesService: Object,
+    employeesService: {
+      type: Object as PropType<EmployeeInteractor>,
+      required: true,
+    },
     service: Object,
+  },
+  components: {
+    WorksTable,
   },
 });
 
@@ -169,8 +139,33 @@ export default class Day extends DayProps {
     end: new Date(2020, 1, 2, 2),
   };
 
-  get employees() {
-    return this.employeesService.employees;
+  get employees(): ISalaryWorker[] {
+    return this.employeesService.employees as ISalaryWorker[];
+  }
+
+  get availableEmployees(): ISalaryWorker[] {
+    return this.employees.filter((employee: ISalaryWorker) => {
+      return !this.day.works.find((work: IWorkDate) => {
+        return work.employee === employee.id;
+      });
+    });
+  }
+
+  getAvailableEmployeesPreference(preference: string): ISalaryWorker[] {
+    return this.availableEmployees.filter((employee: ISalaryWorker) => {
+      return employee.preference == preference;
+    });
+  }
+
+  getWorksPreference(preference: string): IWorkDate[] {
+    return this.day.works.filter((work: IWorkDate) => {
+      const startHour = work.start.getHours();
+      const dayHours = [8, 9, 10, 11, 12, 13, 14, 15, 16];
+      const nightHours = [17, 18, 19, 20, 21, 22, 23, 0, 1, 2, 3, 4];
+      return preference == "morning"
+        ? dayHours.includes(startHour)
+        : nightHours.includes(startHour);
+    });
   }
 
   getDayName() {
@@ -188,12 +183,14 @@ export default class Day extends DayProps {
     return `${dayName} ${day.number} ${monthName}`;
   }
 
-  getTotalHours(start?: Date, end?: Date) {
-    const startDate = start ? new Date(start) : this.work.start;
-    const endDate = end ? new Date(end) : new Date(this.work.end.getTime());
+  getTotalHours() {
+    const startDate = this.work.start;
+    const endDate = new Date(this.work.end.getTime());
 
     if (endDate.getHours() > 6) {
-      endDate.setDate(endDate.getDate() - 1);
+      endDate.setDate(startDate.getDate());
+    } else if (endDate.getHours() < 6) {
+      endDate.setDate(startDate.getDate() + 1);
     }
     let milliseconds = endDate.getTime() - startDate.getTime();
 
@@ -204,31 +201,6 @@ export default class Day extends DayProps {
     const twoDigits = minutes < 10 ? "0" + minutes : minutes;
 
     return `${hours}H${twoDigits}`;
-  }
-
-  getEmployeeName(id: number) {
-    return this.employeesService.employees.find(
-      (employee: ISalaryWorker) => employee.id == id
-    )?.name;
-  }
-
-  getMorning() {
-    return this.availableEmployees().filter((employee: ISalaryWorker) => {
-      return employee.preference == "morning";
-    });
-  }
-  getEvening() {
-    return this.availableEmployees().filter((employee: ISalaryWorker) => {
-      return employee.preference == "evening";
-    });
-  }
-
-  availableEmployees() {
-    return this.employees.filter((employee: ISalaryWorker) => {
-      return !this.day.works.find((work: IWorkDate) => {
-        return work.employee === employee.id;
-      });
-    });
   }
 
   async create(work: IWork) {

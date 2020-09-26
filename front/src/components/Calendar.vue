@@ -95,7 +95,10 @@
                   <div class="c-day__data">
                     <b-icon
                       :class="{
-                        'is-invisible': !getMorningEmployees(day.works).length,
+                        'is-invisible': !getWorksPreference(
+                          day.works,
+                          'morning'
+                        ).length,
                       }"
                       class="c-day__employee-preference"
                       pack="fas"
@@ -103,11 +106,16 @@
                       size="is-small"
                     />
                     <span class="c-day__employee-number">
-                      {{ getMorningEmployees(day.works).length || null }}
+                      {{
+                        getWorksPreference(day.works, "morning").length || null
+                      }}
                     </span>
                     <b-icon
                       :class="{
-                        'is-invisible': !getEveningEmployees(day.works).length,
+                        'is-invisible': !getWorksPreference(
+                          day.works,
+                          'evening'
+                        ).length,
                       }"
                       class="c-day__employee-preference"
                       pack="fas"
@@ -115,7 +123,9 @@
                       size="is-small"
                     />
                     <span class="c-day__employee-number">
-                      {{ getEveningEmployees(day.works).length || null }}
+                      {{
+                        getWorksPreference(day.works, "evening").length || null
+                      }}
                     </span>
                   </div>
                 </div>
@@ -204,16 +214,15 @@ export default class Calendar extends Vue {
     await this.employeesService.get();
   }
 
-  getMorningEmployees(works: IWorkDate[]) {
-    return works.filter(
-      (work) => this.getEmployee(work.employee).preference == "morning"
-    );
-  }
-
-  getEveningEmployees(works: IWorkDate[]) {
-    return works.filter(
-      (work) => this.getEmployee(work.employee).preference == "evening"
-    );
+  getWorksPreference(works: IWorkDate[], preference: string): IWorkDate[] {
+    return works.filter((work: IWorkDate) => {
+      const startHour = work.start.getHours();
+      const dayHours = [8, 9, 10, 11, 12, 13, 14, 15, 16];
+      const nightHours = [17, 18, 19, 20, 21, 22, 23, 0, 1, 2, 3, 4];
+      return preference == "morning"
+        ? dayHours.includes(startHour)
+        : nightHours.includes(startHour);
+    });
   }
 }
 </script>
