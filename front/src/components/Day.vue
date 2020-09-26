@@ -3,14 +3,14 @@
     <div class="modal-background" @click="$emit('close-modal')"></div>
     <div class="modal-card">
       <header class="modal-card-head">
-        <p class="modal-card-title">{{ getDayName() }}</p>
+        <p class="modal-card-title is-size-3">{{ getDayName() }}</p>
       </header>
       <section class="modal-card-body">
-        <div class="container">
-          <div class="title">
-            Liste des horaires
+        <div class="container" v-if="day.works.length">
+          <div class="title is-size-4">
+            Employés du matin
           </div>
-          <div class="table-container box" v-if="day.works.length">
+          <div class="table-container box">
             <table class="table is-striped">
               <thead>
                 <tr>
@@ -58,8 +58,10 @@
               </tbody>
             </table>
           </div>
-          <div class="title">
-            Créer un horaire
+        </div>
+        <div class="container" style="margin-top: 1.5em">
+          <div class="title is-size-4">
+            Ajouter un employé
           </div>
           <div class="table-container box">
             <table class="table is-striped">
@@ -167,6 +169,10 @@ export default class Day extends DayProps {
     end: new Date(2020, 1, 2, 2),
   };
 
+  get employees() {
+    return this.employeesService.employees;
+  }
+
   getDayName() {
     const day = this.day;
     if (!day) {
@@ -218,9 +224,9 @@ export default class Day extends DayProps {
   }
 
   availableEmployees() {
-    return this.employeesService.employees.filter((employee: ISalaryWorker) => {
+    return this.employees.filter((employee: ISalaryWorker) => {
       return !this.day.works.find((work: IWorkDate) => {
-        work.employee === employee.id;
+        return work.employee === employee.id;
       });
     });
   }
