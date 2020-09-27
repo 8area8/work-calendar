@@ -91,7 +91,7 @@ const Props = Vue.extend({
 });
 
 @Component
-export default class WorksTable extends Props {
+export default class DayWorksTable extends Props {
   auth = auth;
   getEmployeeName(id: number): string {
     const employee = this.employees.find(

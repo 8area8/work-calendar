@@ -6,21 +6,21 @@
         <p class="modal-card-title is-size-3">{{ dayName }}</p>
       </header>
       <section class="modal-card-body">
-        <WorksTable
+        <DayWorksTable
           :employees="employees"
           :works="getWorksPreference('morning')"
           tableTitle="Matin"
           @modify="modify($event)"
           @delete="delete_($event)"
         />
-        <WorksTable
+        <DayWorksTable
           :employees="employees"
           :works="getWorksPreference('evening')"
           tableTitle="Soir"
           @modify="modify($event)"
           @delete="delete_($event)"
         />
-        <AddWorkTable
+        <DayAddWork
           v-if="auth.isAdmin"
           :employees="availableEmployees"
           :work="work"
@@ -45,8 +45,8 @@
 <script lang="ts">
 import { PropType } from "vue";
 import { Component, Vue, Watch } from "vue-property-decorator";
-import WorksTable from "./WorksTable.vue";
-import AddWorkTable from "./AddWorkTable.vue";
+import DayWorksTable from "./DayWorksTable.vue";
+import DayAddWork from "./DayAddWork.vue";
 
 import { ISalaryWorker } from "../clean_architecture/entities/worker";
 import {
@@ -69,8 +69,8 @@ const DayProps = Vue.extend({
     service: Object,
   },
   components: {
-    WorksTable,
-    AddWorkTable,
+    DayWorksTable,
+    DayAddWork,
   },
 });
 

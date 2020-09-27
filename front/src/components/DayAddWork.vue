@@ -82,7 +82,7 @@ const Props = Vue.extend({
 });
 
 @Component
-export default class WorksTable extends Props {
+export default class DayWorksTable extends Props {
   getTotalHours() {
     const startDate = this.work.start;
     const endDate = new Date(this.work.end.getTime());
