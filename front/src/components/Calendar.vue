@@ -87,6 +87,10 @@
                       :eveningWorks="getWorksPreference(day.works, 'evening')"
                       :morningWorks="getWorksPreference(day.works, 'morning')"
                     />
+                    <CalendarDataSingle
+                      v-else
+                      :work="getEmployeeWork(day.works, filter)"
+                    />
                   </div>
                 </div>
               </b-tooltip>
@@ -111,6 +115,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import { PropType } from "vue";
 import CalendarDataAll from "./CalendarDataAll.vue";
+import CalendarDataSingle from "./CalendarDataSingle.vue";
 import Day from "./Day.vue";
 
 import { IDay, IWorkDate } from "../clean_architecture/entities/calendar";
@@ -133,6 +138,7 @@ const Props = Vue.extend({
   components: {
     Day,
     CalendarDataAll,
+    CalendarDataSingle,
   },
 })
 export default class Calendar extends Props {
@@ -191,6 +197,15 @@ export default class Calendar extends Props {
       return preference == "morning"
         ? dayHours.includes(startHour)
         : nightHours.includes(startHour);
+    });
+  }
+
+  getEmployeeWork(
+    works: IWorkDate[],
+    employeeID: number
+  ): IWorkDate | undefined {
+    return works.find((work: IWorkDate) => {
+      return work.employee == employeeID;
     });
   }
 }

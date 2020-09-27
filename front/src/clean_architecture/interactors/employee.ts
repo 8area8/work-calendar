@@ -53,4 +53,10 @@ export class EmployeeInteractor implements IEmployeeInteractor {
       return employee.id;
     });
   }
+
+  find(id: number): ISalaryWorker | undefined {
+    return this.employees.find((employee: ISalaryWorker) => {
+      return employee.id == id;
+    });
+  }
 }

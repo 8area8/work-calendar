@@ -36,7 +36,6 @@ export default class CFilter extends Props {
   filter = -1;
   emitValue() {
     this.$emit("input", this.filter);
-    console.log("value filter vaut", this.filter);
   }
 }
 </script>
