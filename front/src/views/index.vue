@@ -22,31 +22,42 @@
         :employeesService="employeesService"
         :workService="workService"
         :filter="employeeID"
-        @month-change="isCalendarVisible = calendarService.isVisible()"
+        @month-change="updateCalendar()"
+      />
+      <Dashboard
+        v-if="auth.isAdmin"
+        :workService="workService"
+        :employees="employeesService.employees"
+        :calendar="calendarService"
+        :filter="employeeID"
       />
     </section>
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 
-import Calendar from "../components/Calendar";
-import CFilter from "../components/CFilter";
+import Calendar from "../components/Calendar.vue";
+import CFilter from "../components/CFilter.vue";
+import Dashboard from "../components/AdminDashboard.vue";
 
 import { EmployeeInteractor } from "../clean_architecture/interactors/employee";
 import { CalendarInteractor } from "../clean_architecture/interactors/calendar";
 import { WorkInteractor } from "../clean_architecture/interactors/work";
+import { auth } from "../clean_architecture/services/auth";
 
 @Component({
   components: {
     Calendar,
     CFilter,
+    Dashboard,
   },
 })
 export default class Index extends Vue {
   name = "HomePage";
   employeeID = -1;
+  auth = auth;
   employeesService = new EmployeeInteractor();
   calendarService = new CalendarInteractor();
   workService = new WorkInteractor();
@@ -54,6 +65,12 @@ export default class Index extends Vue {
 
   async mounted() {
     await this.employeesService.get();
+    console.log("Employees are", this.employeesService.employees);
+  }
+
+  updateCalendar() {
+    this.isCalendarVisible = this.calendarService.isVisible();
+    this.$forceUpdate();
   }
 }
 </script>

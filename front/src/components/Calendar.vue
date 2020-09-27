@@ -154,13 +154,13 @@ export default class Calendar extends Props {
 
   async getDays() {
     this.days = await this.calendar.getDays();
+    this.$emit("month-change", this.days);
   }
 
   setMonth(difference: number) {
     this.calendar.setMonth(difference);
     this.getMonthName();
     this.getDays();
-    this.$emit("month-change");
   }
 
   getMonthName() {

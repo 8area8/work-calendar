@@ -85,7 +85,7 @@ const Props = Vue.extend({
 export default class DayWorksTable extends Props {
   getTotalHours() {
     const startDate = this.work.start;
-    const endDate = new Date(this.work.end.getTime());
+    const endDate = this.work.end;
 
     if (endDate.getHours() > 6) {
       endDate.setDate(startDate.getDate());

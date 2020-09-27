@@ -101,7 +101,6 @@ export default class DayWorksTable extends Props {
   }
 
   getTotalHours(start: Date, end: Date): string {
-    end = new Date(end.getTime());
     if (end.getHours() > 6) {
       end.setDate(start.getDate());
     } else if (end.getHours() < 6) {

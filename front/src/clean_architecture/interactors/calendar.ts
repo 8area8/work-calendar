@@ -55,6 +55,7 @@ export class CalendarInteractor implements ICalendarInteractor {
     "Il est impossible de remplir des dates trop éloignées.";
   private calendar: Calendar = new Calendar();
   private client: MonthService = new MonthService();
+  days: IDay[] = [];
 
   getYear(): number {
     return this.calendar.selector.getFullYear();
@@ -155,6 +156,7 @@ export class CalendarInteractor implements ICalendarInteractor {
     });
 
     console.log("days are", jsDays);
+    this.days = jsDays;
     return jsDays;
   }
 
