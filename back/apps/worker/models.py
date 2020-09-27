@@ -13,12 +13,25 @@ from django.db import models
 PREFERENCE_CHOICE = (("morning", 0), ("evening", 1))
 
 
+class Week(models.Model):
+    """Week days."""
+
+    monday = models.BooleanField(default=False)
+    tuesday = models.BooleanField(default=False)
+    wednesday = models.BooleanField(default=False)
+    thursday = models.BooleanField(default=False)
+    friday = models.BooleanField(default=False)
+    saturday = models.BooleanField(default=False)
+    sunday = models.BooleanField(default=False)
+
+
 class Employee(models.Model):
     """Employee model."""
 
     salary = models.IntegerField()
     name = models.CharField(max_length=30, unique=True)
     preference = models.CharField(choices=PREFERENCE_CHOICE, max_length=20)
+    off = models.ForeignKey(to=Week, on_delete=models.CASCADE, null=True)
 
 
 class DayManager(models.Manager):

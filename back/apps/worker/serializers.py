@@ -13,7 +13,7 @@ class EmployeeSerializerForUser(serializers.ModelSerializer):
 
         model = Employee
         fields = ["id", "name", "preference"]
-        read_only_fields = ("id", "name", "preference")
+        read_only_fields = ("id", "name", "preference", "off")
 
 
 class EmployeeSerializerForAdmin(serializers.ModelSerializer):
@@ -23,7 +23,7 @@ class EmployeeSerializerForAdmin(serializers.ModelSerializer):
         """Meta."""
 
         model = Employee
-        fields = ["id", "name", "salary", "preference"]
+        fields = ["id", "name", "salary", "preference", "off"]
 
 
 class WorkDaySerializer(serializers.ModelSerializer):

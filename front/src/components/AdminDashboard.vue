@@ -120,7 +120,6 @@ export default class Dashboard extends Props {
     const works = this.getMonthWorks().filter((work: IWorkDate) => {
       return work.employee == employeeId;
     });
-    console.log("dashboard works:", works);
     return works;
   }
 
