@@ -330,6 +330,10 @@ $calendar-color: #e9e9e9;
   &__number {
     position: relative;
     top: -0.5em;
+    color: #856db0;
+    font-family: "Berkshire Swash", cursive;
+    font-weight: bolder;
+    font-size: 1.4em;
     &--disabled {
       color: #9b9b9b;
     }

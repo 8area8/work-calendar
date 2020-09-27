@@ -1,43 +1,45 @@
 <template>
-  <div
-    class="container has-text-centered table-container box"
-    style="margin-top: 1em"
-  >
-    <div class="dashboard__title">Tableau de bord</div>
-    <table
-      v-if="filter === -1"
-      class="table is-bordered is-striped"
-      style="margin: auto; margin-top: 1em"
-    >
-      <thead>
-        <tr>
-          <th>Employé</th>
-          <th><abbr>Jours travaillés</abbr></th>
-          <th><abbr>Total heures</abbr></th>
-          <th><abbr>Salaire net à l'heure</abbr></th>
-          <th><abbr>Salaire au mois</abbr></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="employee in employees" :key="'month-salary-' + employee.id">
-          <td style="vertical-align: middle;">
-            {{ employee.name }}
-          </td>
-          <td style="vertical-align: middle;">
-            {{ getEmployeeWorks(employee.id).length }}
-          </td>
-          <td style="vertical-align: middle;">
-            {{ getTime(employee) }}
-          </td>
-          <td style="vertical-align: middle;">
-            {{ employee.salary }}
-          </td>
-          <td style="vertical-align: middle;">
-            {{ getMonthSalary(employee) }}
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="container has-text-centered box" style="margin-top: 1em">
+    <div class="table-container">
+      <div class="dashboard__title">Tableau de bord</div>
+      <table
+        v-if="filter === -1"
+        class="table is-bordered is-striped"
+        style="margin: auto; margin-top: 1em"
+      >
+        <thead>
+          <tr>
+            <th>Employé</th>
+            <th><abbr>Jours travaillés</abbr></th>
+            <th><abbr>Total heures</abbr></th>
+            <th><abbr>Salaire net à l'heure</abbr></th>
+            <th><abbr>Salaire au mois</abbr></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="employee in employees"
+            :key="'month-salary-' + employee.id"
+          >
+            <td style="vertical-align: middle;">
+              {{ employee.name }}
+            </td>
+            <td style="vertical-align: middle;">
+              {{ getEmployeeWorks(employee.id).length }}
+            </td>
+            <td style="vertical-align: middle;">
+              {{ getTime(employee) }}
+            </td>
+            <td style="vertical-align: middle;">
+              {{ employee.salary }}
+            </td>
+            <td style="vertical-align: middle;">
+              {{ getMonthSalary(employee) }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 

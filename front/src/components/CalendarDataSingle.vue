@@ -1,7 +1,12 @@
 <template>
   <div>
-    <span class="c-day__employee-number">
-      {{ work ? getWorkingTime() : null }}
+    <span
+      class="c-day__employee-number"
+      :class="{
+        'is-invisible': !work,
+      }"
+    >
+      {{ work ? getWorkingTime() : "No value" }}
     </span>
   </div>
 </template>
