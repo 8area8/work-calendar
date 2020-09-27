@@ -14,7 +14,7 @@
             <th><abbr>Début</abbr></th>
             <th><abbr>Fin</abbr></th>
             <th><abbr>Total</abbr></th>
-            <th v-if="auth.isAdmin"><abbr>Modifier</abbr></th>
+            <th v-if="auth.isAdmin"><abbr>Enregistrer</abbr></th>
             <th v-if="auth.isAdmin"><abbr>Suprimer</abbr></th>
           </tr>
         </thead>
@@ -52,7 +52,7 @@
                 outlined
                 type="is-info"
                 @click="$emit('modify', work)"
-                >Modifier</b-button
+                >Enregistrer</b-button
               >
             </td>
             <td

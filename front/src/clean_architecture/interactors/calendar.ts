@@ -108,13 +108,22 @@ export class CalendarInteractor implements ICalendarInteractor {
     );
   }
 
-  isInvisible(): boolean {
-    return (
-      Math.abs(
-        this.calendar.selector.getMonth() - this.calendar.now.getMonth()
-      ) <= 1 &&
-      this.calendar.selector.getFullYear() === this.calendar.now.getFullYear()
-    );
+  isVisible(): boolean {
+    const selectedMonth = this.calendar.selector.getMonth();
+    const actualMonth = this.calendar.now.getMonth();
+    const selectedYear = this.calendar.selector.getFullYear();
+    const actualYear = this.calendar.now.getFullYear();
+
+    const isOneMonthDifference = Math.abs(selectedMonth - actualMonth) <= 1;
+    const isLastMonthOfTheYear = actualMonth === 12;
+
+    const isOneYearDifference = Math.abs(selectedYear - actualYear) <= 1;
+    const isSameYear = selectedYear === actualYear;
+    const isPossibleYear = isLastMonthOfTheYear
+      ? isOneYearDifference
+      : isSameYear;
+
+    return isOneMonthDifference && isPossibleYear;
   }
 
   async getDays(): Promise<IDay[]> {

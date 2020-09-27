@@ -13,7 +13,7 @@
                   <th>Nom de l'employé</th>
                   <th><abbr>Préférence</abbr></th>
                   <th><abbr>Salaire</abbr></th>
-                  <th><abbr>Modifier</abbr></th>
+                  <th><abbr>Enregistrer</abbr></th>
                   <th><abbr>Suprimer</abbr></th>
                 </tr>
               </thead>
@@ -51,7 +51,7 @@
                       outlined
                       type="is-info"
                       @click="modify(employee)"
-                      >Modifier</b-button
+                      >Enregistrer</b-button
                     >
                   </td>
                   <td class="has-text-centered">

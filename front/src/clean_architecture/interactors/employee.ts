@@ -41,4 +41,16 @@ export class EmployeeInteractor implements IEmployeeInteractor {
     await this.service.deleteEmployee(employee.id);
     return await this.get();
   }
+
+  get names(): string[] {
+    return this.employees.map((employee: ISalaryWorker) => {
+      return employee.name;
+    });
+  }
+
+  get ids(): (number | null)[] {
+    return this.employees.map((employee: ISalaryWorker) => {
+      return employee.id;
+    });
+  }
 }

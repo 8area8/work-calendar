@@ -45,16 +45,18 @@
 <script lang="ts">
 import { PropType } from "vue";
 import { Component, Vue, Watch } from "vue-property-decorator";
+import WorksTable from "./WorksTable.vue";
+import AddWorkTable from "./AddWorkTable.vue";
+
 import { ISalaryWorker } from "../clean_architecture/entities/worker";
 import {
   IDay,
   IWork,
   IWorkDate,
 } from "../clean_architecture/entities/calendar";
+
 import { EmployeeInteractor } from "../clean_architecture/interactors/employee";
 import { auth } from "../clean_architecture/services/auth";
-import WorksTable from "./WorksTable.vue";
-import AddWorkTable from "./AddWorkTable.vue";
 
 const DayProps = Vue.extend({
   props: {

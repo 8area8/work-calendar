@@ -1,33 +1,6 @@
 <template>
   <div id="calendar" class="">
     <div class="container">
-      <!-- MESSAGE -->
-      <b-message
-        :class="{ 'is-invisible': calendar.isInvisible() }"
-        title="Attention"
-        type="is-warning"
-        :closable="false"
-        size="is-small"
-      >
-        {{ calendar.overLimitMessage }}
-      </b-message>
-
-      <div class="container box has-background-dark">
-        <div class=" has-text-light filter">Filtrer</div>
-        <b-field expanded>
-          <b-select expanded placeholder="Filtrer par employé">
-            <option value="all">Tous</option>
-            <option
-              v-for="employee in employeesService.employees"
-              :value="employee.id"
-              :key="employee.id"
-            >
-              {{ employee.name }}
-            </option>
-          </b-select>
-        </b-field>
-      </div>
-
       <!-- CALENDAR -->
       <div id="work-calendar" class="c-work-calendar">
         <!-- HEADER -->
@@ -110,6 +83,7 @@
                   </div>
                   <div class="c-day__data">
                     <CalendarDataAll
+                      v-if="filter === -1"
                       :eveningWorks="getWorksPreference(day.works, 'evening')"
                       :morningWorks="getWorksPreference(day.works, 'morning')"
                     />
@@ -135,14 +109,25 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { CalendarInteractor } from "../clean_architecture/exposers/calendar";
-import { EmployeeInteractor } from "../clean_architecture/interactors/employee";
+import { PropType } from "vue";
+import CalendarDataAll from "./CalendarDataAll.vue";
+import Day from "./Day.vue";
+
 import { IDay, IWorkDate } from "../clean_architecture/entities/calendar";
 import { ISalaryWorker } from "../clean_architecture/entities/worker";
+
+import { CalendarInteractor } from "../clean_architecture/interactors/calendar";
+import { EmployeeInteractor } from "../clean_architecture/interactors/employee";
 import { WorkInteractor } from "../clean_architecture/interactors/work";
-import Day from "./Day.vue";
-import CalendarDataAll from "./CalendarDataAll.vue";
-// import Day from "./Day.vue";
+
+const Props = Vue.extend({
+  props: {
+    employeesService: { type: Object as PropType<EmployeeInteractor> },
+    calendar: { type: Object as PropType<CalendarInteractor> },
+    workService: { type: Object as PropType<WorkInteractor> },
+    filter: Number,
+  },
+});
 
 @Component({
   components: {
@@ -150,11 +135,7 @@ import CalendarDataAll from "./CalendarDataAll.vue";
     CalendarDataAll,
   },
 })
-export default class Calendar extends Vue {
-  calendar = new CalendarInteractor();
-  employeesService = new EmployeeInteractor();
-  workService = new WorkInteractor();
-
+export default class Calendar extends Props {
   days: IDay[] = [];
   monthName = "";
   modalDay: IDay = { works: [], id: null, number: 0, month: 0, year: 0 };
@@ -173,6 +154,7 @@ export default class Calendar extends Vue {
     this.calendar.setMonth(difference);
     this.getMonthName();
     this.getDays();
+    this.$emit("month-change");
   }
 
   getMonthName() {
@@ -199,7 +181,6 @@ export default class Calendar extends Vue {
   async mounted() {
     this.getDays();
     this.getMonthName();
-    await this.employeesService.get();
   }
 
   getWorksPreference(works: IWorkDate[], preference: string): IWorkDate[] {
@@ -348,9 +329,5 @@ $calendar-color: #e9e9e9;
     transition: all 0.3s;
     color: rgb(230, 230, 230);
   }
-}
-.filter {
-  font-size: 3em;
-  font-family: "Berkshire Swash", cursive;
 }
 </style>
