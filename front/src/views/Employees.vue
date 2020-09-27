@@ -100,6 +100,19 @@
                   maxlength="30"
                 ></b-input>
               </b-field>
+              <!-- OFF -->
+              <b-field label="Jours Off" position="is-centered">
+                <div class="block">
+                  <b-checkbox
+                    v-for="day in weekNames"
+                    :key="'week-choice-' + day"
+                    v-model="employee.off"
+                    :native-value="day.value"
+                  >
+                    {{ day.name }}
+                  </b-checkbox>
+                </div>
+              </b-field>
               <!-- PREFERENCE -->
               <b-field label="Préférence" position="is-centered">
                 <b-select
@@ -153,12 +166,43 @@ import { EmployeeInteractor } from "../clean_architecture/interactors/employee";
 export default class Employees extends Vue {
   service = new EmployeeInteractor();
 
+  weekNames = [
+    {
+      value: "monday",
+      name: "lundi",
+    },
+    {
+      value: "tuesday",
+      name: " mardi",
+    },
+    {
+      value: "wednesday",
+      name: " mercredi",
+    },
+    {
+      value: "thursday",
+      name: " jeudi",
+    },
+    {
+      value: "friday",
+      name: " vendredi",
+    },
+    {
+      value: "saturday",
+      name: " samedi",
+    },
+    {
+      value: "sunday",
+      name: " dimanche",
+    },
+  ];
   firstInput = false;
   employee = {
     id: null,
     name: "",
     preference: "morning",
     salary: 10,
+    off: [],
   } as ISalaryWorker;
 
   hasError(): boolean {

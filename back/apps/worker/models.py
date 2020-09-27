@@ -4,6 +4,7 @@ from typing import Tuple
 from datetime import datetime
 from calendar import Calendar
 
+from django.contrib.postgres.fields import ArrayField
 from django.db import IntegrityError
 from django.db import transaction
 
@@ -11,18 +12,15 @@ from django.db import models
 
 
 PREFERENCE_CHOICE = (("morning", 0), ("evening", 1))
-
-
-class Week(models.Model):
-    """Week days."""
-
-    monday = models.BooleanField(default=False)
-    tuesday = models.BooleanField(default=False)
-    wednesday = models.BooleanField(default=False)
-    thursday = models.BooleanField(default=False)
-    friday = models.BooleanField(default=False)
-    saturday = models.BooleanField(default=False)
-    sunday = models.BooleanField(default=False)
+DAYS_CHOICE = (
+    ("monday", 0),
+    ("tuesday", 1),
+    ("wednesday", 2),
+    ("thursday", 3),
+    ("friday", 4),
+    ("saturday", 5),
+    ("sunday", 6),
+)
 
 
 class Employee(models.Model):
@@ -31,7 +29,7 @@ class Employee(models.Model):
     salary = models.IntegerField()
     name = models.CharField(max_length=30, unique=True)
     preference = models.CharField(choices=PREFERENCE_CHOICE, max_length=20)
-    off = models.ForeignKey(to=Week, on_delete=models.CASCADE, null=True)
+    off = ArrayField(models.CharField(choices=DAYS_CHOICE, max_length=30), null=True)
 
 
 class DayManager(models.Manager):

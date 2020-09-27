@@ -6,7 +6,7 @@ interface ISalaryWorker {
   name: string;
   preference: IPreference;
   salary: number;
-  employee_id: number | null;
+  off: string[];
 }
 
 /**
