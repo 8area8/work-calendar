@@ -85,6 +85,35 @@ export class EmployeeInteractor implements IEmployeeInteractor {
       });
     });
   }
+
+  /**
+   * Return the availables employees from a given preference.
+   * @param employees
+   * @param preference
+   * @param weekDay
+   */
+  filterEmployeesFromPreference(
+    employees: IEmployee[],
+    preference: string,
+    weekDay: string
+  ): IEmployee[] {
+    return employees.filter((employee: IEmployee) => {
+      return (
+        employee.preference == preference && !employee.off.includes(weekDay)
+      );
+    });
+  }
+
+  /**
+   * Returns the Off employees.
+   * @param employees
+   * @param weekDay
+   */
+  getOffEmployees(employees: IEmployee[], weekDay: string): IEmployee[] {
+    return employees.filter((employee: IEmployee) => {
+      return employee.off.includes(weekDay);
+    });
+  }
 }
 
 const employeeHandler = new EmployeeInteractor();

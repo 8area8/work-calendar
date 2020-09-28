@@ -25,8 +25,10 @@
               >
                 <optgroup label="Matin">
                   <option
-                    v-for="employee in getAvailableEmployeesPreference(
-                      'morning'
+                    v-for="employee in employeeHandler.filterEmployeesFromPreference(
+                      employees,
+                      'morning',
+                      weekDay
                     )"
                     :key="'select-employee' + employee.id"
                     :value="employee.id"
@@ -35,8 +37,10 @@
                 </optgroup>
                 <optgroup label="Soir">
                   <option
-                    v-for="employee in getAvailableEmployeesPreference(
-                      'evening'
+                    v-for="employee in employeeHandler.filterEmployeesFromPreference(
+                      employees,
+                      'evening',
+                      weekDay
                     )"
                     :key="'select-employee' + employee.id"
                     :value="employee.id"
@@ -46,7 +50,10 @@
                 <optgroup label="Off">
                   <option
                     class="has-text-grey-light"
-                    v-for="employee in getOffEmployees()"
+                    v-for="employee in employeeHandler.getOffEmployees(
+                      employees,
+                      weekDay
+                    )"
                     :key="'select-employee' + employee.id"
                     :value="employee.id"
                     >{{ employee.name }}</option
@@ -84,6 +91,7 @@ import { IEmployee } from "../clean_architecture/entities/worker";
 import { IWorkDate } from "../clean_architecture/entities/calendar";
 
 import { workHandler } from "../clean_architecture/interactors/work";
+import { employeeHandler } from "../clean_architecture/interactors/employee";
 
 const Props = Vue.extend({
   props: {
@@ -96,21 +104,7 @@ const Props = Vue.extend({
 @Component
 export default class DayWorksTable extends Props {
   workHandler = workHandler;
-
-  getAvailableEmployeesPreference(preference: string): IEmployee[] {
-    return this.employees.filter((employee: IEmployee) => {
-      return (
-        employee.preference == preference &&
-        !employee.off.includes(this.weekDay)
-      );
-    });
-  }
-
-  getOffEmployees(): IEmployee[] {
-    return this.employees.filter((employee: IEmployee) => {
-      return employee.off.includes(this.weekDay);
-    });
-  }
+  employeeHandler = employeeHandler;
 }
 </script>
 

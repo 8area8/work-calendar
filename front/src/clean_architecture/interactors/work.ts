@@ -1,4 +1,4 @@
-import { IWork, IWorkDate } from "../entities/calendar";
+import { IWork, IWorkDate, IDay } from "../entities/calendar";
 import { WorkService } from "../services/work";
 import { isError, IError } from "../common/base_api";
 import { IEmployee } from "../entities/worker";
@@ -29,7 +29,7 @@ export interface IWorkInteractor {
     employeeID: number
   ) => IWorkDate | undefined;
 
-  getMonthSalary: (works: IWorkDate[], employee: IEmployee) => string;
+  getSalary: (works: IWorkDate[], employee: IEmployee) => string;
 }
 
 export class WorkInteractor implements IWorkInteractor {
@@ -195,13 +195,38 @@ export class WorkInteractor implements IWorkInteractor {
    * @param works works list
    * @param employee given employee
    */
-  getMonthSalary(works: IWorkDate[], employee: IEmployee): string {
+  getSalary(works: IWorkDate[], employee: IEmployee): string {
     let salary = 0;
     const time = this.getWorksHours(works);
 
     salary = employee.salary * time.hours;
     salary += (employee.salary * time.minutes) / 60;
     return salary.toFixed(2);
+  }
+
+  /**
+   * Get the current month work, grouped by weeks.
+   * @param month
+   * @param days
+   * @param employeeID
+   */
+  getWeeks(month: number, days: IDay[], employeeID: number): IWorkDate[][] {
+    const weeks: IWorkDate[][] = [];
+
+    days.forEach((day: IDay, index: number) => {
+      if (index % 7 == 0) {
+        weeks.push([]);
+      }
+      if (day.month === month) {
+        const work = day.works.find((work: IWorkDate) => {
+          return work.employee === employeeID;
+        });
+        if (work) {
+          weeks.slice(-1)[0].push(work);
+        }
+      }
+    });
+    return weeks;
   }
 }
 

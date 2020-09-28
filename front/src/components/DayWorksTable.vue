@@ -21,7 +21,7 @@
         <tbody>
           <tr v-for="work in works" :key="'work-' + work.id">
             <td style="vertical-align: middle;">
-              {{ getEmployeeName(work.employee) }}
+              {{ employeeHandler.find(work.employee).name }}
             </td>
             <td style="vertical-align: middle;">
               <b-timepicker
@@ -29,7 +29,7 @@
                 v-model="work.start"
                 inline
               ></b-timepicker>
-              <div v-else>{{ getTime(work.start) }}</div>
+              <div v-else>{{ workHandler.getTime(work.start) }}</div>
             </td>
             <td style="vertical-align: middle;">
               <b-timepicker
@@ -37,7 +37,7 @@
                 v-model="work.end"
                 inline
               ></b-timepicker>
-              <div v-else>{{ getTime(work.end) }}</div>
+              <div v-else>{{ workHandler.getTime(work.end) }}</div>
             </td>
             <td class="total-hours" style="vertical-align: middle;">
               {{ workHandler.getTotalHours(work.start, work.end) }}
@@ -95,22 +95,8 @@ const Props = Vue.extend({
 @Component
 export default class DayWorksTable extends Props {
   workHandler = workHandler;
+  employeeHandler = employeeHandler;
   auth = auth;
-
-  getEmployeeName(id: number): string {
-    const employee = employeeHandler.employees.find(
-      (employee: IEmployee) => employee.id == id
-    );
-    return employee ? employee.name : "";
-  }
-
-  getTime(date: Date): string {
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
-    const twoDigits = minutes < 10 ? `0${minutes}` : minutes;
-
-    return `${hours}H${twoDigits}`;
-  }
 }
 </script>
 

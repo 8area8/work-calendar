@@ -35,7 +35,7 @@
                 {{ employee.salary }}
               </td>
               <td style="vertical-align: middle;">
-                {{ getMonthSalary(employee) }}
+                {{ getSalary(employee) }}
               </td>
             </tr>
           </tbody>
@@ -77,7 +77,7 @@
                 {{ week.length }}
               </td>
               <td style="vertical-align: middle;">
-                {{ getWeekTime(week) }}
+                {{ workHandler.getReadableWorksHours(week) }}
               </td>
               <td style="vertical-align: middle;">
                 {{ getWeekSalary(week) }}
@@ -119,65 +119,26 @@ export default class Dashboard extends Vue {
     return this.workHandler.getReadableWorksHours(this.getEmployeeWorks(id));
   }
 
-  getMonthSalary(employee: IEmployee): string {
-    return this.workHandler.getMonthSalary(
+  getSalary(employee: IEmployee): string {
+    return this.workHandler.getSalary(
       this.getEmployeeWorks(employee.id || -1),
       employee
     );
   }
 
   getWeeks(): IWorkDate[][] {
-    const month = this.calendar.getMonth();
-    const weeks: IWorkDate[][] = [];
-
-    this.calendar.days.forEach((day: IDay, index: number) => {
-      if (index % 7 == 0) {
-        weeks.push([]);
-      }
-      if (day.month === month) {
-        const work = day.works.find((work: IWorkDate) => {
-          return work.employee === this.$store.state.employeeID;
-        });
-        if (work) {
-          weeks.slice(-1)[0].push(work);
-        }
-      }
-    });
-    return weeks;
-  }
-
-  getWeekHours(week: IWorkDate[]) {
-    let seconds = 0;
-    let hours = 0;
-    let minutes = 0;
-
-    for (const work of week) {
-      seconds = (work.end.getTime() - work.start.getTime()) / 1000;
-      minutes += seconds / 60;
-    }
-    hours = Math.floor(minutes / 60);
-    minutes -= Math.floor(hours * 60);
-
-    return { hours, minutes };
-  }
-
-  getWeekTime(week: IWorkDate[]): string {
-    const time = this.getWeekHours(week);
-    const twoDigits = time.minutes < 10 ? "0" + time.minutes : time.minutes;
-    return `${time.hours}H${twoDigits}`;
+    return this.workHandler.getWeeks(
+      this.calendar.getMonth(),
+      this.calendar.days,
+      this.$store.state.employeeID
+    );
   }
 
   getWeekSalary(week: IWorkDate[]): string {
-    let salary = 0;
     const employee = this.employees.find(
       (employee: IEmployee) => employee.id == this.$store.state.employeeID
     );
-    const baseNet = employee ? employee.salary : 0;
-    const time = this.getWeekHours(week);
-
-    salary = baseNet * time.hours;
-    salary += (baseNet * time.minutes) / 60;
-    return salary.toFixed(2);
+    return employee ? this.workHandler.getSalary(week, employee) : "";
   }
 }
 </script>
