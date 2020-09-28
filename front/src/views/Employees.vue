@@ -31,7 +31,7 @@
                         v-for="day in weekNames"
                         :key="'week-choice-' + day.value"
                         :native-value="day.value"
-                        type="is-danger"
+                        type="is-warning"
                       >
                         <span>{{ day.name }}</span>
                       </b-checkbox-button>
@@ -122,7 +122,7 @@
                     v-for="day in weekNames"
                     :key="'week-choice-' + day.value"
                     :native-value="day.value"
-                    type="is-danger"
+                    type="is-warning"
                   >
                     <span>{{ day.name }}</span>
                   </b-checkbox-button>

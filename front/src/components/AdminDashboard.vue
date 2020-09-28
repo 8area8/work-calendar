@@ -3,7 +3,7 @@
     <div class="table-container">
       <div class="dashboard__title">Tableau de bord</div>
       <div v-if="filter === -1">
-        <div class="title is-size-5">Salaires au mois</div>
+        <div class="title is-size-5">Salaires net mensuels</div>
         <table
           class="table is-bordered is-striped"
           style="margin: auto; margin-top: 1em"
@@ -13,8 +13,8 @@
               <th>Employé</th>
               <th><abbr>Jours travaillés</abbr></th>
               <th><abbr>Total heures</abbr></th>
-              <th><abbr>Salaire net à l'heure</abbr></th>
-              <th><abbr>Salaire au mois</abbr></th>
+              <th><abbr>Salaire net horaire</abbr></th>
+              <th><abbr>Salaire net mensuel</abbr></th>
             </tr>
           </thead>
           <tbody>
@@ -43,8 +43,9 @@
       </div>
       <div v-else>
         <div class="title is-size-5">
-          Salaire de {{ employees.find((elem) => elem.id == filter).name }} à la
-          semaine (salaire / heure :
+          Salaire hebdomadaire de
+          {{ employees.find((elem) => elem.id == filter).name }}
+          (salaire net horaire :
           {{ employees.find((elem) => elem.id == filter).salary }} euros)
         </div>
         <table
@@ -56,7 +57,7 @@
               <th>Numéro de semaine</th>
               <th><abbr>Jours travaillés</abbr></th>
               <th><abbr>Total heures</abbr></th>
-              <th><abbr>Salaire à la semaine</abbr></th>
+              <th><abbr>Salaires net Hebdomadaires</abbr></th>
             </tr>
           </thead>
           <tbody>
