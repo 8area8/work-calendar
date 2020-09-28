@@ -68,32 +68,30 @@
                 'c-day--disabled': calendar.isOverDatabaseLimit(day),
               }"
             >
-              <b-tooltip :label="getDayTooltip(day)" multilined type="is-dark">
+              <div
+                class="c-day__data-wrapper"
+                :class="{ 'is-invisible': calendar.isOverDatabaseLimit(day) }"
+              >
                 <div
-                  class="c-day__data-wrapper"
-                  :class="{ 'is-invisible': calendar.isOverDatabaseLimit(day) }"
+                  class="c-day__number"
+                  :class="{
+                    'c-day__number--disabled': !calendar.isInMonth(day),
+                  }"
                 >
-                  <div
-                    class="c-day__number"
-                    :class="{
-                      'c-day__number--disabled': !calendar.isInMonth(day),
-                    }"
-                  >
-                    {{ day.number }}
-                  </div>
-                  <div class="c-day__data">
-                    <CalendarDataAll
-                      v-if="filter === -1"
-                      :eveningWorks="getWorksPreference(day.works, 'evening')"
-                      :morningWorks="getWorksPreference(day.works, 'morning')"
-                    />
-                    <CalendarDataSingle
-                      v-else
-                      :work="getEmployeeWork(day.works, filter)"
-                    />
-                  </div>
+                  {{ day.number }}
                 </div>
-              </b-tooltip>
+                <div class="c-day__data">
+                  <CalendarDataAll
+                    v-if="filter === -1"
+                    :eveningWorks="getWorksPreference(day.works, 'evening')"
+                    :morningWorks="getWorksPreference(day.works, 'morning')"
+                  />
+                  <CalendarDataSingle
+                    v-else
+                    :work="getEmployeeWork(day.works, filter)"
+                  />
+                </div>
+              </div>
             </div>
             <!-- AFTER DAY -->
           </div>
@@ -283,10 +281,13 @@ $calendar-color: #e9e9e9;
     &:hover {
       color: white;
       background-color: #ffc82c;
+      transition: all 0.3s;
       cursor: pointer;
       * {
         transition: all 0.3s;
-        color: white;
+      }
+      &:hover .c-day__number {
+        width: 5.3em;
       }
     }
   }
@@ -295,12 +296,10 @@ $calendar-color: #e9e9e9;
     background-color: #f1f1f1;
   }
   &--active {
-    color: white;
     background-color: #ffdd57;
     cursor: pointer;
     * {
       transition: all 0.3s;
-      color: white;
     }
   }
 
@@ -329,11 +328,17 @@ $calendar-color: #e9e9e9;
   }
   &__number {
     position: relative;
+    margin: auto;
+    width: 5em;
     top: -0.5em;
-    color: #856db0;
-    font-family: "Berkshire Swash", cursive;
+    color: #767070;
     font-weight: bolder;
-    font-size: 1.4em;
+    font-size: 1.2em;
+    background-color: #f2f2f2bd;
+    border-radius: 5px 5px 2px 2px;
+    box-shadow: rgba(21, 23, 35, 0.14) 0px 2px 2px 0px,
+      rgba(0, 0, 0, 0.14) 0px 1px 1px 0px;
+
     &--disabled {
       color: #9b9b9b;
     }
