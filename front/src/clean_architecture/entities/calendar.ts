@@ -1,4 +1,4 @@
-import { ISalaryWorker } from "./worker";
+import { IEmployee } from "./worker";
 
 /**
  * Represent a Day object.

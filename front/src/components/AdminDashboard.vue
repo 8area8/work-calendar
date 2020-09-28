@@ -92,12 +92,12 @@ import { Component, Vue } from "vue-property-decorator";
 import { WorkInteractor } from "../clean_architecture/interactors/work";
 import { CalendarInteractor } from "../clean_architecture/interactors/calendar";
 
-import { ISalaryWorker } from "../clean_architecture/entities/worker";
+import { IEmployee } from "../clean_architecture/entities/worker";
 import { IWorkDate, IDay } from "../clean_architecture/entities/calendar";
 
 const Props = Vue.extend({
   props: {
-    employees: { type: Array as PropType<ISalaryWorker[]> },
+    employees: { type: Array as PropType<IEmployee[]> },
     worksService: { type: Object as PropType<WorkInteractor> },
     calendar: { type: Object as PropType<CalendarInteractor> },
     filter: Number,
@@ -124,7 +124,7 @@ export default class Dashboard extends Props {
     return works;
   }
 
-  getTotalHours(employee: ISalaryWorker) {
+  getTotalHours(employee: IEmployee) {
     let seconds = 0;
     let hours = 0;
     let minutes = 0;
@@ -140,13 +140,13 @@ export default class Dashboard extends Props {
     return { minutes, hours };
   }
 
-  getTime(employee: ISalaryWorker): string {
+  getTime(employee: IEmployee): string {
     const time = this.getTotalHours(employee);
     const twoDigits = time.minutes < 10 ? "0" + time.minutes : time.minutes;
     return `${time.hours}H${twoDigits}`;
   }
 
-  getMonthSalary(employee: ISalaryWorker): string {
+  getMonthSalary(employee: IEmployee): string {
     let salary = 0;
     const time = this.getTotalHours(employee);
 
@@ -199,7 +199,7 @@ export default class Dashboard extends Props {
   getWeekSalary(week: IWorkDate[]): string {
     let salary = 0;
     const employee = this.employees.find(
-      (employee: ISalaryWorker) => employee.id == this.filter
+      (employee: IEmployee) => employee.id == this.filter
     );
     const baseNet = employee ? employee.salary : 0;
     const time = this.getWeekHours(week);

@@ -1,7 +1,7 @@
 /**
  * Worker model.
  */
-interface ISalaryWorker {
+interface IEmployee {
   id: null | number;
   name: string;
   preference: IPreference;
@@ -18,4 +18,4 @@ enum IPreference {
 }
 
 // eslint-disable-next-line no-undef
-export { ISalaryWorker, IPreference };
+export { IEmployee, IPreference };

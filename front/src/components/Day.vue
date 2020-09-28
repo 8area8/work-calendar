@@ -49,7 +49,7 @@ import { Component, Vue, Watch } from "vue-property-decorator";
 import DayWorksTable from "./DayWorksTable.vue";
 import DayAddWork from "./DayAddWork.vue";
 
-import { ISalaryWorker } from "../clean_architecture/entities/worker";
+import { IEmployee } from "../clean_architecture/entities/worker";
 import {
   IDay,
   IWork,
@@ -100,12 +100,12 @@ export default class Day extends DayProps {
     return `${dayName} ${day.number} ${monthName}`;
   }
 
-  get employees(): ISalaryWorker[] {
-    return this.employeesService.employees as ISalaryWorker[];
+  get employees(): IEmployee[] {
+    return this.employeesService.employees as IEmployee[];
   }
 
-  get availableEmployees(): ISalaryWorker[] {
-    return this.employees.filter((employee: ISalaryWorker) => {
+  get availableEmployees(): IEmployee[] {
+    return this.employees.filter((employee: IEmployee) => {
       return !this.day.works.find((work: IWorkDate) => {
         return work.employee === employee.id;
       });

@@ -117,7 +117,7 @@ import CalendarDataSingle from "./CalendarDataSingle.vue";
 import Day from "./Day.vue";
 
 import { IDay, IWorkDate } from "../clean_architecture/entities/calendar";
-import { ISalaryWorker } from "../clean_architecture/entities/worker";
+import { IEmployee } from "../clean_architecture/entities/worker";
 
 import { CalendarInteractor } from "../clean_architecture/interactors/calendar";
 import { EmployeeInteractor } from "../clean_architecture/interactors/employee";

@@ -80,12 +80,12 @@
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
 import { PropType } from "vue";
-import { ISalaryWorker } from "../clean_architecture/entities/worker";
+import { IEmployee } from "../clean_architecture/entities/worker";
 import { IWorkDate } from "../clean_architecture/entities/calendar";
 
 const Props = Vue.extend({
   props: {
-    employees: { type: Array as PropType<ISalaryWorker[]> },
+    employees: { type: Array as PropType<IEmployee[]> },
     work: { type: Object as PropType<IWorkDate> },
     weekDay: String,
   },
@@ -113,8 +113,8 @@ export default class DayWorksTable extends Props {
     return `${hours}H${twoDigits}`;
   }
 
-  getAvailableEmployeesPreference(preference: string): ISalaryWorker[] {
-    return this.employees.filter((employee: ISalaryWorker) => {
+  getAvailableEmployeesPreference(preference: string): IEmployee[] {
+    return this.employees.filter((employee: IEmployee) => {
       return (
         employee.preference == preference &&
         !employee.off.includes(this.weekDay)
@@ -122,8 +122,8 @@ export default class DayWorksTable extends Props {
     });
   }
 
-  getOffEmployees(): ISalaryWorker[] {
-    return this.employees.filter((employee: ISalaryWorker) => {
+  getOffEmployees(): IEmployee[] {
+    return this.employees.filter((employee: IEmployee) => {
       return employee.off.includes(this.weekDay);
     });
   }

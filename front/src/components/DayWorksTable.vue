@@ -78,13 +78,13 @@
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
 import { PropType } from "vue";
-import { ISalaryWorker } from "../clean_architecture/entities/worker";
+import { IEmployee } from "../clean_architecture/entities/worker";
 import { IWorkDate } from "../clean_architecture/entities/calendar";
 import { auth } from "../clean_architecture/services/auth";
 
 const Props = Vue.extend({
   props: {
-    employees: { type: Array as PropType<ISalaryWorker[]> },
+    employees: { type: Array as PropType<IEmployee[]> },
     works: { type: Array as PropType<IWorkDate[]> },
     tableTitle: String,
   },
@@ -95,7 +95,7 @@ export default class DayWorksTable extends Props {
   auth = auth;
   getEmployeeName(id: number): string {
     const employee = this.employees.find(
-      (employee: ISalaryWorker) => employee.id == id
+      (employee: IEmployee) => employee.id == id
     );
     return employee ? employee.name : "";
   }

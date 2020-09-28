@@ -174,7 +174,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { ISalaryWorker } from "../clean_architecture/entities/worker";
+import { IEmployee } from "../clean_architecture/entities/worker";
 import { EmployeeInteractor } from "../clean_architecture/interactors/employee";
 
 @Component
@@ -218,7 +218,7 @@ export default class Employees extends Vue {
     preference: "morning",
     salary: 10,
     off: [],
-  } as ISalaryWorker;
+  } as IEmployee;
 
   hasError(): boolean {
     return this.employee.name.length < 3 && this.firstInput;
@@ -245,17 +245,17 @@ export default class Employees extends Vue {
     return readable.join(",");
   }
 
-  create(employee: ISalaryWorker) {
+  create(employee: IEmployee) {
     this.service.add(employee);
     this.$buefy.toast.open(`${employee.name} est créé !`);
   }
 
-  modify(employee: ISalaryWorker) {
+  modify(employee: IEmployee) {
     this.service.modify(employee);
     this.$buefy.toast.open(`${employee.name} a bien été modifié !`);
   }
 
-  delete_(employee: ISalaryWorker) {
+  delete_(employee: IEmployee) {
     this.$buefy.dialog.confirm({
       title: `Supprimer ${employee.name} ?`,
       message: `Es-tu sûre de vouloir <b>supprimer</b> ${employee.name} ? Cette action est irréversible.`,

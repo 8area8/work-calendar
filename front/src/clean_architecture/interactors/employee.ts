@@ -1,18 +1,18 @@
-import { ISalaryWorker } from "../entities/worker";
+import { IEmployee } from "../entities/worker";
 import { EmployeeService } from "../services/employee";
 import { isError, IError } from "../common/base_api";
 
 export interface IEmployeeInteractor {
-  employees: ISalaryWorker[];
-  get: () => Promise<ISalaryWorker[]>;
-  add: (employee: ISalaryWorker) => Promise<ISalaryWorker[]>;
-  modify: (employee: ISalaryWorker) => Promise<ISalaryWorker[]>;
-  delete_: (employee: ISalaryWorker) => Promise<ISalaryWorker[]>;
+  employees: IEmployee[];
+  get: () => Promise<IEmployee[]>;
+  add: (employee: IEmployee) => Promise<IEmployee[]>;
+  modify: (employee: IEmployee) => Promise<IEmployee[]>;
+  delete_: (employee: IEmployee) => Promise<IEmployee[]>;
 }
 
 export class EmployeeInteractor implements IEmployeeInteractor {
   private service = new EmployeeService();
-  public employees: ISalaryWorker[] = [];
+  public employees: IEmployee[] = [];
 
   constructor() {
     this.get().then((res) => (this.employees = res));
@@ -27,35 +27,35 @@ export class EmployeeInteractor implements IEmployeeInteractor {
     return result;
   }
 
-  async add(employee: ISalaryWorker) {
+  async add(employee: IEmployee) {
     await this.service.addEmployee(employee);
     return await this.get();
   }
 
-  async modify(employee: ISalaryWorker) {
+  async modify(employee: IEmployee) {
     await this.service.modifyEmployee(employee);
     return await this.get();
   }
 
-  async delete_(employee: ISalaryWorker) {
+  async delete_(employee: IEmployee) {
     await this.service.deleteEmployee(employee.id);
     return await this.get();
   }
 
   get names(): string[] {
-    return this.employees.map((employee: ISalaryWorker) => {
+    return this.employees.map((employee: IEmployee) => {
       return employee.name;
     });
   }
 
   get ids(): (number | null)[] {
-    return this.employees.map((employee: ISalaryWorker) => {
+    return this.employees.map((employee: IEmployee) => {
       return employee.id;
     });
   }
 
-  find(id: number): ISalaryWorker | undefined {
-    return this.employees.find((employee: ISalaryWorker) => {
+  find(id: number): IEmployee | undefined {
+    return this.employees.find((employee: IEmployee) => {
       return employee.id == id;
     });
   }

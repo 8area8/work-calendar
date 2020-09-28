@@ -1,24 +1,24 @@
 import { httpClient, IError } from "../common/base_api";
-import { ISalaryWorker } from "../entities/worker";
+import { IEmployee } from "../entities/worker";
 import { verifyAuth } from "../services/auth";
 
 export interface IEmployeeService {
-  getEmployees: () => Promise<ISalaryWorker[] | IError>;
-  addEmployee: (employee: ISalaryWorker) => Promise<ISalaryWorker | IError>;
-  modifyEmployee: (employee: ISalaryWorker) => Promise<ISalaryWorker | IError>;
-  deleteEmployee: (id: number | null) => Promise<ISalaryWorker | IError>;
+  getEmployees: () => Promise<IEmployee[] | IError>;
+  addEmployee: (employee: IEmployee) => Promise<IEmployee | IError>;
+  modifyEmployee: (employee: IEmployee) => Promise<IEmployee | IError>;
+  deleteEmployee: (id: number | null) => Promise<IEmployee | IError>;
 }
 
 export class EmployeeService implements IEmployeeService {
   @verifyAuth
   public async getEmployees() {
-    const response = await httpClient.get<ISalaryWorker[]>("/work/employees/");
+    const response = await httpClient.get<IEmployee[]>("/work/employees/");
     return response;
   }
 
   @verifyAuth
-  public async addEmployee(employee: ISalaryWorker) {
-    const response = await httpClient.post<ISalaryWorker>(
+  public async addEmployee(employee: IEmployee) {
+    const response = await httpClient.post<IEmployee>(
       "/work/employees/",
       employee
     );
@@ -26,8 +26,8 @@ export class EmployeeService implements IEmployeeService {
   }
 
   @verifyAuth
-  public async modifyEmployee(employee: ISalaryWorker) {
-    const response = await httpClient.patch<ISalaryWorker>(
+  public async modifyEmployee(employee: IEmployee) {
+    const response = await httpClient.patch<IEmployee>(
       `/work/employees/${employee.id}/`,
       employee
     );
@@ -36,7 +36,7 @@ export class EmployeeService implements IEmployeeService {
 
   @verifyAuth
   public async deleteEmployee(id: number | null) {
-    const response = await httpClient.delete<ISalaryWorker>(
+    const response = await httpClient.delete<IEmployee>(
       `/work/employees/${id}/`
     );
     return response;
