@@ -21,7 +21,7 @@ Photo by [Estée Janssens](https://unsplash.com/@esteejanssens?utm_source=unspla
 - **Python**: [PEP8](https://www.python.org/dev/peps/pep-0008/) - [PEP257](https://www.python.org/dev/peps/pep-0257/) - [Black](https://github.com/psf/black)
 
 - **leading principle**: [Keep It Simple, Stupid (KISS)](https://en.wikipedia.org/wiki/KISS_principle)
-- **Global**: [UsesCases](https://fr.wikipedia.org/wiki/Cas_d%27utilisation) - [Test Driven Developement](https://fr.wikipedia.org/wiki/Test_driven_development) - [Clean Architecture](<https://en.wikipedia.org/wiki/Hexagonal_architecture_(software)>)
+- **Global**: [UsesCases](https://fr.wikipedia.org/wiki/Cas_d%27utilisation) - [Test Driven Developement](https://fr.wikipedia.org/wiki/Test_driven_development) (not fully) - [Clean Architecture](<https://en.wikipedia.org/wiki/Hexagonal_architecture_(software)>)
 
 ## Installation
 
@@ -95,6 +95,16 @@ Travis-ci is configured to automatically deploy the code on Heroku if the tests 
 
 The backend part of the application was designed with the Postman tool. The different use cases are exposed and some automations have been made.
 Get the API documentation and tests [here](https://documenter.getpostman.com/view/4488938/TVCb5WRF) !
+
+## deployment
+
+At the time of deployment, it is necessary:
+
+- create an administrator user
+- create a simple user
+- generate the days on Django with the command `pipenv run python manage.py create_initial_days`
+
+It is also necessary to install a Cron job at the end of each month to update the data (delete the old month and create the new one): `pipenv run python manage.py update_days`
 
 ## Credits
 
