@@ -7,15 +7,13 @@
       </header>
       <section class="modal-card-body">
         <DayWorksTable
-          :employees="employees"
-          :works="getWorksPreference('morning')"
+          :works="workHandler.getWorksPreference(day.works, 'morning')"
           tableTitle="Matin"
           @modify="modify($event)"
           @delete="delete_($event)"
         />
         <DayWorksTable
-          :employees="employees"
-          :works="getWorksPreference('evening')"
+          :works="workHandler.getWorksPreference(day.works, 'evening')"
           tableTitle="Soir"
           @modify="modify($event)"
           @delete="delete_($event)"
@@ -56,18 +54,15 @@ import {
   IWorkDate,
 } from "../clean_architecture/entities/calendar";
 
-import { EmployeeInteractor } from "../clean_architecture/interactors/employee";
+import { employeeHandler } from "../clean_architecture/interactors/employee";
+import { calendarHandler } from "../clean_architecture/interactors/calendar";
+import { workHandler } from "../clean_architecture/interactors/work";
 import { auth } from "../clean_architecture/services/auth";
 
 const DayProps = Vue.extend({
   props: {
     isActive: Boolean,
-    day: Object,
-    employeesService: {
-      type: Object as PropType<EmployeeInteractor>,
-      required: true,
-    },
-    service: Object,
+    day: { type: Object as PropType<IDay> },
   },
   components: {
     DayWorksTable,
@@ -77,83 +72,57 @@ const DayProps = Vue.extend({
 
 @Component
 export default class Day extends DayProps {
+  employeeHandler = employeeHandler;
+  workHandler = workHandler;
+  calendarHandler = calendarHandler;
   auth = auth;
+
   work = {
+    id: null,
     day: null,
     employee: null,
     start: new Date(2020, 1, 1, 17),
     end: new Date(2020, 1, 2, 2),
-  };
+  } as IWorkDate;
 
-  get dayName() {
+  get dayName(): string {
     const day = this.day;
     if (!day) {
       return "";
     }
-    const date = new Date(day.year, day.month, day.number);
-    const dayName = date.toLocaleDateString("default", {
-      weekday: "long",
-    });
-    const monthName = date.toLocaleDateString("default", {
-      month: "long",
-    });
-    return `${dayName} ${day.number} ${monthName}`;
+    return this.calendarHandler.getLongDayName(day);
   }
 
   get employees(): IEmployee[] {
-    return this.employeesService.employees as IEmployee[];
+    return this.employeeHandler.employees as IEmployee[];
   }
 
   get availableEmployees(): IEmployee[] {
-    return this.employees.filter((employee: IEmployee) => {
-      return !this.day.works.find((work: IWorkDate) => {
-        return work.employee === employee.id;
-      });
-    });
-  }
-
-  getWorksPreference(preference: string): IWorkDate[] {
-    return this.day.works.filter((work: IWorkDate) => {
-      const startHour = work.start.getHours();
-      const dayHours = [8, 9, 10, 11, 12, 13, 14, 15, 16];
-      const nightHours = [17, 18, 19, 20, 21, 22, 23, 0, 1, 2, 3, 4];
-      return preference == "morning"
-        ? dayHours.includes(startHour)
-        : nightHours.includes(startHour);
-    });
+    return this.employeeHandler.getAvailableEmployees(
+      this.employees,
+      this.day.works
+    );
   }
 
   getWeekDay(): string {
-    const weekDay = new Date(
-      this.day.year,
-      this.day.month,
-      this.day.number
-    ).getDay();
-    return [
-      "sunday",
-      "monday",
-      "tuesday",
-      "wednesday",
-      "thursday",
-      "friday",
-      "saturday",
-    ][weekDay];
+    const date = new Date(this.day.year, this.day.month, this.day.number);
+    return this.calendarHandler.getWeekDay(date);
   }
 
   async create() {
-    this.work.day = this.day?.id;
-    const works = await this.service.add(this.work);
+    this.work.day = this.day.id || -1;
+    const works = await workHandler.add(this.work);
     this.day.works = works;
     this.$buefy.toast.open(`Horaires créés !`);
   }
 
-  async modify(work: IWork) {
-    const works = await this.service.modify(work);
+  async modify(work: IWorkDate) {
+    const works = await workHandler.modify(work);
     this.day.works = works;
     this.$buefy.toast.open(`L'horaire a bien été modifié !`);
   }
 
-  delete_(work: IWork) {
+  delete_(work: IWorkDate) {
     this.$buefy.dialog.confirm({
       title: `Supprimer l'horaire ?`,
       message: `Es-tu sûre de vouloir <b>supprimer</b> cet horaire ? Cette action est irréversible.`,
@@ -161,7 +130,7 @@ export default class Day extends DayProps {
       type: "is-danger",
       hasIcon: true,
       onConfirm: () => {
-        this.service
+        workHandler
           .delete_(work)
           .then((res: IWorkDate[]) => (this.day.works = res));
         this.$buefy.toast.open(`L'horaire est supprimé !`);

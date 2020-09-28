@@ -4,8 +4,14 @@ import Vuex from "vuex";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-  state: {},
-  mutations: {},
+  state: {
+    employeeID: -1,
+  },
+  mutations: {
+    changeFilter(state, value) {
+      state.employeeID = value;
+    },
+  },
   actions: {},
-  modules: {}
+  modules: {},
 });

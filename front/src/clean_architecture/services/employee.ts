@@ -1,4 +1,5 @@
 import { httpClient, IError } from "../common/base_api";
+import { IWorkDate } from "../entities/calendar";
 import { IEmployee } from "../entities/worker";
 import { verifyAuth } from "../services/auth";
 

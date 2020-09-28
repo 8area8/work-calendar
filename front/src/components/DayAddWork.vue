@@ -62,7 +62,7 @@
             </td>
             <td style="vertical-align: middle;">
               <div class="total-hours">
-                {{ getTotalHours() }}
+                {{ workHandler.getTotalHours(work.start, work.end) }}
               </div>
             </td>
             <td style="vertical-align: middle;">
@@ -83,6 +83,8 @@ import { PropType } from "vue";
 import { IEmployee } from "../clean_architecture/entities/worker";
 import { IWorkDate } from "../clean_architecture/entities/calendar";
 
+import { workHandler } from "../clean_architecture/interactors/work";
+
 const Props = Vue.extend({
   props: {
     employees: { type: Array as PropType<IEmployee[]> },
@@ -93,25 +95,7 @@ const Props = Vue.extend({
 
 @Component
 export default class DayWorksTable extends Props {
-  getTotalHours() {
-    const startDate = this.work.start;
-    const endDate = this.work.end;
-
-    if (endDate.getHours() > 6) {
-      endDate.setDate(startDate.getDate());
-    } else if (endDate.getHours() < 6) {
-      endDate.setDate(startDate.getDate() + 1);
-    }
-    let milliseconds = endDate.getTime() - startDate.getTime();
-
-    const hours = Math.floor(milliseconds / 1000 / 60 / 60);
-    milliseconds -= hours * 1000 * 60 * 60;
-
-    const minutes = Math.floor(milliseconds / 1000 / 60);
-    const twoDigits = minutes < 10 ? "0" + minutes : minutes;
-
-    return `${hours}H${twoDigits}`;
-  }
+  workHandler = workHandler;
 
   getAvailableEmployeesPreference(preference: string): IEmployee[] {
     return this.employees.filter((employee: IEmployee) => {

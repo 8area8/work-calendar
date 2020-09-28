@@ -6,7 +6,7 @@
         'is-invisible': !work,
       }"
     >
-      {{ work ? getWorkingTime() : "No value" }}
+      {{ work ? workHandler.getWorkingTime(work.start, work.end) : "No value" }}
     </span>
   </div>
 </template>
@@ -17,6 +17,8 @@ import { PropType } from "vue";
 
 import { IWorkDate } from "../clean_architecture/entities/calendar";
 
+import { workHandler } from "../clean_architecture/interactors/work";
+
 const Props = Vue.extend({
   props: {
     work: Object as PropType<IWorkDate>,
@@ -24,17 +26,7 @@ const Props = Vue.extend({
 });
 
 export default class CalendarDataSingle extends Props {
-  getTime(date: Date): string {
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
-    const twoDigits = minutes < 10 ? `0${minutes}` : minutes;
-
-    return `${hours}H${twoDigits}`;
-  }
-
-  getWorkingTime() {
-    return `${this.getTime(this.work.start)} - ${this.getTime(this.work.end)}`;
-  }
+  workHandler = workHandler;
 }
 </script>
 

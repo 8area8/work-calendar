@@ -40,7 +40,7 @@
               <div v-else>{{ getTime(work.end) }}</div>
             </td>
             <td class="total-hours" style="vertical-align: middle;">
-              {{ getTotalHours(work.start, work.end) }}
+              {{ workHandler.getTotalHours(work.start, work.end) }}
             </td>
             <td
               class="has-text-centered"
@@ -80,11 +80,13 @@ import { Component, Vue, Watch } from "vue-property-decorator";
 import { PropType } from "vue";
 import { IEmployee } from "../clean_architecture/entities/worker";
 import { IWorkDate } from "../clean_architecture/entities/calendar";
+
 import { auth } from "../clean_architecture/services/auth";
+import { employeeHandler } from "../clean_architecture/interactors/employee";
+import { workHandler } from "../clean_architecture/interactors/work";
 
 const Props = Vue.extend({
   props: {
-    employees: { type: Array as PropType<IEmployee[]> },
     works: { type: Array as PropType<IWorkDate[]> },
     tableTitle: String,
   },
@@ -92,30 +94,14 @@ const Props = Vue.extend({
 
 @Component
 export default class DayWorksTable extends Props {
+  workHandler = workHandler;
   auth = auth;
+
   getEmployeeName(id: number): string {
-    const employee = this.employees.find(
+    const employee = employeeHandler.employees.find(
       (employee: IEmployee) => employee.id == id
     );
     return employee ? employee.name : "";
-  }
-
-  getTotalHours(start: Date, end: Date): string {
-    if (end.getHours() > 6) {
-      end.setDate(start.getDate());
-    } else if (end.getHours() < 6) {
-      end.setDate(start.getDate() + 1);
-    }
-
-    let milliseconds = end.getTime() - start.getTime();
-
-    const hours = Math.floor(milliseconds / 1000 / 60 / 60);
-    milliseconds -= hours * 1000 * 60 * 60;
-
-    const minutes = Math.floor(milliseconds / 1000 / 60);
-    const twoDigits = minutes < 10 ? "0" + minutes : minutes;
-
-    return `${hours}H${twoDigits}`;
   }
 
   getTime(date: Date): string {

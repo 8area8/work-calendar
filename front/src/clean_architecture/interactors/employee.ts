@@ -1,13 +1,23 @@
 import { IEmployee } from "../entities/worker";
+import { IWorkDate } from "../entities/calendar";
 import { EmployeeService } from "../services/employee";
 import { isError, IError } from "../common/base_api";
 
 export interface IEmployeeInteractor {
   employees: IEmployee[];
+  names: string[];
+  ids: (number | null)[];
+
   get: () => Promise<IEmployee[]>;
   add: (employee: IEmployee) => Promise<IEmployee[]>;
   modify: (employee: IEmployee) => Promise<IEmployee[]>;
   delete_: (employee: IEmployee) => Promise<IEmployee[]>;
+
+  find: (id: number) => IEmployee | undefined;
+  getAvailableEmployees: (
+    employees: IEmployee[],
+    works: IWorkDate[]
+  ) => IEmployee[];
 }
 
 export class EmployeeInteractor implements IEmployeeInteractor {
@@ -59,4 +69,23 @@ export class EmployeeInteractor implements IEmployeeInteractor {
       return employee.id == id;
     });
   }
+
+  /**
+   * Returns employees who do not work.
+   * @param employees
+   * @param works
+   */
+  getAvailableEmployees(
+    employees: IEmployee[],
+    works: IWorkDate[]
+  ): IEmployee[] {
+    return employees.filter((employee: IEmployee) => {
+      return !works.find((work: IWorkDate) => {
+        return work.employee === employee.id;
+      });
+    });
+  }
 }
+
+const employeeHandler = new EmployeeInteractor();
+export { employeeHandler };

@@ -82,13 +82,22 @@
                 </div>
                 <div class="c-day__data">
                   <CalendarDataAll
-                    v-if="filter === -1"
-                    :eveningWorks="getWorksPreference(day.works, 'evening')"
-                    :morningWorks="getWorksPreference(day.works, 'morning')"
+                    v-if="$store.state.employeeID === -1"
+                    :eveningWorks="
+                      workHandler.getWorksPreference(day.works, 'evening')
+                    "
+                    :morningWorks="
+                      workHandler.getWorksPreference(day.works, 'morning')
+                    "
                   />
                   <CalendarDataSingle
                     v-else
-                    :work="getEmployeeWork(day.works, filter)"
+                    :work="
+                      workHandler.getEmployeeWork(
+                        day.works,
+                        $store.state.employeeID
+                      )
+                    "
                   />
                 </div>
               </div>
@@ -102,8 +111,6 @@
       ref="day"
       :isActive="isModalActive"
       :day="modalDay"
-      :employeesService="employeesService"
-      :service="workService"
       @close-modal="isModalActive = false"
     />
   </div>
@@ -119,18 +126,9 @@ import Day from "./Day.vue";
 import { IDay, IWorkDate } from "../clean_architecture/entities/calendar";
 import { IEmployee } from "../clean_architecture/entities/worker";
 
-import { CalendarInteractor } from "../clean_architecture/interactors/calendar";
-import { EmployeeInteractor } from "../clean_architecture/interactors/employee";
-import { WorkInteractor } from "../clean_architecture/interactors/work";
-
-const Props = Vue.extend({
-  props: {
-    employeesService: { type: Object as PropType<EmployeeInteractor> },
-    calendar: { type: Object as PropType<CalendarInteractor> },
-    workService: { type: Object as PropType<WorkInteractor> },
-    filter: Number,
-  },
-});
+import { calendarHandler } from "../clean_architecture/interactors/calendar";
+import { employeeHandler } from "../clean_architecture/interactors/employee";
+import { workHandler } from "../clean_architecture/interactors/work";
 
 @Component({
   components: {
@@ -139,10 +137,14 @@ const Props = Vue.extend({
     CalendarDataSingle,
   },
 })
-export default class Calendar extends Props {
+export default class Calendar extends Vue {
+  calendar = calendarHandler;
+  workHandler = workHandler;
+
   days: IDay[] = [];
-  monthName = "";
   modalDay: IDay = { works: [], id: null, number: 0, month: 0, year: 0 };
+
+  monthName = "";
   isModalActive = false;
 
   openDayModale(day: IDay) {
@@ -165,46 +167,9 @@ export default class Calendar extends Props {
     this.monthName = this.calendar.getMonthName();
   }
 
-  getDayTooltip(day: IDay): string {
-    return `employés: ${
-      day.works.length
-        ? day.works.map((item) => this.getEmployee(item.employee).name)
-        : "aucun"
-    }`;
-  }
-
-  getEmployee(id: number | null) {
-    return (
-      this.employeesService.employees.find((elem) => elem.id == id) || {
-        preference: "",
-        name: "",
-      }
-    );
-  }
-
   async mounted() {
     this.getDays();
     this.getMonthName();
-  }
-
-  getWorksPreference(works: IWorkDate[], preference: string): IWorkDate[] {
-    return works.filter((work: IWorkDate) => {
-      const startHour = work.start.getHours();
-      const dayHours = [8, 9, 10, 11, 12, 13, 14, 15, 16];
-      const nightHours = [17, 18, 19, 20, 21, 22, 23, 0, 1, 2, 3, 4];
-      return preference == "morning"
-        ? dayHours.includes(startHour)
-        : nightHours.includes(startHour);
-    });
-  }
-
-  getEmployeeWork(
-    works: IWorkDate[],
-    employeeID: number
-  ): IWorkDate | undefined {
-    return works.find((work: IWorkDate) => {
-      return work.employee == employeeID;
-    });
   }
 }
 </script>

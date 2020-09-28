@@ -2,7 +2,7 @@
   <div class="container has-text-centered box" style="margin-top: 1em">
     <div class="table-container">
       <div class="dashboard__title">Tableau de bord</div>
-      <div v-if="filter === -1">
+      <div v-if="$store.state.employeeID === -1">
         <div class="title is-size-5">Salaires net mensuels</div>
         <table
           class="table is-bordered is-striped"
@@ -29,7 +29,7 @@
                 {{ getEmployeeWorks(employee.id).length }}
               </td>
               <td style="vertical-align: middle;">
-                {{ getTime(employee) }}
+                {{ getReadableWorksHours(employee.id) }}
               </td>
               <td style="vertical-align: middle;">
                 {{ employee.salary }}
@@ -44,9 +44,14 @@
       <div v-else>
         <div class="title is-size-5">
           Salaire hebdomadaire de
-          {{ employees.find((elem) => elem.id == filter).name }}
+          {{
+            employees.find((elem) => elem.id == $store.state.employeeID).name
+          }}
           (salaire net horaire :
-          {{ employees.find((elem) => elem.id == filter).salary }} euros)
+          {{
+            employees.find((elem) => elem.id == $store.state.employeeID).salary
+          }}
+          euros)
         </div>
         <table
           class="table is-bordered is-striped"
@@ -89,70 +94,36 @@
 import { PropType } from "vue";
 import { Component, Vue } from "vue-property-decorator";
 
-import { WorkInteractor } from "../clean_architecture/interactors/work";
-import { CalendarInteractor } from "../clean_architecture/interactors/calendar";
-
 import { IEmployee } from "../clean_architecture/entities/worker";
 import { IWorkDate, IDay } from "../clean_architecture/entities/calendar";
 
-const Props = Vue.extend({
-  props: {
-    employees: { type: Array as PropType<IEmployee[]> },
-    worksService: { type: Object as PropType<WorkInteractor> },
-    calendar: { type: Object as PropType<CalendarInteractor> },
-    filter: Number,
-  },
-});
+import { calendarHandler } from "../clean_architecture/interactors/calendar";
+import { employeeHandler } from "../clean_architecture/interactors/employee";
+import { workHandler } from "../clean_architecture/interactors/work";
 
 @Component
-export default class Dashboard extends Props {
-  getMonthWorks(): IWorkDate[] {
-    const onlyThisMonth = this.calendar.days.filter(
-      (day: IDay) => day.month == this.calendar.getMonth()
-    );
-    const works = onlyThisMonth.map((day: IDay) => {
-      return day.works;
-    });
-    const result = works.flat();
-    return result;
+export default class Dashboard extends Vue {
+  calendar = calendarHandler;
+  workHandler = workHandler;
+  employeeHandler = employeeHandler;
+
+  get employees() {
+    return this.employeeHandler.employees;
   }
 
-  getEmployeeWorks(employeeId: number): IWorkDate[] {
-    const works = this.getMonthWorks().filter((work: IWorkDate) => {
-      return work.employee == employeeId;
-    });
-    return works;
+  getEmployeeWorks(id: number): IWorkDate[] {
+    return this.workHandler.getEmployeeWorks(id, this.calendar.getMonthWorks());
   }
 
-  getTotalHours(employee: IEmployee) {
-    let seconds = 0;
-    let hours = 0;
-    let minutes = 0;
-    const works = this.getEmployeeWorks(employee.id || -1);
-
-    for (const work of works) {
-      seconds = (work.end.getTime() - work.start.getTime()) / 1000;
-      minutes += seconds / 60;
-    }
-    hours = Math.floor(minutes / 60);
-    minutes -= Math.floor(hours * 60);
-
-    return { minutes, hours };
-  }
-
-  getTime(employee: IEmployee): string {
-    const time = this.getTotalHours(employee);
-    const twoDigits = time.minutes < 10 ? "0" + time.minutes : time.minutes;
-    return `${time.hours}H${twoDigits}`;
+  getReadableWorksHours(id: number): string {
+    return this.workHandler.getReadableWorksHours(this.getEmployeeWorks(id));
   }
 
   getMonthSalary(employee: IEmployee): string {
-    let salary = 0;
-    const time = this.getTotalHours(employee);
-
-    salary = employee.salary * time.hours;
-    salary += (employee.salary * time.minutes) / 60;
-    return salary.toFixed(2);
+    return this.workHandler.getMonthSalary(
+      this.getEmployeeWorks(employee.id || -1),
+      employee
+    );
   }
 
   getWeeks(): IWorkDate[][] {
@@ -165,7 +136,7 @@ export default class Dashboard extends Props {
       }
       if (day.month === month) {
         const work = day.works.find((work: IWorkDate) => {
-          return work.employee === this.filter;
+          return work.employee === this.$store.state.employeeID;
         });
         if (work) {
           weeks.slice(-1)[0].push(work);
@@ -199,7 +170,7 @@ export default class Dashboard extends Props {
   getWeekSalary(week: IWorkDate[]): string {
     let salary = 0;
     const employee = this.employees.find(
-      (employee: IEmployee) => employee.id == this.filter
+      (employee: IEmployee) => employee.id == this.$store.state.employeeID
     );
     const baseNet = employee ? employee.salary : 0;
     const time = this.getWeekHours(week);

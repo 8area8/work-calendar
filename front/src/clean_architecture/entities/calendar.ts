@@ -13,16 +13,16 @@ interface IDay {
 
 interface IWork {
   id: number | null;
-  employee: number;
-  day: number;
+  employee: number | null;
+  day: number | null;
   start: string | Date;
   end: string | Date;
 }
 
 export interface IWorkDate {
   id: number | null;
-  day: number;
-  employee: number;
+  day: number | null;
+  employee: number | null;
   start: Date;
   end: Date;
 }

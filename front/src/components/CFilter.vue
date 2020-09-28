@@ -24,9 +24,10 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 
+import { employeeHandler } from "../clean_architecture/interactors/employee";
+
 const Props = Vue.extend({
   props: {
-    employees: Array,
     value: Number,
   },
 });
@@ -34,8 +35,14 @@ const Props = Vue.extend({
 @Component
 export default class CFilter extends Props {
   filter = -1;
+  employeeHandler = employeeHandler;
+
   emitValue() {
-    this.$emit("input", this.filter);
+    this.$store.commit("changeFilter", this.filter);
+  }
+
+  get employees() {
+    return this.employeeHandler.employees;
   }
 }
 </script>

@@ -1,4 +1,4 @@
-import { IDay, Calendar } from "../entities/calendar";
+import { IDay, IWorkDate, Calendar } from "../entities/calendar";
 import { MonthService } from "../services/calendar";
 import { isError } from "../common/base_api";
 
@@ -48,6 +48,10 @@ export interface ICalendarInteractor {
    * @returns {IDay[]} a list of IDays
    */
   getDays: () => Promise<IDay[]>;
+  isSimilarDays: (day1: IDay, day2: IDay) => boolean;
+  getMonthWorks: () => IWorkDate[];
+  getWeekDay: (date: Date) => string;
+  getLongDayName: (day: IDay) => string;
 }
 
 export class CalendarInteractor implements ICalendarInteractor {
@@ -160,11 +164,60 @@ export class CalendarInteractor implements ICalendarInteractor {
     return jsDays;
   }
 
-  isSimilarDays(day1: IDay, day2: IDay) {
+  isSimilarDays(day1: IDay, day2: IDay): boolean {
     return (
       day1.number == day2.number &&
       day1.month == day2.month &&
       day1.year == day2.year
     );
   }
+
+  /**
+   * Get all works of the current month (only the current month).
+   */
+  getMonthWorks(): IWorkDate[] {
+    const onlyThisMonth = this.days.filter(
+      (day: IDay) => day.month == this.getMonth()
+    );
+    const works = onlyThisMonth.map((day: IDay) => {
+      return day.works;
+    });
+    const result = works.flat();
+    return result;
+  }
+
+  /**
+   * Get the week day of the given date.
+   * @param date the given date.
+   */
+  getWeekDay(date: Date): string {
+    const weekDay = date.getDay();
+    return [
+      "sunday",
+      "monday",
+      "tuesday",
+      "wednesday",
+      "thursday",
+      "friday",
+      "saturday",
+    ][weekDay];
+  }
+
+  /**
+   * Get the long day name of the given day (pattern like "lundi 6 juin")
+   * @param day the given day.
+   */
+  getLongDayName(day: IDay): string {
+    const date = new Date(day.year, day.month, day.number);
+    const dayName = date.toLocaleDateString("default", {
+      weekday: "long",
+    });
+    const monthName = date.toLocaleDateString("default", {
+      month: "long",
+    });
+    return `${dayName} ${day.number} ${monthName}`;
+  }
 }
+
+const calendarHandler = new CalendarInteractor();
+export { calendarHandler };
