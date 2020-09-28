@@ -11,6 +11,7 @@
                 <tr>
                   <th><abbr title="Identifiant">ID</abbr></th>
                   <th>Nom de l'employé</th>
+                  <th><abbr>Jours Off</abbr></th>
                   <th><abbr>Préférence</abbr></th>
                   <th><abbr>Salaire</abbr></th>
                   <th><abbr>Enregistrer</abbr></th>
@@ -22,6 +23,19 @@
                   <th>{{ employee.id }}</th>
                   <td>
                     <b-input v-model="employee.name"></b-input>
+                  </td>
+                  <td>
+                    <b-field position="is-centered">
+                      <b-checkbox-button
+                        v-model="employee.off"
+                        v-for="day in weekNames"
+                        :key="'week-choice-' + day.value"
+                        :native-value="day.value"
+                        type="is-danger"
+                      >
+                        <span>{{ day.name }}</span>
+                      </b-checkbox-button>
+                    </b-field>
                   </td>
                   <td>
                     <b-select
@@ -102,16 +116,17 @@
               </b-field>
               <!-- OFF -->
               <b-field label="Jours Off" position="is-centered">
-                <div class="block">
-                  <b-checkbox
-                    v-for="day in weekNames"
-                    :key="'week-choice-' + day"
+                <b-field position="is-centered">
+                  <b-checkbox-button
                     v-model="employee.off"
+                    v-for="day in weekNames"
+                    :key="'week-choice-' + day.value"
                     :native-value="day.value"
+                    type="is-danger"
                   >
-                    {{ day.name }}
-                  </b-checkbox>
-                </div>
+                    <span>{{ day.name }}</span>
+                  </b-checkbox-button>
+                </b-field>
               </b-field>
               <!-- PREFERENCE -->
               <b-field label="Préférence" position="is-centered">
@@ -215,6 +230,19 @@ export default class Employees extends Vue {
 
   preferenceName(preference: string) {
     return preference === "morning" ? "matin" : "soir";
+  }
+
+  readEmployeeOff(off: string[]): string {
+    const readable = [];
+    for (const day of off) {
+      const foundDay = this.weekNames.find((week: any) => {
+        return week.value == day;
+      });
+      if (foundDay) {
+        readable.push(foundDay.name);
+      }
+    }
+    return readable.join(",");
   }
 
   create(employee: ISalaryWorker) {

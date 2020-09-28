@@ -24,6 +24,7 @@
           v-if="auth.isAdmin"
           :employees="availableEmployees"
           :work="work"
+          :weekDay="getWeekDay()"
           @create="create()"
         />
       </section>
@@ -120,6 +121,23 @@ export default class Day extends DayProps {
         ? dayHours.includes(startHour)
         : nightHours.includes(startHour);
     });
+  }
+
+  getWeekDay(): string {
+    const weekDay = new Date(
+      this.day.year,
+      this.day.month,
+      this.day.number
+    ).getDay();
+    return [
+      "sunday",
+      "monday",
+      "tuesday",
+      "wednesday",
+      "thursday",
+      "friday",
+      "saturday",
+    ][weekDay];
   }
 
   async create() {

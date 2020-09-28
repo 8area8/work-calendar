@@ -43,6 +43,15 @@
                     >{{ employee.name }}</option
                   >
                 </optgroup>
+                <optgroup label="Off">
+                  <option
+                    class="has-text-grey-light"
+                    v-for="employee in getOffEmployees()"
+                    :key="'select-employee' + employee.id"
+                    :value="employee.id"
+                    >{{ employee.name }}</option
+                  >
+                </optgroup>
               </b-select>
             </td>
             <td style="vertical-align: middle;">
@@ -78,6 +87,7 @@ const Props = Vue.extend({
   props: {
     employees: { type: Array as PropType<ISalaryWorker[]> },
     work: { type: Object as PropType<IWorkDate> },
+    weekDay: String,
   },
 });
 
@@ -105,7 +115,16 @@ export default class DayWorksTable extends Props {
 
   getAvailableEmployeesPreference(preference: string): ISalaryWorker[] {
     return this.employees.filter((employee: ISalaryWorker) => {
-      return employee.preference == preference;
+      return (
+        employee.preference == preference &&
+        !employee.off.includes(this.weekDay)
+      );
+    });
+  }
+
+  getOffEmployees(): ISalaryWorker[] {
+    return this.employees.filter((employee: ISalaryWorker) => {
+      return employee.off.includes(this.weekDay);
     });
   }
 }
