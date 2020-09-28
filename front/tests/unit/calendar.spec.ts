@@ -13,7 +13,7 @@ test("getDays should return the days of the selected month", () => {
       year: date.getFullYear(),
       month: date.getMonth(),
       number: date.getDate(),
-      employees: []
+      works: [],
     });
     date.setDate(date.getDate() + 1);
   }
