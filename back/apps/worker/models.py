@@ -1,8 +1,8 @@
 """Workers models."""
 
-from typing import Tuple
-from datetime import datetime
-from calendar import Calendar
+from typing import Tuple, List
+from datetime import datetime, date
+from calendar import Calendar, monthrange
 
 from django.contrib.postgres.fields import ArrayField
 from django.db import IntegrityError
@@ -52,12 +52,23 @@ class DayManager(models.Manager):
         year = now.year + month // self.MAX_MONTHS
         return month, year
 
-    def get_month(self, from_now: int = 0) -> "DayManager":
+    def get_month(
+        self, from_now: int = 0, until_last_of_week: bool = True
+    ) -> "DayManager":
         """Get a month."""
         month, year = self.set_month(from_now)
-        monthdays = Calendar().monthdatescalendar(year, month)
-        start = monthdays[0][0]
-        end = monthdays[-1][-1]
+        monthdays: List[List[date]] = Calendar().monthdatescalendar(year, month)
+
+        first_week = monthdays[0]
+        last_week = monthdays[-1]
+
+        start = first_week[0]
+        if until_last_of_week:
+            end = last_week[-1]
+        else:
+            day_number = monthrange(year, month)[-1]
+            end = date(year, month, day_number)
+
         return self.filter(date__range=(start, end)).order_by("date")
 
     def create_month(self, from_now: int = 0) -> None:

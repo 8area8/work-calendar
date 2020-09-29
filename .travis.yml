@@ -20,7 +20,7 @@ jobs:
       before_script: psql -c 'create database example;' -U postgres
       script: pip install pipenv && pipenv install --dev && pipenv run pytest back/tests
     - stage: Deploy on Heroku
-      script: cd front && npm install && npm run build && cd ..
+      script: cd front && npm install && npm run build && cd .. && pip install pipenv && pipenv install
       deploy:
         provider: heroku
         skip_cleanup: true

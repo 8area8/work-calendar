@@ -73,7 +73,7 @@ def test_days_of_last_month_are_deleted_after_recreation_on_new_month():
     create_initial_days.Command().handle()
     update_days.Command().handle()
 
-    days = Day.objects.get_month(-1)
+    days = Day.objects.get_month(-2)
     assert len(days) < 7
 
 
@@ -83,8 +83,18 @@ def test_days_of_next_month_exists_after_recreation_on_new_month():
     create_initial_days.Command().handle()
     update_days.Command().handle()
 
-    days = Day.objects.get_month(2)
-    assert len(days) > 0
+    days = Day.objects.get_month(1)
+    assert len(days) > 7
+
+
+@pytest.mark.django_db
+def test_month_creation():
+    """Test the month creation."""
+    create_initial_days.Command().handle()
+    Day.objects.create_month(3)
+
+    days = Day.objects.get_month(3)
+    assert len(days) > 7
 
 
 @pytest.mark.django_db

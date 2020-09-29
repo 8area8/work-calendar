@@ -104,7 +104,26 @@ At the time of deployment, it is necessary:
 - create a simple user
 - generate the days on Django with the command `pipenv run python manage.py create_initial_days`
 
-It is also necessary to install a Cron job at the end of each month to update the data (delete the old month and create the new one): `pipenv run python manage.py update_days`
+Example on Heroku console :
+
+```bash
+pipenv run python manage.py create_initial_days
+pipenv run python manage.py createsuperuser --username=admin --email=your@email.com  # you will be prompted for a password
+pipenv run python manage.py shell  # then:
+```
+
+```python
+from django.contrib.auth.models import User
+>>> user = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
+```
+
+It is also necessary to install a Cron job at the start of each month to update the data (delete the oldest month and create the new one): `pipenv run python manage.py update_days`
+
+Exemple for [Heroku tasks scheduler](https://elements.heroku.com/addons/scheduler) (Thanks to [this article](https://blog.dbrgn.ch/2013/10/4/heroku-schedule-weekly-monthly-tasks/)):
+
+```bash
+if [ "$(date +%d)" = 01 ]; then pipenv run python manage.py update_days; fi
+```
 
 ## Credits
 
