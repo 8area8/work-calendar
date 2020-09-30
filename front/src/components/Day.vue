@@ -7,13 +7,13 @@
       </header>
       <section class="modal-card-body">
         <DayWorksTable
-          :works="workHandler.getWorksPreference(day.works, 'morning')"
+          :works="morningWorks"
           tableTitle="Matin"
           @modify="modify($event)"
           @delete="delete_($event)"
         />
         <DayWorksTable
-          :works="workHandler.getWorksPreference(day.works, 'evening')"
+          :works="eveningWorks"
           tableTitle="Soir"
           @modify="modify($event)"
           @delete="delete_($event)"
@@ -102,6 +102,14 @@ export default class Day extends DayProps {
       this.employees,
       this.day.works
     );
+  }
+
+  get morningWorks() {
+    return this.workHandler.getWorksPreference(this.day.works, "morning");
+  }
+
+  get eveningWorks() {
+    return this.workHandler.getWorksPreference(this.day.works, "evening");
   }
 
   getWeekDay(): string {

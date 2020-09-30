@@ -38,72 +38,82 @@
           <!-- YEAR -->
           <div class="c-work-calendar__year">
             <span id="calendar-year">
-              {{ calendar.getYear() }}
+              {{ getYear() }}
             </span>
           </div>
         </div>
-        <!-- CONTENT -->
-        <div class="c-work-calendar__content">
-          <!-- DAYS NAMES -->
-          <div class="c-nodes c-nodes--title">
-            <div
-              v-for="(name, index) of calendar.getWeekDayNames()"
-              :key="`dayName-${index}`"
-              class="c-nodes__node c-nodes__node--day-name"
-            >
-              {{ name }}
-            </div>
-          </div>
+        <!-- TABLE CONTENT -->
+        <div class="c-work-calendar__content table-container">
           <!-- DAYS NODES -->
-          <div class="c-nodes">
-            <div
-              @click="openDayModale(day)"
-              v-for="(day, index) in days"
-              :id="calendar.getStringDate(day)"
-              :key="`day-${index}`"
-              class="c-nodes__node c-day"
-              :class="{
-                'c-day--out-of-month': !calendar.isInMonth(day),
-                'c-day--active': calendar.isActiveDay(day),
-                'c-day--disabled': calendar.isOverDatabaseLimit(day),
-              }"
+          <table class="table is-fullwidth has-text-centered">
+            <thead
+              class="has-text-light"
+              style="background-color: #3c3b3b !important;"
             >
-              <div
-                class="c-day__data-wrapper"
-                :class="{ 'is-invisible': calendar.isOverDatabaseLimit(day) }"
-              >
-                <div
-                  class="c-day__number"
+              <tr>
+                <th
+                  v-for="weekDay in weekNames"
+                  :key="'weekDay-' + weekDay"
+                  style="padding: 2em"
+                  class="has-text-grey has-text-weight-light has-text-centered"
+                >
+                  {{ weekDay }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(week, index) in weeks" :key="'week-' + index">
+                <th
+                  @click="openDayModale(day)"
+                  v-for="day in week"
+                  style="border-width: 0 1px 0;"
+                  :key="'week-' + index + '-day-' + day.number"
+                  class="c-day"
                   :class="{
-                    'c-day__number--disabled': !calendar.isInMonth(day),
+                    'c-day--out-of-month': !calendar.isInMonth(day),
+                    'c-day--active': calendar.isActiveDay(day),
+                    'c-day--disabled': calendar.isOverDatabaseLimit(day),
                   }"
                 >
-                  {{ day.number }}
-                </div>
-                <div class="c-day__data">
-                  <CalendarDataAll
-                    v-if="$store.state.employeeID === -1"
-                    :eveningWorks="
-                      workHandler.getWorksPreference(day.works, 'evening')
-                    "
-                    :morningWorks="
-                      workHandler.getWorksPreference(day.works, 'morning')
-                    "
-                  />
-                  <CalendarDataSingle
-                    v-else
-                    :work="
-                      workHandler.getEmployeeWork(
-                        day.works,
-                        $store.state.employeeID
-                      )
-                    "
-                  />
-                </div>
-              </div>
-            </div>
-            <!-- AFTER DAY -->
-          </div>
+                  <div
+                    class="c-day__data-wrapper"
+                    :class="{
+                      'is-invisible': calendar.isOverDatabaseLimit(day),
+                    }"
+                  >
+                    <div
+                      class="c-day__number"
+                      :class="{
+                        'c-day__number--disabled': !calendar.isInMonth(day),
+                      }"
+                    >
+                      {{ day.number }}
+                    </div>
+                    <div class="c-day__data">
+                      <CalendarDataAll
+                        v-if="$store.state.employeeID === -1"
+                        :eveningWorks="
+                          workHandler.getWorksPreference(day.works, 'evening')
+                        "
+                        :morningWorks="
+                          workHandler.getWorksPreference(day.works, 'morning')
+                        "
+                      />
+                      <CalendarDataSingle
+                        v-else
+                        :work="
+                          workHandler.getEmployeeWork(
+                            day.works,
+                            $store.state.employeeID
+                          )
+                        "
+                      />
+                    </div>
+                  </div>
+                </th>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -147,6 +157,25 @@ export default class Calendar extends Vue {
   monthName = "";
   isModalActive = false;
 
+  get weeks(): IDay[][] {
+    const weeks: IDay[][] = [];
+    this.days.forEach((day: IDay, index: number) => {
+      if (index % 7 == 0) {
+        weeks.push([]);
+      }
+      weeks[weeks.length - 1].push(day);
+    });
+    return weeks;
+  }
+
+  get weekNames() {
+    return this.calendar.getWeekDayNames();
+  }
+
+  getYear() {
+    return this.calendar.getYear();
+  }
+
   openDayModale(day: IDay) {
     this.isModalActive = true;
     this.modalDay = day;
@@ -185,7 +214,6 @@ $calendar-color: #e9e9e9;
   font-family: "Lato", sans-serif;
   border-top-left-radius: 15px;
   border-top-right-radius: 15px;
-  // border-left: 1px $calendar-color solid;
   background-color: $calendar-head-color;
   -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
@@ -211,38 +239,9 @@ $calendar-color: #e9e9e9;
     justify-content: center;
   }
 }
-.c-nodes {
-  display: flex;
-  flex-wrap: wrap;
-  background-color: white;
-
-  &--title {
-    background-color: $calendar-header-color;
-    color: #7e7e7e;
-    font-size: 1.3em;
-  }
-
-  &__node {
-    padding: 2em;
-    font-size: 0.7em;
-    flex: 1 0 14%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    transition: all 0.1s;
-
-    &:not(.c-nodes__node--day-name) {
-      border-left: solid 1px #c7c7c7;
-      // border-bottom: solid 1px #e0e0e0;
-    }
-  }
-}
 
 .c-day {
   &:not(.c-day--disabled) {
-    // border-bottom: 1px $calendar-color solid;
-    // border-right: 1px $calendar-color solid;
     &:hover {
       color: white;
       background-color: #ffc82c;
@@ -250,9 +249,6 @@ $calendar-color: #e9e9e9;
       cursor: pointer;
       * {
         transition: all 0.3s;
-      }
-      &:hover .c-day__number {
-        width: 5.3em;
       }
     }
   }
@@ -274,10 +270,9 @@ $calendar-color: #e9e9e9;
     text-align: center;
   }
   &__data {
-    margin-top: 0.5em;
-    display: flex;
-    justify-content: center;
+    margin: 2em 0 2em 0;
     color: #7e919a;
+    font-size: 0.7em;
   }
   &__employee-preference {
     font-size: 1.3em;
@@ -292,13 +287,10 @@ $calendar-color: #e9e9e9;
     }
   }
   &__number {
-    position: relative;
     margin: auto;
+    font-weight: 400;
     width: 5em;
-    top: -0.5em;
     color: #767070;
-    font-weight: bolder;
-    font-size: 1.2em;
     background-color: #f2f2f2bd;
     border-radius: 5px 5px 2px 2px;
     box-shadow: rgba(21, 23, 35, 0.14) 0px 2px 2px 0px,

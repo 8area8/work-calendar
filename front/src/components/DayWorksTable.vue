@@ -21,7 +21,7 @@
         <tbody>
           <tr v-for="work in works" :key="'work-' + work.id">
             <td style="vertical-align: middle;">
-              {{ employeeHandler.find(work.employee).name }}
+              {{ findEmployee(work).name }}
             </td>
             <td style="vertical-align: middle;">
               <b-timepicker
@@ -29,7 +29,7 @@
                 v-model="work.start"
                 inline
               ></b-timepicker>
-              <div v-else>{{ workHandler.getTime(work.start) }}</div>
+              <div v-else>{{ getTime(work.start) }}</div>
             </td>
             <td style="vertical-align: middle;">
               <b-timepicker
@@ -37,10 +37,10 @@
                 v-model="work.end"
                 inline
               ></b-timepicker>
-              <div v-else>{{ workHandler.getTime(work.end) }}</div>
+              <div v-else>{{ getTime(work.end) }}</div>
             </td>
             <td class="total-hours" style="vertical-align: middle;">
-              {{ workHandler.getTotalHours(work.start, work.end) }}
+              {{ getTotalHours(work) }}
             </td>
             <td
               class="has-text-centered"
@@ -97,6 +97,18 @@ export default class DayWorksTable extends Props {
   workHandler = workHandler;
   employeeHandler = employeeHandler;
   auth = auth;
+
+  findEmployee(work: IWorkDate): IEmployee {
+    return this.employeeHandler.find(work.employee);
+  }
+
+  getTime(work: IWorkDate): string {
+    return this.workHandler.getReadableTime(work.start);
+  }
+
+  getTotalHours(work: IWorkDate): string {
+    return this.workHandler.getTotalHours(work.start, work.end);
+  }
 }
 </script>
 

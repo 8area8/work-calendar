@@ -25,11 +25,7 @@
               >
                 <optgroup label="Matin">
                   <option
-                    v-for="employee in employeeHandler.filterEmployeesFromPreference(
-                      employees,
-                      'morning',
-                      weekDay
-                    )"
+                    v-for="employee in morningEmployees"
                     :key="'select-employee' + employee.id"
                     :value="employee.id"
                     >{{ employee.name }}</option
@@ -37,11 +33,7 @@
                 </optgroup>
                 <optgroup label="Soir">
                   <option
-                    v-for="employee in employeeHandler.filterEmployeesFromPreference(
-                      employees,
-                      'evening',
-                      weekDay
-                    )"
+                    v-for="employee in eveningEmployees"
                     :key="'select-employee' + employee.id"
                     :value="employee.id"
                     >{{ employee.name }}</option
@@ -50,10 +42,7 @@
                 <optgroup label="Off">
                   <option
                     class="has-text-grey-light"
-                    v-for="employee in employeeHandler.getOffEmployees(
-                      employees,
-                      weekDay
-                    )"
+                    v-for="employee in offEmployees"
                     :key="'select-employee' + employee.id"
                     :value="employee.id"
                     >{{ employee.name }}</option
@@ -69,7 +58,7 @@
             </td>
             <td style="vertical-align: middle;">
               <div class="total-hours">
-                {{ workHandler.getTotalHours(work.start, work.end) }}
+                {{ totalHours }}
               </div>
             </td>
             <td style="vertical-align: middle;">
@@ -105,6 +94,29 @@ const Props = Vue.extend({
 export default class DayWorksTable extends Props {
   workHandler = workHandler;
   employeeHandler = employeeHandler;
+  get morningEmployees() {
+    return this.employeeHandler.filterEmployeesFromPreference(
+      this.employees,
+      "morning",
+      this.weekDay
+    );
+  }
+
+  get eveningEmployees() {
+    return this.employeeHandler.filterEmployeesFromPreference(
+      this.employees,
+      "evening",
+      this.weekDay
+    );
+  }
+
+  get offEmployees() {
+    return this.employeeHandler.getOffEmployees(this.employees, this.weekDay);
+  }
+
+  get totalHours() {
+    return this.workHandler.getTotalHours(this.work.start, this.work.end);
+  }
 }
 </script>
 
