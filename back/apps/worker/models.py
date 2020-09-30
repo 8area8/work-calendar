@@ -29,7 +29,11 @@ class Employee(models.Model):
     salary = models.IntegerField()
     name = models.CharField(max_length=30, unique=True)
     preference = models.CharField(choices=PREFERENCE_CHOICE, max_length=20)
-    off = ArrayField(models.CharField(choices=DAYS_CHOICE, max_length=30), default=[])
+    off = ArrayField(
+        models.CharField(choices=DAYS_CHOICE, max_length=30, null=True),
+        default=list,
+        blank=True,
+    )
 
 
 class DayManager(models.Manager):
