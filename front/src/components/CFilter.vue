@@ -34,7 +34,7 @@ const Props = Vue.extend({
 
 @Component
 export default class CFilter extends Props {
-  filter = -1;
+  filter = this.$store.state.employeeID;
   employeeHandler = employeeHandler;
 
   emitValue() {

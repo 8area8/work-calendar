@@ -259,7 +259,7 @@ export default class Employees extends Vue {
     this.$buefy.dialog.confirm({
       title: `Supprimer ${employee.name} ?`,
       message: `Es-tu sûre de vouloir <b>supprimer</b> ${employee.name} ? Cette action est irréversible.`,
-      confirmText: "Surrpimer",
+      confirmText: "Supprimer",
       type: "is-danger",
       hasIcon: true,
       onConfirm: () => {
