@@ -201,7 +201,8 @@ export class WorkInteractor implements IWorkInteractor {
 
     salary = employee.salary * time.hours;
     salary += (employee.salary * time.minutes) / 60;
-    return salary.toFixed(2);
+    const salaryOrZero = salary > 0 ? salary : 0;
+    return salaryOrZero.toFixed(2);
   }
 
   /**

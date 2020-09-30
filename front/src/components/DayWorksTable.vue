@@ -27,6 +27,7 @@
               <b-timepicker
                 v-if="auth.isAdmin"
                 v-model="work.start"
+                @input="keepMinToStart($event, work.end, work)"
                 inline
               ></b-timepicker>
               <div v-else>{{ getTime(work.start) }}</div>
@@ -35,6 +36,7 @@
               <b-timepicker
                 v-if="auth.isAdmin"
                 v-model="work.end"
+                @input="keepMinToStart($event, work.start, work)"
                 inline
               ></b-timepicker>
               <div v-else>{{ getTime(work.end) }}</div>
@@ -108,6 +110,13 @@ export default class DayWorksTable extends Props {
 
   getTotalHours(work: IWorkDate): string {
     return this.workHandler.getTotalHours(work.start, work.end);
+  }
+
+  keepMinToStart(date1: Date, date2: Date, work: IWorkDate) {
+    if (date1.getTime() < date2.getTime()) {
+      work.start = date1;
+      work.end = date2;
+    }
   }
 }
 </script>
