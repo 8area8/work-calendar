@@ -2,8 +2,7 @@
 
 A calendar application to manage its employees.
 
-![calendar shot](/doc/calendar-shot.jpg)
-Photo by [Estée Janssens](https://unsplash.com/@esteejanssens?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText) on [Unsplash](https://unsplash.com/s/photos/calendar?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText)
+![tutorial employee creation](doc/work.gif)
 
 ## Stack
 
@@ -58,8 +57,18 @@ Run `pipenv run python manage.py runserver` then go to `http://localhost:8000/`
 
 ## Local developement
 
-Rather than generating the frontend at each modification, you can simply use the `cd front; npm run dev` command. The command will generate the front-end Nuxt server at `http://localhot:3000` with the Hot Reload.
+Rather than generating the frontend at each modification, you can simply use the `cd front; npm run serve` command. The command will generate the front-end Nuxt server at `http://localhot:3000` with the Hot Reload.
 Run `pipenv run python manage.py runserver` to launch the backend API.
+
+## Authentication system
+
+The authentication system is strong in the backend, but very simple in the frontend. To access the administration components, all you have to do is connect with a username that is worth `admin`. It is therefore advisable to create a backend superuser whose name is `admin`.
+
+> **Note :** you can customize this feature in the `authenticate` method of the `auth` service (`front\src\clean_architecture\services\auth.ts`)
+
+In fact, the permissions system in Frontend is based on a `right` variable stored in the `localStorage`. The admin components expect the value `admin` for the `right` variable (`localStorage.getItem("right")`).
+
+> **Note :** having access to the admin components does not allow you to have write or read admin permissions. The backend will always act as a barrier if the frontend is hacked.
 
 ## Tests
 
@@ -104,17 +113,33 @@ At the time of deployment, it is necessary:
 - create a simple user
 - generate the days on Django with the command `pipenv run python manage.py create_initial_days`
 
-Example on Heroku console :
+> **Note :** use `pipenv run` if you are not yet in your virtual environment. Avoid it on Heroku.
+
+Example for Heroku CLI ([read the doc here](https://devcenter.heroku.com/articles/scheduling-custom-django-management-commands)) :
 
 ```bash
-pipenv run python manage.py create_initial_days
-pipenv run python manage.py createsuperuser --username=admin --email=your@email.com  # you will be prompted for a password
-pipenv run python manage.py shell  # then:
+# In your local CLI
+heroku run bash -a <your-app-name>
+```
+
+```bash
+# In your remote CLI
+python manage.py migrate
+python manage.py create_initial_days
+python manage.py createsuperuser
+python manage.py shell
 ```
 
 ```python
-from django.contrib.auth.models import User
->>> user = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
+# In your Django shell
+>>> from django.contrib.auth.models import User
+>>> user = User.objects.create_user('user', 'your@email.com', 'yourpassword')
+>>> quit()
+```
+
+```bash
+# In your remote CLI
+exit
 ```
 
 It is also necessary to install a Cron job at the start of each month to update the data (delete the oldest month and create the new one): `pipenv run python manage.py update_days`
@@ -122,7 +147,7 @@ It is also necessary to install a Cron job at the start of each month to update 
 Exemple for [Heroku tasks scheduler](https://elements.heroku.com/addons/scheduler) (Thanks to [this article](https://blog.dbrgn.ch/2013/10/4/heroku-schedule-weekly-monthly-tasks/)):
 
 ```bash
-if [ "$(date +%d)" = 01 ]; then pipenv run python manage.py update_days; fi
+if [ "$(date +%d)" = 01 ]; then python manage.py update_days; fi
 ```
 
 ## Credits
