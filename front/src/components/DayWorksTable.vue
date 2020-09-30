@@ -100,8 +100,8 @@ export default class DayWorksTable extends Props {
   employeeHandler = employeeHandler;
   auth = auth;
 
-  findEmployee(work: IWorkDate): IEmployee {
-    return this.employeeHandler.find(work.employee);
+  findEmployee(work: IWorkDate): IEmployee | undefined {
+    return this.employeeHandler.find(work.employee || -1);
   }
 
   getTime(work: IWorkDate): string {
